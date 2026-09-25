@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ACSOM Neurology Codenames</title>
+  <style>
+    :root {
+      --acsom-red: #d32f2f;
+      --acsom-dark-red: #b71c1c;
+      --acsom-blue: #1976d2;
+      --acsom-dark-blue: #0d47a1;
+      --bg-color: #f4f5f7;
+      --card-bg: #ffffff;
+      --text-dark: #212121;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* ACSOM Header Banner matching screenshot */
+    .header-banner {
+      width: 100%;
+      background-color: var(--acsom-red);
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .header-title {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin: 0;
+      flex-grow: 1;
+      text-align: center;
+    }
+
+    .acsom-logo {
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      border-left: 2px solid rgba(255, 255, 255, 0.4);
+      padding-left: 10px;
+    }
+
+    .container {
+      max-width: 1100px;
+      width: 100%;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .btn-new {
+      background-color: #2e7d32;
+      color: white;
+    }
+
+    .btn-new:hover {
+      background-color: #1b5e20;
+    }
+
+    .btn-spymaster {
+      background-color: #f57c00;
+      color: white;
+    }
+
+    .btn-spymaster:hover {
+      background-color: #e65100;
+    }
+
+    .status-bar {
+      display: flex;
+      gap: 30px;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: #ffffff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border-top: 3px solid var(--acsom-red);
+    }
+
+    .score-red { color: var(--acsom-red); }
+    .score-blue { color: var(--acsom-blue); }
+
+    /* 5x5 Grid Layout */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      width: 100%;
+    }
+
+    .card {
+      aspect-ratio: 1.5;
+      background-color: var(--card-bg);
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      padding: 8px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+      color: var(--text-dark);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+      word-break: break-word;
+    }
+
+    .card:hover {
+      border-color: var(--acsom-red);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Colors on click (revealed) */
+    .card.revealed.red {
+      background-color: var(--acsom-red);
+      color: #ffffff;
+      border-color: var(--acsom-dark-red);
+    }
+
+    .card.revealed.blue {
+      background-color: var(--acsom-blue);
+      color: #ffffff;
+      border-color: var(--acsom-dark-blue);
+    }
+
+    .card.revealed.white {
+      background-color: #e0e0e0;
+      color: #616161;
+      border-color: #bdbdbd;
+    }
+
+    .card.revealed.black {
+      background-color: #111111;
+      color: #ff5252;
+      border-color: #ff1744;
+    }
+
+    /* Spymaster Key View (Unrevealed Peeking) */
+    .spymaster-mode .card:not(.revealed).red {
+      border: 3px solid var(--acsom-red);
+      color: var(--acsom-red);
+      background-color: #ffebee;
+    }
+
+    .spymaster-mode .card:not(.revealed).blue {
+      border: 3px solid var(--acsom-blue);
+      color: var(--acsom-blue);
+      background-color: #e3f2fd;
+    }
+
+    .spymaster-mode .card:not(.revealed).white {
+      border: 3px solid #9e9e9e;
+      color: #616161;
+      background-color: #f5f5f5;
+    }
+
+    .spymaster-mode .card:not(.revealed).black {
+      border: 3px dashed #111111;
+      color: #d32f2f;
+      background-color: #ffebee;
+    }
+
+    @media (max-width: 768px) {
+      .header-title {
+        font-size: 18px;
+      }
+      .card {
+        font-size: 10px;
+        padding: 4px;
+      }
+      .grid {
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Slide Banner Header matching image -->
+  <header class="header-banner">
+    <div class="header-title">Neurology Codenames Board</div>
+    <div class="acsom-logo">
+      <span>American</span>
+      <span>Canadian</span>
+      <span>School OF</span>
+      <span>Medicine</span>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="controls">
+      <button class="btn-new" onclick="startNewGame()">New Game</button>
+      <button class="btn-spymaster" onclick="toggleSpymaster()">Toggle Spymaster Key</button>
+    </div>
+
+    <div class="status-bar">
+      <span class="score-red">Red Remaining: <span id="red-count">0</span></span>
+      <span class="score-blue">Blue Remaining: <span id="blue-count">0</span></span>
+    </div>
+
+    <div class="grid" id="card-grid"></div>
+  </div>
+
+  <script>
+    const WORD_LIST = [
+      // CSF & ICP
+      "CSF", "Choroid plexus", "Lateral ventricles", "Third ventricle", "Fourth ventricle", 
+      "Cerebral aqueduct", "Aqueduct of Sylvius", "Foramen of Monro", "Foramen of Luschka", 
+      "Foramen of Magendie", "Arachnoid granulations", "Arachnoid villi", "Dural venous sinuses", 
+      "Monro-Kellie doctrine", "Intracranial pressure", "Cerebral perfusion pressure", "Cerebral edema", 
+      "Brain herniation", "Hydrocephalus", "Communicating hydrocephalus", "Noncommunicating hydrocephalus", 
+      "Obstructive hydrocephalus", "Normal-pressure hydrocephalus", "Aqueductal stenosis", 
+      "Arnold-Chiari malformation", "Dandy-Walker malformation", "Subarachnoid hemorrhage", "Meningitis", 
+      "Cushing triad", "Papilledema", "Sixth nerve palsy", "Headache", "Nausea", "Vomiting", "Diplopia", 
+      "Altered mental status", "Decreased consciousness", "Subfalcine herniation", "Uncal herniation", 
+      "Tonsillar herniation", "Central transtentorial herniation", "Tentorium cerebelli", "Uncus", 
+      "Hippocampus", "Posterior cerebral artery", "Cranial nerve III", "Brainstem compression", 
+      "Urinary incontinence", "Gait disturbance", "Magnetic gait", "Cognitive impairment", "Ventriculomegaly",
+
+      // Basal Ganglia
+      "Basal ganglia", "Caudate nucleus", "Putamen", "Globus pallidus interna", "Globus pallidus externa", 
+      "Subthalamic nucleus", "Substantia nigra pars compacta", "Striatum", "Nigrostriatal pathway", 
+      "Direct pathway", "Indirect pathway", "Corticostriatal pathway", "Thalamus", "Dopamine", "GABA", 
+      "Glutamate", "Acetylcholine", "D1 receptor", "D2 receptor", "Parkinson disease", "Dopaminergic neuron loss", 
+      "Alpha-synuclein", "Lewy body", "Lewy neurite", "Bradykinesia", "Resting tremor", "Rigidity", 
+      "Postural instability", "Shuffling gait", "Masked facies", "Hypophonia", "Micrographia", "Freezing", 
+      "Festinating gait", "Huntington disease", "HTT gene", "CAG repeat", "Trinucleotide repeat", 
+      "Anticipation", "Autosomal dominant", "Caudate atrophy", "Striatal degeneration", "GABAergic neurons", 
+      "Chorea", "Athetosis", "Dystonia", "Hemiballismus", "Tardive dyskinesia", "Acute dystonia", "Akathisia", 
+      "Drug-induced parkinsonism", "Dopamine D2 blockade", "Antipsychotics", "Neuroleptic malignant syndrome", 
+      "Hyperthermia", "Autonomic instability", "Creatine kinase", "Extrapyramidal symptoms",
+
+      // Dementias
+      "Alzheimer disease", "Beta-amyloid", "Amyloid precursor protein", "APP", "Beta-secretase", 
+      "Gamma-secretase", "A-beta", "Amyloid plaques", "Tau protein", "Neurofibrillary tangles", 
+      "Microtubules", "GSK-3-beta", "Presenilin 1", "Presenilin 2", "APOE epsilon 4", "Cholinergic neurons", 
+      "Nucleus basalis of Meynert", "Progressive memory loss", "Anterograde memory", "Episodic memory", 
+      "Language impairment", "Visuospatial dysfunction", "Executive dysfunction", "Aphasia", "Apraxia", 
+      "Agnosia", "Hippocampal atrophy", "Medial temporal lobe atrophy", "Cortical atrophy", 
+      "Ex vacuo ventriculomegaly", "Frontotemporal dementia", "Primary progressive aphasia", "Frontal lobe", 
+      "Anterior temporal lobe", "TDP-43", "Progranulin", "MAPT", "Personality change", "Disinhibition", 
+      "Apathy", "Loss of empathy", "Compulsive behavior", "Fluctuating cognition", "Visual hallucinations", 
+      "Parkinsonism", "REM sleep behavior disorder", "Neuroleptic sensitivity", "Autonomic dysfunction", 
+      "Vascular dementia", "Cerebrovascular disease", "Small-vessel disease", "Lacunar infarct", "Multi-infarct dementia",
+
+      // Demyelinating & Leukodystrophies
+      "Multiple system atrophy", "Alpha-synucleinopathy", "Oligodendroglial cytoplasmic inclusions", 
+      "Glial cytoplasmic inclusions", "Autonomic failure", "Orthostatic hypotension", "Urinary dysfunction", 
+      "Erectile dysfunction", "Poor levodopa response", "Cerebellar ataxia", "Oligodendrocyte", "Myelin sheath", 
+      "Node of Ranvier", "Saltatory conduction", "Myelin basic protein", "Proteolipid protein", 
+      "Myelin oligodendrocyte glycoprotein", "Central nervous system demyelination", "Multiple sclerosis", 
+      "Autoimmune demyelination", "T cells", "B cells", "Macrophages", "Microglia", "Oligodendrocyte injury", 
+      "Demyelinating plaque", "Optic neuritis", "Internuclear ophthalmoplegia", "Medial longitudinal fasciculus", 
+      "Uhthoff phenomenon", "Lhermitte sign", "Sensory loss", "Upper motor neuron weakness", "Ataxia", 
+      "Bladder dysfunction", "Periventricular lesions", "Spinal cord lesions", "Dawson fingers", "Oligoclonal bands", 
+      "P100 latency", "Neuromyelitis optica spectrum disorder", "Aquaporin-4", "AQP4", "AQP4-IgG", "Astrocyte", 
+      "Complement", "Astrocytopathy", "Longitudinally extensive transverse myelitis", "Severe optic neuritis", 
+      "Area postrema", "Intractable nausea", "Intractable vomiting", "Intractable hiccups", 
+      "Acute disseminated encephalomyelitis", "ADEM", "Post-infectious demyelination", "Post-vaccination demyelination", 
+      "Monophasic disease", "Encephalopathy", "Multifocal neurological deficits", "Progressive multifocal leukoencephalopathy", 
+      "JC virus", "Immunosuppression", "HIV/AIDS", "Natalizumab", "Multifocal white-matter lesions", 
+      "Oligodendrocyte infection", "Metachromatic leukodystrophy", "Arylsulfatase A", "Sulfatides", 
+      "Metachromatic granules", "CNS demyelination", "Peripheral demyelination", "Krabbe disease", 
+      "Galactocerebrosidase", "GALC", "Psychosine", "Galactocerebroside", "Globoid cells", "Adrenoleukodystrophy", 
+      "ABCD1", "Peroxisome", "Very-long-chain fatty acids", "X-linked recessive", "Adrenal insufficiency", "Addison disease",
+
+      // Osmotic, Brainstem & PRES
+      "Sodium", "Potassium", "Chloride", "Na-K ATPase", "Hypovolemic hyponatremia", "Euvolemic hyponatremia", 
+      "Hypervolemic hyponatremia", "SIADH", "Syndrome of inappropriate antidiuretic hormone secretion", "ADH", 
+      "Vasopressin", "Neuronal dehydration", "Central diabetes insipidus", "Nephrogenic diabetes insipidus", 
+      "Desmopressin", "Lithium", "Free water", "Rapid sodium correction", "Chronic hyponatremia", 
+      "Osmotic adaptation", "Osmotic demyelination syndrome", "Central pontine myelinolysis", "Extrapontine myelinolysis", 
+      "Noninflammatory demyelination", "Basis pontis", "Corticospinal tract", "Corticobulbar tract", 
+      "Quadriparesis", "Quadriplegia", "Dysarthria", "Dysphagia", "Seizures", "Malnutrition", "Liver disease", 
+      "Liver transplantation", "Hypokalemia", "Locked-in syndrome", "Ventral pons", "Basilar artery", 
+      "Pontine infarction", "Pontine hemorrhage", "Reticular activating system", "Vertical gaze", 
+      "Vertical eye movements", "Anarthria", "Facial paralysis", "Preserved consciousness", "Blinking", 
+      "Eye movement communication", "Brainstem lesion", "Posterior reversible encephalopathy syndrome", 
+      "PRES", "Blood-brain barrier", "Cerebral autoregulation", "Endothelial dysfunction", "Vasogenic edema", 
+      "Cytotoxic edema", "Parieto-occipital edema", "Parieto-occipital white matter", "Severe hypertension", 
+      "Preeclampsia", "Eclampsia", "Renal disease", "Autoimmune disease", "Tacrolimus", "Cyclosporine", 
+      "Chemotherapy", "Transplantation", "Visual disturbance", "Cortical blindness", "T2 hyperintensity", "FLAIR hyperintensity"
+    ];
+
+    let currentBoard = [];
+    let isSpymaster = false;
+
+    function shuffle(array) {
+      let currentIndex = array.length, randomIndex;
+      const newArray = [...array];
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [newArray[currentIndex], newArray[randomIndex]] = [newArray[randomIndex], newArray[currentIndex]];
+      }
+      return newArray;
+    }
+
+    function startNewGame() {
+      isSpymaster = false;
+      document.getElementById('card-grid').classList.remove('spymaster-mode');
+
+      // Deduplicate and pick 25 random words from the full term list
+      const uniqueWords = Array.from(new Set(WORD_LIST));
+      const shuffledWords = shuffle(uniqueWords).slice(0, 25);
+
+      // Randomize starting team (9 cards for starter, 8 for second team)
+      const redIsFirst = Math.random() < 0.5;
+      const redCount = redIsFirst ? 9 : 8;
+      const blueCount = redIsFirst ? 8 : 9;
+
+      // Create role pool: Red, Blue, Neutral (White), Assassin (Black)
+      const roles = [
+        ...Array(redCount).fill('red'),
+        ...Array(blueCount).fill('blue'),
+        ...Array(7).fill('white'),
+        'black'
+      ];
+      const shuffledRoles = shuffle(roles);
+
+      // Assemble card objects
+      currentBoard = shuffledWords.map((word, index) => ({
+        word: word,
+        role: shuffledRoles[index],
+        revealed: false
+      }));
+
+      renderBoard();
+      updateCounts();
+    }
+
+    function renderBoard() {
+      const grid = document.getElementById('card-grid');
+      grid.innerHTML = '';
+
+      currentBoard.forEach((cardData, index) => {
+        const card = document.createElement('div');
+        card.className = `card ${cardData.role}`;
+        if (cardData.revealed) {
+          card.classList.add('revealed');
+        }
+        card.textContent = cardData.word;
+
+        card.addEventListener('click', () => handleCardClick(index));
+        grid.appendChild(card);
+      });
+    }
+
+    function handleCardClick(index) {
+      const card = currentBoard[index];
+      if (card.revealed) return;
+
+      card.revealed = true;
+      renderBoard();
+      updateCounts();
+
+      if (card.role === 'black') {
+        setTimeout(() => alert('🚨 FATAL COMPLICATION! The Assassin card was revealed! Game Over.'), 100);
+      }
+    }
+
+    function toggleSpymaster() {
+      isSpymaster = !isSpymaster;
+      const grid = document.getElementById('card-grid');
+      if (isSpymaster) {
+        grid.classList.add('spymaster-mode');
+      } else {
+        grid.classList.remove('spymaster-mode');
+      }
+    }
+
+    function updateCounts() {
+      const redLeft = currentBoard.filter(c => c.role === 'red' && !c.revealed).length;
+      const blueLeft = currentBoard.filter(c => c.role === 'blue' && !c.revealed).length;
+
+      document.getElementById('red-count').textContent = redLeft;
+      document.getElementById('blue-count').textContent = blueLeft;
+
+      if (redLeft === 0) {
+        setTimeout(() => alert('🎉 RED TEAM WINS! All terms identified!'), 100);
+      } else if (blueLeft === 0) {
+        setTimeout(() => alert('🎉 BLUE TEAM WINS! All terms identified!'), 100);
+      }
+    }
+
+    // Initialize on page load
+    startNewGame();
+  </script>
+</body>
+</html>
