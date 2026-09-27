@@ -1,14 +1,1333 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>NEUROLOGY WEEK 4</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>USMLE Step 1 Neurology - Week 4 High-Yield Flashcards</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slide: {
+                            red: '#E31B23',
+                            darkred: '#C4121A',
+                            bg: '#F4F5F7',
+                            card: '#FFFFFF',
+                            text: '#1A1A1A',
+                            subtext: '#555555',
+                            border: '#E2E8F0'
+                        }
+                    },
+                    animation: {
+                        'pop': 'pop 0.2s ease-out'
+                    },
+                    keyframes: {
+                        pop: {
+                            '0%': { transform: 'scale(0.98)', opacity: '0.8' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Lock screen to 100dvh with zero page scrolling on mobile */
+        html, body {
+            height: 100dvh;
+            width: 100vw;
+            overflow: hidden;
+            position: fixed;
+            touch-action: manipulation;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #F4F5F7;
+            color: #1A1A1A;
+        }
+
+        /* Fluid text sizing for mobile viewports */
+        .text-clamp-title {
+            font-size: clamp(0.85rem, 3.8vw, 1.2rem);
+        }
+        .text-clamp-prompt {
+            font-size: clamp(0.85rem, 3.8vw, 1.1rem);
+            line-height: 1.35;
+        }
+        .text-clamp-option {
+            font-size: clamp(0.78rem, 3.2vw, 0.92rem);
+            line-height: 1.25;
+        }
+
+        button, a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Custom subtle scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E31B23;
+            border-radius: 4px;
+        }
+    </style>
 </head>
+<body class="bg-slide-bg text-slide-text flex flex-col justify-between select-none antialiased h-[100dvh] max-h-[100dvh] w-full p-0 m-0 border-box">
 
-<body>
+    <!-- SLIDE-STYLE BRIGHT RED HEADER BANNER -->
+    <header class="shrink-0 bg-slide-red text-white w-full shadow-md py-2 px-3 sm:px-4">
+        <div class="max-w-md mx-auto flex items-center justify-between gap-2">
+            <!-- GO BACK BUTTON LINKING TO ACSOM -->
+            <a href="https://nineandelevennn.github.io/acsom/" target="_self" class="inline-flex items-center gap-1 px-2.5 py-1 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded-lg border border-white/30 transition-all active:scale-95 shrink-0">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Go Back
+            </a>
 
-<h1>NEUROLOGY WEEK 4 BUZZWORD DRILL</h1>
+            <!-- CENTER LECTURE TITLE -->
+            <div class="text-center flex-1 min-w-0">
+                <h1 class="font-black text-white text-clamp-title tracking-wider uppercase truncate">USMLE STEP 1 NEUROLOGY</h1>
+                <p class="text-[9px] text-white/90 font-medium tracking-widest uppercase truncate">American Canadian School of Medicine</p>
+            </div>
 
-<h2>not ready yet :( </h2>
+            <!-- RESET STATS BUTTON -->
+            <button id="resetStatsBtn" class="px-2 py-1 bg-white/15 hover:bg-white/25 text-white text-xs font-medium rounded-lg border border-white/30 transition-all active:scale-95 shrink-0 flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <span class="hidden sm:inline">Reset</span>
+            </button>
+        </div>
+    </header>
 
+    <!-- MAIN WRAPPER CONTAINER -->
+    <div class="flex-1 min-h-0 w-full max-w-md mx-auto flex flex-col justify-between px-2.5 py-2 sm:px-4 box-border">
+
+        <!-- DAY SELECTOR DROPDOWN & STATS BAR -->
+        <section class="shrink-0 flex flex-col gap-2 w-full my-0.5">
+            <!-- DAY SELECTOR -->
+            <div class="relative w-full">
+                <select id="daySelect" class="w-full bg-white text-slide-text font-bold text-xs sm:text-sm py-2 px-3 pr-8 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slide-red appearance-none shadow-sm cursor-pointer transition-all">
+                    <option value="16">Day 16: Neurocutaneous disorders</option>
+                    <option value="17">Day 17: Neuroinfections part 1</option>
+                    <option value="18">Day 18: Neuroinfections part 2</option>
+                    <option value="19">Day 19: Sleep disturbances</option>
+                    <option value="20">Day 20: Headache</option>
+                    <option value="all" selected>All Days (16-20 Master Review)</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slide-red">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                </div>
+            </div>
+
+            <!-- STATS DASHBOARD BAR -->
+            <div class="grid grid-cols-3 gap-2 w-full">
+                <!-- DONE STAT -->
+                <div class="bg-white border border-slate-200 rounded-xl p-1.5 flex flex-col items-center justify-center shadow-sm">
+                    <span class="text-[9px] uppercase font-bold text-slide-subtext tracking-wider">Done</span>
+                    <span id="statDone" class="text-base font-black text-slate-800">0</span>
+                </div>
+
+                <!-- ACCURACY STAT -->
+                <div class="bg-white border border-slate-200 rounded-xl p-1.5 flex flex-col items-center justify-center shadow-sm">
+                    <span class="text-[9px] uppercase font-bold text-slide-subtext tracking-wider">Correct</span>
+                    <div class="flex items-baseline gap-1">
+                        <span id="statCorrect" class="text-base font-black text-emerald-600">0</span>
+                        <span id="statAccuracy" class="text-[9px] text-slate-500 font-medium">(0%)</span>
+                    </div>
+                </div>
+
+                <!-- STREAK STAT -->
+                <div class="bg-white border border-slate-200 rounded-xl p-1.5 flex flex-col items-center justify-center shadow-sm">
+                    <span class="text-[9px] uppercase font-bold text-slide-subtext tracking-wider flex items-center gap-0.5">
+                        Streak
+                        <svg class="w-3 h-3 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-1.048c-2.5 1.249-4.2 3.824-4.2 6.551 0 2.228 1.135 4.103 2.8 5.15C8.3 13.9 7 15.65 7 17.5c0 .28.02.55.06.81a1 1 0 001.6.66c1.8-1.35 3.34-3.23 3.34-5.47 0-1.34-.5-2.55-1.35-3.48 1.8 1.34 3.35 3.23 3.35 5.47 0 1.25-.4 2.4-1.08 3.33a1 1 0 001.44 1.28c1.6-1.5 2.64-3.6 2.64-5.95 0-3.3-1.85-6.1-4.59-7.62z" clip-rule="evenodd"/></svg>
+                    </span>
+                    <span id="statStreak" class="text-base font-black text-amber-500">0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- MAIN QUESTION CARD CONTAINER WITH STRICT FIXED FLEX HEIGHTS -->
+        <main class="flex-1 min-h-0 w-full flex flex-col justify-between bg-white border border-slate-300 rounded-2xl p-3 shadow-md relative overflow-hidden my-1">
+            
+            <!-- CARD HEADER INFO (FIXED HEIGHT) -->
+            <div class="shrink-0 flex items-center justify-between pb-1.5 border-b border-slate-200 h-7">
+                <span id="cardCategoryBadge" class="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-red-50 text-slide-red border border-red-200 rounded-full truncate max-w-[70%]">
+                    Day 16
+                </span>
+                <span id="cardProgressText" class="text-[11px] font-semibold text-slate-500 shrink-0">
+                    Card 1 of 25
+                </span>
+            </div>
+
+            <!-- QUESTION PROMPT BOX (FLEX EXPANDABLE WITH BOUNDED PADDING TO PREVENT JUMP) -->
+            <div class="flex-1 min-h-[70px] max-h-[120px] flex items-center justify-center p-2.5 my-1.5 bg-slate-50 border border-slate-200 rounded-xl text-center shadow-inner overflow-y-auto">
+                <p id="questionPrompt" class="font-bold text-slate-900 text-clamp-prompt text-balance">
+                    Prompt loading...
+                </p>
+            </div>
+
+            <!-- OPTIONS GRID CONTAINER (3 OPTIONS FIXED SLOTS) -->
+            <div id="optionsContainer" class="shrink-0 grid grid-cols-1 gap-1.5 my-1">
+                <!-- Dynamic 3 Option Buttons render here -->
+            </div>
+
+            <!-- EXPLANATION / KEY POINT FEEDBACK PANEL (ALWAYS VISIBLE & FIXED HEIGHT TO PREVENT LAYOUT SHIFT) -->
+            <div id="explanationBox" class="shrink-0 h-[100px] max-h-[100px] p-2.5 bg-slate-50 border border-slate-300 rounded-xl my-1 text-xs overflow-y-auto transition-all duration-200">
+                <div class="flex items-center gap-1.5 font-bold mb-1 text-slate-400" id="feedbackTitle">
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Explanation</span>
+                </div>
+                <p id="explanationText" class="leading-relaxed text-[11px] sm:text-xs text-slate-400 italic">
+                    Select an answer above to view the high-yield explanation...
+                </p>
+            </div>
+
+            <!-- NEXT QUESTION BUTTON CONTAINER (ALWAYS RESERVED HEIGHT SLOTS TO PREVENT JUMP) -->
+            <div id="nextBtnContainer" class="shrink-0 h-[38px] mt-0.5">
+                <button id="nextBtn" class="w-full h-full bg-slate-200 text-slate-400 font-bold text-xs sm:text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-not-allowed opacity-60" disabled>
+                    <span>Next Question</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+            </div>
+
+        </main>
+
+        <!-- FOOTER INFO -->
+        <footer class="shrink-0 text-center text-[10px] text-slate-500 py-0.5">
+            USMLE Step 1 High-Yield Review &bull; Day 16–20 Neurology
+        </footer>
+    </div>
+
+    <script>
+        const QUIZ_DATA = [
+            // DAY 16: Neurocutaneous disorders
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "Port-wine stain + seizures + glaucoma",
+                answer: "Sturge-Weber syndrome",
+                explanation: "Sturge-Weber syndrome is a congenital neurocutaneous disorder presenting with a facial port-wine stain (V1/V2 distribution), seizures, ipsilateral leptomeningeal angioma, and glaucoma."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "Sturge-Weber: characteristic mutation",
+                answer: "Somatic GNAQ mutation",
+                explanation: "Sturge-Weber syndrome is caused by a somatic activating mosaic mutation in the GNAQ gene on chromosome 9q34."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "“Tram-track” cortical calcifications",
+                answer: "Sturge-Weber: classic CT finding",
+                explanation: "Gyriform cortical calcifications resembling 'tram-track' lines on CT/X-ray are characteristic of brain involvement in Sturge-Weber syndrome."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "Sturge-Weber: underlying lesion",
+                answer: "Leptomeningeal capillary-venous malformation (angiomatosis)",
+                explanation: "The hallmark vascular malformation in Sturge-Weber syndrome is a leptomeningeal angioma causing brain tissue hypoperfusion, atrophy, and seizures."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "Tuberous sclerosis: two genes",
+                answer: "TSC1 (hamartin) and TSC2 (tuberin)",
+                explanation: "Tuberous sclerosis complex is an autosomal dominant phakomatosis caused by loss-of-function mutations in either TSC1 (hamartin) or TSC2 (tuberin)."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "Tuberous sclerosis: abnormal signaling pathway",
+                answer: "↑ mTOR signaling → abnormal cell growth/hamartomas",
+                explanation: "Hamartin and tuberin normally form a tumor suppressor complex inhibiting mTOR; mutations lead to constitutive mTOR activation and widespread hamartomas."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "Cortical tubers + subependymal nodules",
+                answer: "Tuberous sclerosis: classic CNS lesions",
+                explanation: "Cortical tubers, subependymal nodules, and subependymal giant cell astrocytomas (SEGAs) are the cardinal CNS structural lesions in Tuberous Sclerosis."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "Tuberous sclerosis + infantile spasms: key treatment",
+                answer: "Vigabatrin",
+                explanation: "Vigabatrin, an irreversible GABA transaminase inhibitor, is the first-line targeted therapy for infantile spasms (west syndrome) associated with Tuberous Sclerosis."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "Tuberous sclerosis: characteristic facial lesion",
+                answer: "Facial angiofibromas (adenoma sebaceum)",
+                explanation: "Reddish papules on the cheeks and nose (facial angiofibromas or adenoma sebaceum) typically develop in early childhood in Tuberous Sclerosis."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "Tuberous sclerosis: classic renal lesion",
+                answer: "Renal angiomyolipomas",
+                explanation: "Benign renal angiomyolipomas (composed of blood vessels, smooth muscle, and fat) are present in up to 80% of patients with Tuberous Sclerosis."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "NF1: mutated gene and protein",
+                answer: "NF1 gene → neurofibromin",
+                explanation: "Neurofibromatosis Type 1 is caused by mutations on chromosome 17 in the NF1 tumor suppressor gene, encoding the protein neurofibromin."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "NF1: neurofibromin normally inhibits what pathway?",
+                answer: "RAS/MAPK pathway",
+                explanation: "Neurofibromin functions as a GTPase-activating protein (GAP) that negatively regulates proto-oncogene RAS; loss leads to hyperactive RAS signaling."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "Café-au-lait spots + axillary freckling + Lisch nodules",
+                answer: "NF1: classic skin/eye findings",
+                explanation: "NF1 diagnosis includes ≥6 café-au-lait macules, axillary/inguinal freckling (Crowe sign), and pigmented iris hamartomas (Lisch nodules)."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "NF1: characteristic peripheral nerve tumor",
+                answer: "Plexiform neurofibroma",
+                explanation: "Plexiform neurofibromas involve major nerve plexuses and peripheral nerve trunks, pathognomonic for NF1."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "NF1: rapidly enlarging/painful plexiform neurofibroma suggests",
+                answer: "Malignant peripheral nerve sheath tumor (MPNST)",
+                explanation: "Rapid growth, severe persistent pain, or new neurological deficits in a plexiform neurofibroma warn of malignant transformation to an MPNST."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "NF1: classic CNS tumor",
+                answer: "Optic pathway glioma",
+                explanation: "Pilocytic astrocytoma of the optic pathway (optic nerve/chiasm glioma) is a hallmark CNS tumor associated with NF1 in children."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "Bilateral vestibular schwannomas → hearing loss/tinnitus",
+                answer: "NF2: hallmark tumor",
+                explanation: "Bilateral vestibular schwannomas (acoustic neuromas) compressing CN VIII are the pathognomonic feature of Neurofibromatosis Type 2."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "Merlin (schwannomin)",
+                answer: "NF2: mutated tumor-suppressor protein",
+                explanation: "NF2 gene on chromosome 22 encodes merlin (schwannomin), a tumor suppressor protein involved in cytoskeletal signaling."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "NF2: other associated tumors",
+                answer: "Meningiomas + ependymomas + other schwannomas",
+                explanation: "NF2 features multiple intracranial/spinal tumors including meningiomas, spinal ependymomas, and schwannomas (mnemonic: MISME)."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "VHL: mutated tumor-suppressor gene",
+                answer: "VHL gene",
+                explanation: "Von Hippel-Lindau disease is caused by germline mutations in the VHL tumor suppressor gene located on chromosome 3p25."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "HIF → ↑ VEGF and angiogenesis",
+                answer: "VHL mutation causes accumulation of",
+                explanation: "VHL protein normally targets Hypoxia-Inducible Factor (HIF) for ubiquitination. VHL loss causes aberrant accumulation of HIF and excessive VEGF expression."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "VHL: classic CNS tumor",
+                answer: "CNS hemangioblastoma, especially cerebellar",
+                explanation: "VHL presents with highly vascular capillary hemangioblastomas in the cerebellum, brainstem, or retina, which can produce erythropoietin (secondary polycythemia)."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "VHL: classic renal malignancy",
+                answer: "Clear-cell renal cell carcinoma",
+                explanation: "Patients with VHL have a high risk of developing multiple bilateral clear-cell renal cell carcinomas (RCC) and renal cysts."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "Stocking-glove sensory loss suggests",
+                answer: "Length-dependent peripheral polyneuropathy",
+                explanation: "Distal symmetric polyneuropathy begins in the longest axons first (feet/lower legs), producing a characteristic 'stocking-glove' sensory gradient."
+            },
+            {
+                day: 16,
+                dayTitle: "Neurocutaneous disorders",
+                prompt: "Nerve conduction: low amplitude vs slow velocity",
+                answer: "Low amplitude = axonal; slow conduction velocity = demyelinating",
+                explanation: "On nerve conduction studies, reduced compound muscle/sensory action potential amplitude indicates axonal loss, whereas slowed conduction velocity indicates demyelination."
+            },
+
+            // DAY 17: Neuroinfections part 1
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Fever + headache + neck stiffness",
+                answer: "Classic presentation of meningitis",
+                explanation: "The clinical triad of fever, severe headache, and nuchal rigidity strongly suggests acute meningeal inflammation."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Meningitis: inflammation primarily involves",
+                answer: "Meninges and subarachnoid space",
+                explanation: "Meningitis is characterized by inflammatory swelling of the leptomeninges (arachnoid and pia mater) and the subarachnoid CSF space."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Dura → arachnoid → pia",
+                answer: "Meninges: outer → inner layers",
+                explanation: "The meningeal layers from outermost to innermost are Dura mater, Arachnoid mater, and Pia mater (DAP)."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Meningitis: CSF is located in which meningeal space?",
+                answer: "Subarachnoid space",
+                explanation: "Cerebrospinal fluid flows within the subarachnoid space between the arachnoid and pia mater layers."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Neck stiffness + pain with passive neck flexion",
+                answer: "Meningeal irritation",
+                explanation: "Nuchal rigidity refers to involuntary resistance and discomfort when passively flexing the neck, reflecting spinal meningeal inflammation."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Kernig sign: pain/resistance with knee extension after hip flexion",
+                answer: "Meningeal irritation",
+                explanation: "Kernig sign is positive when passive knee extension with the hip flexed to 90 degrees causes severe hamstring pain due to meningeal stretching."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Brudzinski sign: passive neck flexion causes hip/knee flexion",
+                answer: "Meningeal irritation",
+                explanation: "Brudzinski sign is positive when involuntary flexion of the hips and knees occurs during passive neck flexion."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "CSF: neutrophils + ↓ glucose + ↑↑ protein",
+                answer: "Bacterial meningitis",
+                explanation: "Bacterial meningitis displays neutrophilic pleocytosis (high PMNs), significantly decreased CSF glucose (<40% serum), elevated opening pressure, and markedly elevated protein."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "CSF: lymphocytes + normal glucose + mildly ↑ protein",
+                answer: "Viral meningitis",
+                explanation: "Viral (aseptic) meningitis shows lymphocytic predominance, normal CSF glucose levels, and mild protein elevation."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "CSF: lymphocytes + ↓ glucose + ↑↑ protein",
+                answer: "TB or fungal meningitis",
+                explanation: "Subacute/chronic meningitis caused by Mycobacterium tuberculosis or fungi (e.g., Cryptococcus) demonstrates lymphocytic pleocytosis with low glucose and high protein."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Bacterial meningitis: characteristic CSF cell type",
+                answer: "Neutrophilic pleocytosis",
+                explanation: "Acute pyogenic bacterial infections trigger rapid recruitment of polymorphonuclear leukocytes (neutrophils) into CSF."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Viral meningitis: characteristic CSF cell type",
+                answer: "Lymphocytic pleocytosis",
+                explanation: "Non-bacterial/viral pathogens (Enteroviruses, HSV) characteristically recruit mononuclear lymphocytes into the subarachnoid space."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Purpuric/petechial rash + meningitis",
+                answer: "Neisseria meningitidis",
+                explanation: "Meningococcemia due to N. meningitidis produces a classic non-blanching petechial or purpuric rash that can progress to purpura fulminans."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Most common bacterial meningitis pathogen in adults",
+                answer: "Streptococcus pneumoniae",
+                explanation: "Streptococcus pneumoniae (pneumococcus) is the leading overall cause of community-acquired bacterial meningitis in adults."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Neonate: meningitis + sepsis; maternal/perinatal exposure",
+                answer: "Group B Streptococcus, E. coli, Listeria",
+                explanation: "Neonatal meningitis (<1 month) is most commonly caused by Group B Strep (S. agalactiae), E. coli, and Listeria monocytogenes acquired during birth."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Older/immunocompromised patient + meningitis",
+                answer: "Think Listeria monocytogenes",
+                explanation: "Listeria monocytogenes specifically affects neonates, adults >50 years, pregnant women, and immunocompromised individuals due to impaired cell-mediated immunity."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Listeria coverage requires adding which antibiotic?",
+                answer: "Ampicillin",
+                explanation: "Listeria monocytogenes is intrinsically resistant to cephalosporins; IV ampicillin must be added to empiric regimens when Listeria risk factors are present."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Empiric adult bacterial meningitis therapy",
+                answer: "Vancomycin + 3rd-gen cephalosporin ± ampicillin",
+                explanation: "Empiric coverage for immunocompetent adults consists of Vancomycin + Ceftriaxone/Cefotaxime (+ Ampicillin if >50 years or immunocompromised)."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Dexamethasone given before/with first antibiotic dose",
+                answer: "Adjunctive therapy for appropriate bacterial meningitis",
+                explanation: "Dexamethasone reduces inflammatory neurological sequelae (such as sensorineural hearing loss in S. pneumoniae meningitis) when administered with or prior to antibiotics."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Cryptococcal meningitis: classic high-risk population",
+                answer: "Immunocompromised, especially advanced HIV/AIDS",
+                explanation: "Cryptococcus neoformans causes opportunistic fungal meningitis in severely immunocompromised patients, particularly CD4 count <100/mm³."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Chronic meningitis + lymphocytes + very low glucose + high protein",
+                answer: "Tuberculous meningitis",
+                explanation: "TB meningitis presents insidiously with basilar meningeal exudates, cranial nerve palsies, CSF lymphocytic predominant pleocytosis, very high protein, and low glucose."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Meningitis diagnosis: key procedure",
+                answer: "Lumbar puncture with CSF analysis",
+                explanation: "Lumbar puncture (LP) is the mandatory diagnostic procedure to obtain CSF for cell count, differential, protein, glucose, Gram stain, and cultures."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Focal neurological deficit/papilledema/marked altered consciousness before LP",
+                answer: "Consider neuroimaging first for increased ICP/mass lesion",
+                explanation: "Head CT prior to LP is required in patients with focal motor deficits, papilledema, new seizures, or altered sensorium to rule out mass effect and brain herniation risk."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Suspected bacterial meningitis: should antibiotics await CT/LP?",
+                answer: "No—do not delay empiric antibiotics when suspicion is high",
+                explanation: "Empiric antibiotic therapy must be initiated immediately after blood cultures are drawn if LP or head CT imaging is delayed."
+            },
+            {
+                day: 17,
+                dayTitle: "Neuroinfections part 1",
+                prompt: "Fever + altered mental status + seizures/focal deficits",
+                answer: "Think encephalitis or meningoencephalitis rather than isolated meningitis",
+                explanation: "Encephalopathy (altered cognitive state, focal signs, seizures) distinguishes parenchymal brain involvement (encephalitis) from uncomplicated meningeal irritation."
+            },
+
+            // DAY 18: Neuroinfections part 2
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Fever + altered mental status + seizures",
+                answer: "Encephalitis",
+                explanation: "The clinical presentation of systemic fever accompanied by acute brain dysfunction (altered consciousness, personality changes, seizures) defines acute encephalitis."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Encephalitis: inflammation primarily involves",
+                answer: "Brain parenchyma",
+                explanation: "Unlike meningitis, encephalitis directly targets and inflames the brain parenchyma itself, leading to neuronal injury and dysfunction."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Temporal lobe seizures + personality change + fever",
+                answer: "HSV-1 encephalitis",
+                explanation: "Herpes Simplex Virus-1 causes severe sporadic encephalitis with a strong predilection for the inferomedial temporal and frontal lobes."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "HSV encephalitis: characteristic MRI finding",
+                answer: "Temporal lobe hyperintensity/edema, often hemorrhagic",
+                explanation: "T2/FLAIR MRI in HSV-1 encephalitis shows asymmetric high signal intensity and edema in the medial temporal lobes, orbitofrontal cortex, and insula."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "CSF HSV PCR",
+                answer: "Diagnostic test for HSV encephalitis",
+                explanation: "Polymerase Chain Reaction (PCR) amplification of HSV DNA in CSF is the gold standard diagnostic test of choice due to high sensitivity and specificity."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "HSV encephalitis: typical CSF pattern",
+                answer: "Lymphocytic pleocytosis + ↑ protein + usually normal glucose",
+                explanation: "CSF analysis shows viral profile (lymphocytic pleocytosis, elevated protein, normal glucose) along with frequent presence of RBCs secondary to hemorrhagic necrosis."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Hemorrhagic temporal lobe lesions",
+                answer: "HSV encephalitis",
+                explanation: "HSV-1 retrograde neuronal spread causes focal necrotizing encephalitis with hemorrhagic destructive lesions in the temporal lobe."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Suspected HSV encephalitis: immediate treatment",
+                answer: "IV acyclovir",
+                explanation: "Empiric high-dose IV acyclovir must be started immediately upon clinical suspicion of HSV encephalitis to minimize mortality and neurological morbidity."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Behavioral changes + aphasia + focal seizures",
+                answer: "HSV encephalitis",
+                explanation: "Involvement of limbic structures and temporal cortex produces olfactory hallucinations, memory impairment, expressive aphasia, and complex partial seizures."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "West Nile virus is transmitted primarily by",
+                answer: "Mosquitoes",
+                explanation: "West Nile Virus is a flavivirus transmitted to humans primarily via Culex mosquito bites, with birds serving as the reservoir."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Encephalitis + flaccid paralysis + tremor/movement disorder",
+                answer: "West Nile encephalitis",
+                explanation: "West Nile encephalitis can present with acute asymmetric flaccid paralysis (anterior horn cell damage resembling polio) and extrapyramidal tremors."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "West Nile encephalitis: treatment",
+                answer: "Supportive care",
+                explanation: "There is no specific approved antiviral therapy for West Nile Virus infection; management relies entirely on supportive care."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Tick exposure + febrile meningoencephalitis",
+                answer: "Tick-borne encephalitis",
+                explanation: "Tick-borne encephalitis (TBE) flavivirus is transmitted by Ixodes ticks and presents with biphasic febrile neurological illness."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Tick-borne encephalitis: prevention",
+                answer: "Vaccination where indicated + tick avoidance",
+                explanation: "In endemic geographical areas (e.g., parts of Europe/Asia), TBE is prevented through tick bite precautions and specific TBE vaccines."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Chronic encephalitis/meningoencephalitis + lymphocytic CSF + low glucose",
+                answer: "Tuberculosis",
+                explanation: "CNS tuberculosis can manifest as chronic meningoencephalitis, basilar exudates, tuberculomas, and vasculitis."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Autoimmune encephalitis: underlying mechanism",
+                answer: "Immune-mediated attack on neuronal receptors/proteins",
+                explanation: "Autoimmune encephalitis results from autoantibodies directed against cell-surface neuronal synaptic receptors or intracellular antigens."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Young woman + psychosis + seizures + dyskinesias",
+                answer: "Anti-NMDA receptor encephalitis",
+                explanation: "Anti-N-methyl-D-aspartate (NMDA) receptor encephalitis classically affects young women, presenting with psychiatric symptoms, autonomic instability, and orofacial dyskinesias."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Anti-NMDA receptor encephalitis: classic associated tumor",
+                answer: "Ovarian teratoma",
+                explanation: "Approximately 50% of adult female patients with anti-NMDA receptor encephalitis have an underlying ovarian teratoma containing neural tissue."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Faciobrachial dystonic seizures + hyponatremia",
+                answer: "LGI1 encephalitis",
+                explanation: "Anti-LGI1 encephalitis (voltage-gated potassium channel complex antibodies) is characterized by pathognomonic frequent brief faciobrachial dystonic seizures and hyponatremia."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "LGI1 encephalitis: typical clinical feature",
+                answer: "Memory impairment + focal seizures",
+                explanation: "Anti-LGI1 encephalitis typically presents as limbic encephalitis featuring rapid cognitive/memory decline and focal motor seizures."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Autoimmune encephalitis: first-line immunotherapy",
+                answer: "High-dose corticosteroids ± IVIG/plasma exchange",
+                explanation: "First-line acute treatment for autoimmune encephalitis involves high-dose IV corticosteroids combined with IVIG or plasmapheresis."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Refractory autoimmune encephalitis: common second-line agent",
+                answer: "Rituximab",
+                explanation: "Patients who fail first-line immunotherapy are treated with second-line agents such as Rituximab (anti-CD20) or Cyclophosphamide."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Normal CSF does not exclude autoimmune encephalitis",
+                answer: "CSF findings can be nonspecific or normal",
+                explanation: "Normal or mildly inflammatory CSF does not rule out autoimmune encephalitis; definitive diagnosis requires specific serum/CSF autoantibody testing."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Encephalitis workup commonly includes",
+                answer: "MRI + EEG + CSF + infectious/neuronal antibody testing",
+                explanation: "Comprehensive evaluation includes brain MRI with contrast, continuous EEG, and CSF sampling for infectious PCR and neuronal surface autoantibodies."
+            },
+            {
+                day: 18,
+                dayTitle: "Neuroinfections part 2",
+                prompt: "Altered mental status + seizures/focal deficits distinguish it from uncomplicated meningitis",
+                answer: "Encephalitis",
+                explanation: "Global cognitive dysfunction, behavioral changes, and focal motor/sensory deficits indicate cortical/subcortical involvement of encephalitis over isolated meningitis."
+            },
+
+            // DAY 19: Sleep disturbances
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Darkness → pineal gland → increased melatonin",
+                answer: "Circadian sleep signaling",
+                explanation: "In the absence of light, reduced retinohypothalamic stimulation triggers pineal gland secretion of melatonin to promote sleep initiation."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Melatonin is produced primarily by which structure?",
+                answer: "Pineal gland",
+                explanation: "The pineal gland synthesizes and secretes melatonin (derived from tryptophan/serotonin) into the bloodstream in response to darkness."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Master circadian clock",
+                answer: "Suprachiasmatic nucleus (SCN)",
+                explanation: "The suprachiasmatic nucleus (SCN) of the anterior hypothalamus acts as the primary master circadian pacemaker of the body."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Retina → SCN → sympathetic pathway → pineal gland",
+                answer: "Neural pathway regulating melatonin",
+                explanation: "Light signals travel from retinal ganglion cells to the SCN, which sends inhibitory projections through the superior cervical ganglion to control pineal melatonin release."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "NREM stages",
+                answer: "N1 → N2 → N3 (slow-wave sleep)",
+                explanation: "Non-REM sleep is divided into N1 (light transition, theta waves), N2 (sleep spindles and K-complexes), and N3 (deep delta slow-wave sleep)."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "High-amplitude, low-frequency delta waves",
+                answer: "N3 / slow-wave sleep",
+                explanation: "Stage N3 NREM sleep is characterized by high-voltage, low-frequency (<4 Hz) delta waves on EEG; it is the deepest, non-dreaming sleep stage."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "REM sleep: characteristic EEG pattern",
+                answer: "Low-amplitude, mixed-frequency (“desynchronized”) EEG",
+                explanation: "REM sleep exhibits a high-frequency, desynchronized 'sawtooth' EEG pattern similar to the active awake state, accompanied by rapid eye movements."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "REM sleep + skeletal muscle atonia",
+                answer: "Normal REM physiology",
+                explanation: "During normal REM sleep, glycine-mediated brainstem inhibition of spinal motor neurons causes motor atonia, preventing dream enactment."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Vivid dreams + REM + loss of normal REM atonia",
+                answer: "REM sleep behavior disorder",
+                explanation: "Loss of muscle atonia during REM sleep causes patients to physically act out vivid, violent, or action-packed dreams."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Difficulty initiating or maintaining sleep + daytime impairment",
+                answer: "Insomnia disorder",
+                explanation: "Insomnia disorder involves persistent sleep dissatisfaction (latency, duration, consolidation) despite adequate opportunity, causing significant daytime fatigue/distress."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "First-line treatment for chronic insomnia",
+                answer: "CBT-I (cognitive behavioral therapy for insomnia)",
+                explanation: "Cognitive Behavioral Therapy for Insomnia (CBT-I) is the recommended first-line long-term treatment over pharmacotherapy."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Chronic insomnia: diagnostic duration",
+                answer: "≥3 nights/week for ≥3 months",
+                explanation: "Chronic insomnia is formally diagnosed when symptoms occur at least 3 nights per week for a minimum duration of 3 months."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Excessive daytime sleepiness + cataplexy",
+                answer: "Narcolepsy type 1",
+                explanation: "Narcolepsy Type 1 is defined by severe excessive daytime sleepiness accompanied by cataplexy (sudden emotional loss of muscle tone)."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Narcolepsy type 1: deficient neurotransmitter",
+                answer: "Hypocretin (orexin)",
+                explanation: "Narcolepsy Type 1 is caused by autoimmune destruction of hypocretin (orexin)-producing neuropeptide neurons in the lateral hypothalamus."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Sudden loss of muscle tone triggered by laughter/emotion",
+                answer: "Cataplexy",
+                explanation: "Cataplexy involves transient bilateral loss of voluntary muscle tone triggered by strong positive emotions (laughter, excitement), with preserved consciousness."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Narcolepsy: diagnostic sleep study after overnight PSG",
+                answer: "Multiple Sleep Latency Test (MSLT)",
+                explanation: "Confirmation of narcolepsy requires a Multiple Sleep Latency Test (MSLT) demonstrating mean sleep latency <8 minutes and ≥2 sleep-onset REM periods."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Multiple sleep-onset REM periods (SOREMPs)",
+                answer: "Narcolepsy",
+                explanation: "Entering REM sleep within 15 minutes of sleep onset (SOREMP) during PSG or daytime nap trials is a hallmark diagnostic feature of narcolepsy."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "NREM parasomnia occurring during deep sleep",
+                answer: "Sleepwalking / sleep terrors / confusional arousals",
+                explanation: "NREM parasomnias occur during slow-wave (N3) deep sleep in the first third of the night and feature amnesia for the event."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Child screams, appears terrified, autonomic activation, little memory next morning",
+                answer: "Sleep terror",
+                explanation: "Sleep terrors occur in N3 sleep, presenting with sudden awakening, screaming, intense autonomic arousal, and complete amnesia upon waking."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Complex behavior during N3 sleep + amnesia",
+                answer: "Sleepwalking (somnambulism)",
+                explanation: "Somnambulism involves complex motor behaviors (walking, eating) initiated during N3 slow-wave sleep without conscious awareness."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Awake but temporarily unable to move after awakening",
+                answer: "Sleep paralysis",
+                explanation: "Sleep paralysis is a benign transition state where voluntary muscle atonia persists briefly after awakening from REM sleep."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Sleep paralysis results from",
+                answer: "REM atonia persisting into wakefulness",
+                explanation: "Intrusion of REM sleep motor inhibition (atonia) into full conscious awareness causes transient inability to perform voluntary movement."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Punching/kicking while apparently acting out dreams",
+                answer: "REM sleep behavior disorder",
+                explanation: "RBD involves complex motor behaviors during REM sleep, causing patients to flail, punch, or injure themselves during dream enactment."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "REM sleep behavior disorder is strongly associated with",
+                answer: "α-synucleinopathies: Parkinson disease, DLB, MSA",
+                explanation: "RBD is a strong prodromal marker for alpha-synuclein neurodegenerative diseases (Parkinson disease, Dementia with Lewy Bodies, Multiple System Atrophy)."
+            },
+            {
+                day: 19,
+                dayTitle: "Sleep disturbances",
+                prompt: "Vivid frightening dreams with recall upon awakening",
+                answer: "Nightmare disorder",
+                explanation: "Unlike sleep terrors, nightmares occur during late-night REM sleep; the individual awakens fully alert with detailed recall of the terrifying dream."
+            },
+
+            // DAY 20: Headache
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Headache caused by another underlying disease/process",
+                answer: "Secondary headache",
+                explanation: "Secondary headaches stem from identifiable structural, vascular, infectious, or metabolic etiologies (e.g., SAH, mass, meningitis)."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Sudden “worst headache of my life” / thunderclap headache",
+                answer: "Subarachnoid hemorrhage until excluded",
+                explanation: "An abrupt, hyperacute 'thunderclap' headache reaching maximum intensity within seconds requires urgent evaluation to rule out ruptured intracranial aneurysm."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Primary headache disorders include",
+                answer: "Migraine, tension-type, and trigeminal autonomic cephalalgias",
+                explanation: "Primary headache syndromes are benign functional disorders without an underlying organic mass or structural lesion."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Bilateral + pressing/tightening + mild/moderate pain",
+                answer: "Tension-type headache",
+                explanation: "Tension headaches present with bilateral, dull 'band-like' pressing pain around the head without throbbing or gastrointestinal features."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Tension-type headache: typical associated symptoms",
+                answer: "Pericranial tenderness; usually no vomiting",
+                explanation: "Tension headaches commonly display pericranial muscle sensitivity; nausea and severe disability are absent."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Unilateral + pulsating + moderate/severe + worsened by activity",
+                answer: "Migraine",
+                explanation: "Migraines present as episodic, throbbing/pulsating unilateral headaches lasting 4-72 hours, aggravated by routine physical exertion."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Migraine: classic associated symptoms",
+                answer: "Nausea/vomiting + photophobia and/or phonophobia",
+                explanation: "Migraine attacks are characteristically accompanied by autonomic sensory symptoms including nausea, vomiting, photophobia, and phonophobia."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Scintillating scotoma / zig-zag visual lines",
+                answer: "Migraine with aura",
+                explanation: "Visual aura consists of shimmering, expanding fortification spectra (scintillating scotomas) or flickering lines preceding the headache phase."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Migraine aura: underlying physiological phenomenon",
+                answer: "Cortical spreading depression",
+                explanation: "Aura is caused by cortical spreading depression—a slow wave of neuronal and glial depolarization followed by prolonged inhibition."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Aura: typical time course",
+                answer: "Gradual development over minutes; reversible",
+                explanation: "Neurological aura symptoms evolve gradually over 5-20 minutes and fully resolve within 60 minutes before headache onset."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Triptans act primarily as",
+                answer: "5-HT1B/5-HT1D receptor agonists",
+                explanation: "Triptans selectively stimulate serotonin 5-HT1B and 5-HT1D receptors to suppress trigeminal neuropeptide release and cause cranial vasoconstriction."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Triptans: important pharmacological effect",
+                answer: "Inhibit trigeminal signaling + cause cranial vasoconstriction",
+                explanation: "5-HT1B/1D activation inhibits calcitonin gene-related peptide (CGRP) release from trigeminal nerve terminals and constricts dilated cerebral vessels."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Sumatriptan",
+                answer: "Triptan used for acute migraine treatment",
+                explanation: "Sumatriptan is a standard first-line abortive therapy for moderate-to-severe acute migraine attacks."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Major contraindication/caution for triptans",
+                answer: "Significant cardiovascular/cerebrovascular disease",
+                explanation: "Because triptans induce coronary and cerebral vasoconstriction, they are contraindicated in CAD, history of MI, stroke, peripheral vascular disease, or uncontrolled HTN."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Migraine: common acute treatments",
+                answer: "NSAIDs, acetaminophen, triptans ± antiemetics",
+                explanation: "Mild-moderate attacks respond to NSAIDs/acetaminophen; severe attacks require triptans and adjunctive dopamine receptor antagonist antiemetics."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Frequent migraines requiring prevention",
+                answer: "Consider preventive therapy such as topiramate, beta-blocker, CGRP-targeted therapy, etc.",
+                explanation: "Indicated when headaches occur ≥4 days/month; first-line preventives include Topiramate, Propranolol, Amitriptyline, or CGRP monoclonal antibodies."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Electric-shock-like unilateral facial pain triggered by brushing teeth",
+                answer: "Trigeminal neuralgia",
+                explanation: "Trigeminal neuralgia presents with brief, lancinating, electric shock-like paroxysmal pain in CN V distribution triggered by light tactile cutaneous stimuli."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Trigeminal neuralgia: most commonly involved divisions",
+                answer: "V2 (maxillary) and V3 (mandibular)",
+                explanation: "Trigeminal neuralgia most frequently involves the maxillary (V2) and/or mandibular (V3) branches of the trigeminal nerve."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Trigeminal neuralgia: classic underlying mechanism",
+                answer: "Vascular compression of CN V root entry zone → focal demyelination",
+                explanation: "Microvascular compression of the trigeminal root entry zone (often by the superior cerebellar artery) induces local nerve demyelination and ectopic impulse generation."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "First-line pharmacologic treatment for trigeminal neuralgia",
+                answer: "Carbamazepine or oxcarbazepine",
+                explanation: "Carbamazepine (or oxcarbazepine), a voltage-gated sodium channel blocker, is the drug of choice for trigeminal neuralgia."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Young patient + bilateral trigeminal neuralgia",
+                answer: "Consider multiple sclerosis",
+                explanation: "Bilateral trigeminal neuralgia in a young patient is highly suggestive of multiple sclerosis causing demyelinating plaque at the trigeminal root entry zone."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Headache + fever + neck stiffness",
+                answer: "Consider meningitis",
+                explanation: "The acute co-occurrence of fever, headache, and nuchal rigidity requires emergency investigation for acute infectious meningitis."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "New headache + papilledema + progressive vomiting",
+                answer: "Raised intracranial pressure / secondary headache",
+                explanation: "Papilledema with progressive early morning headache and projectile vomiting indicates elevated intracranial pressure from a mass lesion or idiopathic intracranial HTN."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "SNOOP features are used to identify",
+                answer: "Red flags suggesting secondary headache",
+                explanation: "The SNOOP mnemonic provides red flag clinical features indicating urgent neuroimaging and workup for secondary cause."
+            },
+            {
+                day: 20,
+                dayTitle: "Headache",
+                prompt: "Systemic symptoms, neurological deficits, sudden onset, new/change in pattern, older age at onset",
+                answer: "Features requiring evaluation for secondary headache",
+                explanation: "Red flags: Systemic features (fever/cancer), Neurologic signs, Onset sudden (thunderclap), Older age (>50), Pattern change/Progressive."
+            }
+        ];
+
+        let state = {
+            currentDay: 'all',
+            activeCards: [],
+            currentIndex: 0,
+            doneCount: 0,
+            correctCount: 0,
+            streakCount: 0,
+            isAnswered: false,
+            userSelectedOption: null
+        };
+
+        // DOM Cache
+        const daySelect = document.getElementById('daySelect');
+        const statDone = document.getElementById('statDone');
+        const statCorrect = document.getElementById('statCorrect');
+        const statAccuracy = document.getElementById('statAccuracy');
+        const statStreak = document.getElementById('statStreak');
+        const resetStatsBtn = document.getElementById('resetStatsBtn');
+
+        const cardCategoryBadge = document.getElementById('cardCategoryBadge');
+        const cardProgressText = document.getElementById('cardProgressText');
+        const questionPrompt = document.getElementById('questionPrompt');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const explanationBox = document.getElementById('explanationBox');
+        const feedbackTitle = document.getElementById('feedbackTitle');
+        const explanationText = document.getElementById('explanationText');
+        const nextBtnContainer = document.getElementById('nextBtnContainer');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Generate 3 options (1 correct, 2 wrong)
+        function generateOptions(currentCard) {
+            const correctAnswer = currentCard.answer;
+            const allPossibleWrong = QUIZ_DATA
+                .map(item => item.answer)
+                .filter(ans => ans !== correctAnswer);
+            
+            const uniqueWrong = Array.from(new Set(allPossibleWrong));
+            const shuffledWrong = shuffleArray(uniqueWrong).slice(0, 2);
+            return shuffleArray([correctAnswer, ...shuffledWrong]);
+        }
+
+        function filterCards() {
+            if (state.currentDay === 'all') {
+                state.activeCards = shuffleArray(QUIZ_DATA);
+            } else {
+                const dayNum = parseInt(state.currentDay, 10);
+                const filtered = QUIZ_DATA.filter(card => card.day === dayNum);
+                state.activeCards = shuffleArray(filtered);
+            }
+            state.currentIndex = 0;
+        }
+
+        function resetExplanationBox() {
+            feedbackTitle.className = 'flex items-center gap-1.5 font-bold mb-1 text-slate-400';
+            feedbackTitle.innerHTML = `
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>Explanation</span>
+            `;
+            explanationText.className = 'leading-relaxed text-[11px] sm:text-xs text-slate-400 italic';
+            explanationText.textContent = 'Select an answer above to view the high-yield explanation...';
+
+            nextBtn.disabled = true;
+            nextBtn.className = 'w-full h-full bg-slate-200 text-slate-400 font-bold text-xs sm:text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-not-allowed opacity-60';
+        }
+
+        function renderCard() {
+            if (state.activeCards.length === 0) return;
+
+            state.isAnswered = false;
+            state.userSelectedOption = null;
+
+            resetExplanationBox();
+
+            const currentCard = state.activeCards[state.currentIndex];
+            
+            cardCategoryBadge.textContent = `Day ${currentCard.day}: ${currentCard.dayTitle}`;
+            cardProgressText.textContent = `Card ${state.currentIndex + 1} of ${state.activeCards.length}`;
+
+            questionPrompt.textContent = currentCard.prompt;
+
+            const options = generateOptions(currentCard);
+            optionsContainer.innerHTML = '';
+
+            options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `w-full text-left p-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 active:scale-[0.98] transition-all flex items-center gap-2.5 text-clamp-option text-slate-900 font-medium cursor-pointer shadow-sm h-[46px] overflow-hidden`;
+                
+                const letter = String.fromCharCode(65 + idx);
+                btn.innerHTML = `
+                    <span class="shrink-0 w-5 h-5 rounded-md bg-red-50 border border-red-200 text-[11px] font-bold text-slide-red flex items-center justify-center">
+                        ${letter}
+                    </span>
+                    <span class="flex-1 text-balance line-clamp-2 leading-tight">${optText}</span>
+                `;
+
+                btn.onclick = () => handleOptionSelect(optText, currentCard, btn, options);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleOptionSelect(selectedOption, currentCard, clickedBtn, options) {
+            if (state.isAnswered) return;
+            state.isAnswered = true;
+
+            const isCorrect = selectedOption === currentCard.answer;
+            state.doneCount++;
+
+            const optionButtons = optionsContainer.querySelectorAll('button');
+            
+            optionButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.remove('hover:bg-slate-50', 'active:scale-[0.98]', 'cursor-pointer');
+                btn.classList.add('cursor-default');
+
+                const textSpan = btn.querySelector('span:last-child');
+                const optText = textSpan ? textSpan.textContent.trim() : '';
+
+                if (optText === currentCard.answer) {
+                    // Highlight Correct Answer in Emerald Green
+                    btn.classList.remove('bg-white', 'border-slate-300');
+                    btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-950', 'ring-1', 'ring-emerald-500');
+                    const badge = btn.querySelector('span:first-child');
+                    if (badge) {
+                        badge.classList.remove('bg-red-50', 'border-red-200', 'text-slide-red');
+                        badge.classList.add('bg-emerald-600', 'border-emerald-600', 'text-white');
+                    }
+                }
+            });
+
+            if (isCorrect) {
+                state.correctCount++;
+                state.streakCount++;
+                
+                feedbackTitle.className = 'flex items-center gap-1.5 font-bold mb-1 text-emerald-700';
+                feedbackTitle.innerHTML = `
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                    <span>Correct! High-Yield Fact</span>
+                `;
+            } else {
+                state.streakCount = 0;
+                
+                // Highlight incorrect user choice in Red
+                clickedBtn.classList.remove('bg-white', 'border-slate-300');
+                clickedBtn.classList.add('bg-rose-50', 'border-rose-500', 'text-rose-950');
+                const badge = clickedBtn.querySelector('span:first-child');
+                if (badge) {
+                    badge.classList.remove('bg-red-50', 'border-red-200', 'text-slide-red');
+                    badge.classList.add('bg-rose-600', 'border-rose-600', 'text-white');
+                }
+
+                feedbackTitle.className = 'flex items-center gap-1.5 font-bold mb-1 text-rose-700';
+                feedbackTitle.innerHTML = `
+                    <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <span>Incorrect &bull; Key High-Yield Concept</span>
+                `;
+            }
+
+            updateStatsDisplay();
+
+            explanationText.className = 'leading-relaxed text-[11px] sm:text-xs text-slate-700 not-italic';
+            explanationText.textContent = currentCard.explanation;
+
+            nextBtn.disabled = false;
+            nextBtn.className = 'w-full h-full bg-slide-red hover:bg-slide-darkred text-white font-bold text-xs sm:text-sm rounded-xl shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer';
+        }
+
+        function updateStatsDisplay() {
+            statDone.textContent = state.doneCount;
+            statCorrect.textContent = state.correctCount;
+            
+            const accuracy = state.doneCount > 0 
+                ? Math.round((state.correctCount / state.doneCount) * 100) 
+                : 0;
+            statAccuracy.textContent = `(${accuracy}%)`;
+
+            statStreak.textContent = state.streakCount;
+        }
+
+        function nextQuestion() {
+            if (!state.isAnswered) return;
+            state.currentIndex++;
+            if (state.currentIndex >= state.activeCards.length) {
+                state.activeCards = shuffleArray(state.activeCards);
+                state.currentIndex = 0;
+            }
+            renderCard();
+        }
+
+        function resetStats() {
+            state.doneCount = 0;
+            state.correctCount = 0;
+            state.streakCount = 0;
+            updateStatsDisplay();
+            filterCards();
+            renderCard();
+        }
+
+        daySelect.addEventListener('change', (e) => {
+            state.currentDay = e.target.value;
+            filterCards();
+            renderCard();
+        });
+
+        nextBtn.addEventListener('click', nextQuestion);
+        resetStatsBtn.addEventListener('click', resetStats);
+
+        // Keyboard shortcuts (1-3 or A-C to choose option, Space/Enter for Next)
+        document.addEventListener('keydown', (e) => {
+            if (!state.isAnswered) {
+                const keyMap = { '1': 0, '2': 1, '3': 2, 'a': 0, 'b': 1, 'c': 2 };
+                const idx = keyMap[e.key.toLowerCase()];
+                if (idx !== undefined) {
+                    const buttons = optionsContainer.querySelectorAll('button');
+                    if (buttons[idx]) buttons[idx].click();
+                }
+            } else {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    nextQuestion();
+                }
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            filterCards();
+            renderCard();
+            updateStatsDisplay();
+        });
+    </script>
 </body>
 </html>
