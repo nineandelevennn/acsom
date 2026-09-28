@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neurology Alias - American Canadian School of Medicine</title>
+    <!-- Tailwind CSS for utility styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for crisp icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --brand-red: #D32F2F;
+            --brand-red-dark: #B71C1C;
+            --brand-bg: #FFFFFF;
+            --brand-text: #222222;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #F4F6F8;
+            color: var(--brand-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        /* Banner matching screenshot styling */
+        .slide-header {
+            background-color: var(--brand-red);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 20;
+        }
+
+        .school-logo-text {
+            font-size: 0.75rem;
+            line-height: 1.1;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-align: right;
+            text-transform: uppercase;
+            border-left: 1.5px solid rgba(255,255,255,0.4);
+            padding-left: 0.75rem;
+        }
+
+        /* Medical Slide Container */
+        .slide-card {
+            background: #FFFFFF;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border: 1px solid #E2E8F0;
+        }
+
+        /* Custom Bullet Styling matching slide presentation */
+        .slide-bullet {
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        .slide-bullet::before {
+            content: "•";
+            position: absolute;
+            left: 0.5rem;
+            top: -0.1rem;
+            font-size: 1.4rem;
+            color: #333;
+        }
+
+        /* Animations */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.03); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .pulse-timer {
+            animation: pulse-ring 1s infinite ease-in-out;
+        }
+
+        @keyframes card-flip {
+            0% { transform: scale(0.9) rotateY(-10deg); opacity: 0; }
+            100% { transform: scale(1) rotateY(0deg); opacity: 1; }
+        }
+
+        .animate-card {
+            animation: card-flip 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Touch target improvements */
+        .btn-touch {
+            min-height: 52px;
+            touch-action: manipulation;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col justify-between min-h-screen">
+
+    <!-- Top Crimson Header -->
+    <header class="slide-header">
+        <div class="flex items-center gap-3">
+            <button id="btn-home-nav" onclick="app.showSetupScreen()" class="text-white hover:text-gray-200 transition p-1" title="Main Menu">
+                <i class="fa-solid font-bold text-2xl fa-brain"></i>
+            </button>
+            <h1 class="text-xl md:text-2xl font-extrabold tracking-wide text-white uppercase">
+                Posterior reversible encephalopathy syndrome (PRES) - Neurology Alias
+            </h1>
+        </div>
+        <div class="school-logo-text hidden sm:block">
+            AMERICAN<br>
+            CANADIAN<br>
+            SCHOOL OF<br>
+            MEDICINE
+        </div>
+    </header>
+
+    <!-- Navigation Bar & Deck Stats Bar -->
+    <div class="bg-white border-b border-gray-200 px-4 py-2 text-sm text-gray-700 flex flex-wrap justify-between items-center gap-2 shadow-sm">
+        <div class="flex items-center gap-4 font-semibold">
+            <span class="flex items-center gap-1.5 text-red-700">
+                <i class="fa-solid fa-layer-group"></i> 
+                Deck Progress: <span id="deck-counter-text" class="font-bold text-gray-900">0 / 0</span>
+            </span>
+            <span id="active-category-badge" class="hidden md:inline-block bg-gray-100 text-gray-700 text-xs px-2.5 py-1 rounded-full border border-gray-300">
+                All Topics
+            </span>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="app.toggleSound()" id="sound-btn" class="px-2.5 py-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium text-xs flex items-center gap-1">
+                <i class="fa-solid fa-volume-high" id="sound-icon"></i> <span id="sound-label">Audio On</span>
+            </button>
+            <button onclick="app.toggleFullscreen()" class="px-2.5 py-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium text-xs flex items-center gap-1">
+                <i class="fa-solid fa-expand"></i> Fullscreen
+            </button>
+            <button onclick="app.openDeckModal()" class="px-2.5 py-1 rounded bg-red-50 hover:bg-red-100 text-red-700 font-medium text-xs flex items-center gap-1">
+                <i class="fa-solid fa-list-check"></i> View Deck
+            </button>
+            <button onclick="app.showSetupScreen()" class="px-2.5 py-1 rounded bg-gray-800 hover:bg-gray-900 text-white font-medium text-xs flex items-center gap-1">
+                <i class="fa-solid fa-gear"></i> Setup
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow container mx-auto px-4 py-6 max-w-5xl flex flex-col justify-center">
+
+        <!-- ================= SETUP SCREEN ================= -->
+        <div id="screen-setup" class="slide-card p-6 md:p-8 max-w-3xl mx-auto w-full">
+            <div class="border-b border-gray-200 pb-4 mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-red-600"></i> Game Setup & Options
+                </h2>
+                <p class="text-gray-600 text-sm mt-1">Configure your teams, medical topic filters, and timer parameters for Neurology Alias.</p>
+            </div>
+
+            <!-- Mode Selector -->
+            <div class="mb-6">
+                <label class="block text-sm font-bold text-gray-800 mb-2">Select Game Mode:</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button type="button" id="mode-btn-team" onclick="app.setGameMode('team')" class="p-4 rounded-lg border-2 border-red-600 bg-red-50 text-left transition flex items-start gap-3">
+                        <i class="fa-solid fa-stopwatch text-2xl text-red-600 mt-1"></i>
+                        <div>
+                            <div class="font-bold text-gray-900">Timed Team Alias</div>
+                            <div class="text-xs text-gray-600 mt-0.5">Classic party mode with customizable round timer, point tracking, and non-repeating terms.</div>
+                        </div>
+                    </button>
+                    <button type="button" id="mode-btn-classic" onclick="app.setGameMode('classic')" class="p-4 rounded-lg border-2 border-gray-200 bg-white hover:border-gray-400 text-left transition flex items-start gap-3">
+                        <i class="fa-solid fa-square-poll-horizontal text-2xl text-gray-500 mt-1"></i>
+                        <div>
+                            <div class="font-bold text-gray-900">Classic 5-Term Card Deck</div>
+                            <div class="text-xs text-gray-600 mt-0.5">Generates traditional Alias cards with 5 random medical terms per card for flexible offline play.</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Category Selection -->
+            <div class="mb-6">
+                <label class="block text-sm font-bold text-gray-800 mb-2">Filter Medical Category:</label>
+                <select id="category-select" onchange="app.onCategoryChange()" class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-md text-gray-900 focus:ring-2 focus:ring-red-500 font-medium text-sm">
+                    <option value="ALL">All Topics (Complete Deck: 211 Terms)</option>
+                    <option value="CSF">1. CSF, ICP & Hydrocephalus (52 Terms)</option>
+                    <option value="BASAL">2. Basal Ganglia & Movement Disorders (58 Terms)</option>
+                    <option value="DEMENTIA">3. Dementias & Neurodegenerative (61 Terms)</option>
+                    <option value="DEMYELINATION">4. Demyelinating Diseases & Demyelination (63 Terms)</option>
+                    <option value="PRES">5. Electrolytes, Pontine Lesions & PRES (57 Terms)</option>
+                </select>
+            </div>
+
+            <!-- Team Mode Settings -->
+            <div id="team-settings-container" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800 mb-1">Round Timer (Seconds):</label>
+                        <select id="timer-select" class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-medium text-sm">
+                            <option value="30">30 Seconds (Fast)</option>
+                            <option value="60" selected>60 Seconds (Standard)</option>
+                            <option value="90">90 Seconds (Extended)</option>
+                            <option value="120">120 Seconds (Relaxed)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800 mb-1">Winning Target Score:</label>
+                        <input type="number" id="target-score-input" value="30" min="5" max="200" class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-medium text-sm">
+                    </div>
+                </div>
+
+                <!-- Teams Configuration -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-sm font-bold text-gray-800">Participating Teams:</label>
+                        <button type="button" onclick="app.addTeamInput()" class="text-xs text-red-700 font-bold hover:underline flex items-center gap-1">
+                            <i class="fa-solid fa-plus-circle"></i> Add Team
+                        </button>
+                    </div>
+                    <div id="teams-list" class="space-y-2">
+                        <!-- Dynamic Team Inputs -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-4 border-t border-gray-200 flex flex-wrap justify-between items-center gap-3">
+                <button type="button" onclick="app.resetDeck()" class="px-4 py-2 text-sm text-gray-600 hover:text-red-700 font-medium transition">
+                    <i class="fa-solid fa-arrows-rotate"></i> Reshuffle Master Deck
+                </button>
+                <button type="button" onclick="app.startGame()" class="px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-md hover:shadow-lg transition text-base flex items-center gap-2">
+                    <i class="fa-solid fa-play"></i> Start Alias Session
+                </button>
+            </div>
+        </div>
+
+
+        <!-- ================= TIMED ALIAS READY TURN SCREEN ================= -->
+        <div id="screen-ready" class="hidden slide-card p-8 max-w-2xl mx-auto w-full text-center">
+            <div class="inline-block bg-red-100 text-red-800 font-bold text-xs uppercase px-3 py-1 rounded-full mb-3">
+                Next Up
+            </div>
+            <h2 id="ready-team-name" class="text-3xl font-extrabold text-gray-900 mb-2">Team 1</h2>
+            <p class="text-gray-600 mb-6">Pass the device to the explainer. Click below when ready to start timer.</p>
+
+            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 mb-8 max-w-md mx-auto text-left">
+                <div class="text-xs font-bold text-gray-500 uppercase mb-2 border-b pb-1">Current Standings</div>
+                <div id="ready-scores-summary" class="space-y-1 text-sm">
+                    <!-- Dynamic scores -->
+                </div>
+            </div>
+
+            <button onclick="app.startTurn()" class="w-full sm:w-auto px-10 py-4 bg-red-600 hover:bg-red-700 text-white font-extrabold text-xl rounded-xl shadow-lg hover:shadow-xl transition flex items-center justify-center gap-3 mx-auto">
+                <i class="fa-solid fa-stopwatch"></i> START ROUND NOW
+            </button>
+        </div>
+
+
+        <!-- ================= ACTIVE GAME CARD SCREEN ================= -->
+        <div id="screen-game" class="hidden slide-card p-6 md:p-8 max-w-3xl mx-auto w-full relative">
+            <!-- Active Game Header Status -->
+            <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-6">
+                <div>
+                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wider block">Active Explainer</span>
+                    <span id="active-team-display" class="text-xl font-bold text-red-700">Team 1</span>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wider block">Round Score</span>
+                    <span id="active-round-points" class="text-2xl font-black text-gray-900">+0</span>
+                </div>
+                <div class="flex items-center gap-2 bg-red-50 px-4 py-2 rounded-xl border border-red-200">
+                    <i class="fa-solid fa-clock text-red-600 text-xl"></i>
+                    <span id="timer-display" class="text-3xl font-black text-red-600 font-mono">60</span>
+                </div>
+            </div>
+
+            <!-- Active Medical Term Presentation Card -->
+            <div id="active-card-box" class="bg-white border-2 border-red-500 rounded-2xl p-8 md:p-12 mb-8 text-center shadow-inner relative overflow-hidden animate-card min-h-[220px] flex flex-col justify-center items-center">
+                <span class="text-xs font-bold text-red-500 uppercase tracking-widest mb-2" id="card-category-label">NEUROLOGY TERM</span>
+                <h2 id="current-term-text" class="text-3xl md:text-5xl font-black text-gray-900 tracking-tight leading-tight">
+                    Posterior reversible encephalopathy syndrome
+                </h2>
+                <div class="mt-4 text-xs text-gray-400 font-medium">
+                    Explain without using the term itself or direct translations!
+                </div>
+            </div>
+
+            <!-- Controls / Action Buttons -->
+            <div class="grid grid-cols-3 gap-3 md:gap-4 mb-6">
+                <button onclick="app.recordAnswer('skip')" class="btn-touch bg-amber-500 hover:bg-amber-600 text-white font-extrabold rounded-xl shadow transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 p-2">
+                    <i class="fa-solid fa-forward text-lg"></i>
+                    <span class="text-sm md:text-base">SKIP (-1)</span>
+                </button>
+                <button onclick="app.recordAnswer('pass')" class="btn-touch bg-gray-500 hover:bg-gray-600 text-white font-extrabold rounded-xl shadow transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 p-2">
+                    <i class="fa-solid fa-minus text-lg"></i>
+                    <span class="text-sm md:text-base">PASS (0)</span>
+                </button>
+                <button onclick="app.recordAnswer('correct')" class="btn-touch bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl shadow transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 p-2">
+                    <i class="fa-solid fa-check text-xl"></i>
+                    <span class="text-sm md:text-base">CORRECT (+1)</span>
+                </button>
+            </div>
+
+            <!-- Keyboard Hotkey Legend -->
+            <div class="text-center text-xs text-gray-500 hidden sm:block">
+                Hotkeys: <kbd class="px-1.5 py-0.5 bg-gray-200 rounded font-mono">Right Arrow</kbd> / <kbd class="px-1.5 py-0.5 bg-gray-200 rounded font-mono">Space</kbd> = Correct | <kbd class="px-1.5 py-0.5 bg-gray-200 rounded font-mono">Left Arrow</kbd> = Skip | <kbd class="px-1.5 py-0.5 bg-gray-200 rounded font-mono">Down Arrow</kbd> = Pass
+            </div>
+        </div>
+
+
+        <!-- ================= CLASSIC CARD VIEW SCREEN ================= -->
+        <div id="screen-classic" class="hidden slide-card p-6 md:p-8 max-w-2xl mx-auto w-full">
+            <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-6">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">Classic Alias Card</h2>
+                    <p class="text-xs text-gray-500">5 randomly drawn terms from deck</p>
+                </div>
+                <span id="classic-card-number" class="text-sm font-bold bg-red-100 text-red-800 px-3 py-1 rounded-full">
+                    Card #1
+                </span>
+            </div>
+
+            <div class="bg-red-700 text-white p-4 rounded-t-xl font-bold text-center uppercase tracking-wider text-sm flex justify-between items-center">
+                <span>AMERICAN CANADIAN SCHOOL OF MEDICINE</span>
+                <i class="fa-solid fa-notes-medical"></i>
+            </div>
+            
+            <div id="classic-terms-container" class="bg-white border-2 border-t-0 border-gray-300 rounded-b-xl p-6 shadow-md mb-6 space-y-4">
+                <!-- 5 random words populated here -->
+            </div>
+
+            <div class="flex justify-between items-center gap-3">
+                <button onclick="app.showSetupScreen()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-100">
+                    <i class="fa-solid fa-arrow-left"></i> Menu
+                </button>
+                <button onclick="app.generateNextClassicCard()" class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow transition text-sm flex items-center gap-2">
+                    Next Card <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Slide Info -->
+    <footer class="bg-white border-t border-gray-200 py-3 text-center text-xs text-gray-500">
+        <div class="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div>
+                &copy; American Canadian School of Medicine - Department of Neurology
+            </div>
+            <div class="text-gray-400">
+                Posterior Reversible Encephalopathy Syndrome (PRES) &amp; Comprehensive Neurology Alias
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- ================= MODAL: ROUND REVIEW ================= -->
+    <div id="modal-round-review" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-gray-200 max-h-[90vh] flex flex-col">
+            <div class="border-b border-gray-200 pb-3 mb-4 flex justify-between items-center">
+                <div>
+                    <h3 class="text-xl font-extrabold text-gray-900">Time's Up! Round Review</h3>
+                    <p class="text-xs text-gray-500">Verify or adjust answers for <span id="review-team-name" class="font-bold text-red-600">Team 1</span></p>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs text-gray-500 block uppercase font-bold">Total Round</span>
+                    <span id="review-total-points" class="text-2xl font-black text-red-600">+0</span>
+                </div>
+            </div>
+
+            <div id="review-words-list" class="flex-grow overflow-y-auto space-y-2 pr-1 my-2">
+                <!-- Dynamic Review Items -->
+            </div>
+
+            <div class="pt-4 border-t border-gray-200 flex justify-end gap-3 mt-2">
+                <button onclick="app.confirmRoundScore()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow transition">
+                    Confirm &amp; Next Team Turn
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= MODAL: GAME OVER / VICTORY ================= -->
+    <div id="modal-game-over" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8 text-center shadow-2xl border border-gray-200 animate-card">
+            <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 border-4 border-amber-300">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h2 class="text-3xl font-black text-gray-900 mb-1">VICTORY!</h2>
+            <p id="winner-team-text" class="text-xl font-bold text-red-600 mb-6">Team 1 Wins!</p>
+
+            <div class="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-200">
+                <h4 class="text-xs font-bold text-gray-500 uppercase mb-3">Final Scores</h4>
+                <div id="final-leaderboard" class="space-y-2 text-sm font-semibold">
+                    <!-- Final rankings -->
+                </div>
+            </div>
+
+            <button onclick="app.showSetupScreen()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-extrabold rounded-xl shadow-lg transition">
+                Start New Game
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ================= MODAL: MASTER DECK VIEWER ================= -->
+    <div id="modal-deck" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-gray-200 max-h-[85vh] flex flex-col">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900">Master Neurology Deck Terms</h3>
+                    <p class="text-xs text-gray-500">All medical terms embedded in game repository</p>
+                </div>
+                <button onclick="app.closeDeckModal()" class="text-gray-400 hover:text-gray-700 text-xl font-bold p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="flex gap-2 mb-3 overflow-x-auto pb-1 text-xs">
+                <button onclick="app.renderDeckList('ALL')" class="px-3 py-1.5 rounded-full bg-red-600 text-white font-bold whitespace-nowrap">All Terms</button>
+                <button onclick="app.renderDeckList('CSF')" class="px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium whitespace-nowrap">1. CSF &amp; ICP</button>
+                <button onclick="app.renderDeckList('BASAL')" class="px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium whitespace-nowrap">2. Basal Ganglia</button>
+                <button onclick="app.renderDeckList('DEMENTIA')" class="px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium whitespace-nowrap">3. Dementia</button>
+                <button onclick="app.renderDeckList('DEMYELINATION')" class="px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium whitespace-nowrap">4. Demyelination</button>
+                <button onclick="app.renderDeckList('PRES')" class="px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium whitespace-nowrap">5. Pontine &amp; PRES</button>
+            </div>
+
+            <div id="deck-list-container" class="flex-grow overflow-y-auto border border-gray-200 rounded-lg p-3 bg-gray-50 text-sm grid grid-cols-1 md:grid-cols-2 gap-2">
+                <!-- Terms output -->
+            </div>
+
+            <div class="pt-4 border-t border-gray-200 flex justify-between items-center text-xs text-gray-500">
+                <span id="deck-modal-count">Total: 211 terms</span>
+                <button onclick="app.closeDeckModal()" class="px-4 py-2 bg-gray-800 text-white rounded-lg font-bold">Close</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= EMBEDDED JAVASCRIPT GAME LOGIC ================= -->
+    <script>
+        // Comprehensive medical term repository categorized exactly as specified
+        const MASTER_TERMS = [
+            // Category 1: CSF, ICP & Hydrocephalus
+            { term: "CSF", cat: "CSF" },
+            { term: "Choroid plexus", cat: "CSF" },
+            { term: "Lateral ventricles", cat: "CSF" },
+            { term: "Third ventricle", cat: "CSF" },
+            { term: "Fourth ventricle", cat: "CSF" },
+            { term: "Cerebral aqueduct", cat: "CSF" },
+            { term: "Aqueduct of Sylvius", cat: "CSF" },
+            { term: "Foramen of Monro", cat: "CSF" },
+            { term: "Foramen of Luschka", cat: "CSF" },
+            { term: "Foramen of Magendie", cat: "CSF" },
+            { term: "Arachnoid granulations", cat: "CSF" },
+            { term: "Arachnoid villi", cat: "CSF" },
+            { term: "Dural venous sinuses", cat: "CSF" },
+            { term: "Monro-Kellie doctrine", cat: "CSF" },
+            { term: "Intracranial pressure", cat: "CSF" },
+            { term: "Cerebral perfusion pressure", cat: "CSF" },
+            { term: "Cerebral edema", cat: "CSF" },
+            { term: "Brain herniation", cat: "CSF" },
+            { term: "Hydrocephalus", cat: "CSF" },
+            { term: "Communicating hydrocephalus", cat: "CSF" },
+            { term: "Noncommunicating hydrocephalus", cat: "CSF" },
+            { term: "Obstructive hydrocephalus", cat: "CSF" },
+            { term: "Normal-pressure hydrocephalus", cat: "CSF" },
+            { term: "Aqueductal stenosis", cat: "CSF" },
+            { term: "Arnold-Chiari malformation", cat: "CSF" },
+            { term: "Dandy-Walker malformation", cat: "CSF" },
+            { term: "Subarachnoid hemorrhage", cat: "CSF" },
+            { term: "Meningitis", cat: "CSF" },
+            { term: "Cushing triad", cat: "CSF" },
+            { term: "Papilledema", cat: "CSF" },
+            { term: "Sixth nerve palsy", cat: "CSF" },
+            { term: "Headache", cat: "CSF" },
+            { term: "Nausea", cat: "CSF" },
+            { term: "Vomiting", cat: "CSF" },
+            { term: "Diplopia", cat: "CSF" },
+            { term: "Altered mental status", cat: "CSF" },
+            { term: "Decreased consciousness", cat: "CSF" },
+            { term: "Subfalcine herniation", cat: "CSF" },
+            { term: "Uncal herniation", cat: "CSF" },
+            { term: "Tonsillar herniation", cat: "CSF" },
+            { term: "Central transtentorial herniation", cat: "CSF" },
+            { term: "Tentorium cerebelli", cat: "CSF" },
+            { term: "Uncus", cat: "CSF" },
+            { term: "Hippocampus", cat: "CSF" },
+            { term: "Posterior cerebral artery", cat: "CSF" },
+            { term: "Cranial nerve III", cat: "CSF" },
+            { term: "Brainstem compression", cat: "CSF" },
+            { term: "Urinary incontinence", cat: "CSF" },
+            { term: "Gait disturbance", cat: "CSF" },
+            { term: "Magnetic gait", cat: "CSF" },
+            { term: "Cognitive impairment", cat: "CSF" },
+            { term: "Ventriculomegaly", cat: "CSF" },
+
+            // Category 2: Basal Ganglia & Movement Disorders
+            { term: "Basal ganglia", cat: "BASAL" },
+            { term: "Caudate nucleus", cat: "BASAL" },
+            { term: "Putamen", cat: "BASAL" },
+            { term: "Globus pallidus interna", cat: "BASAL" },
+            { term: "Globus pallidus externa", cat: "BASAL" },
+            { term: "Subthalamic nucleus", cat: "BASAL" },
+            { term: "Substantia nigra pars compacta", cat: "BASAL" },
+            { term: "Striatum", cat: "BASAL" },
+            { term: "Nigrostriatal pathway", cat: "BASAL" },
+            { term: "Direct pathway", cat: "BASAL" },
+            { term: "Indirect pathway", cat: "BASAL" },
+            { term: "Corticostriatal pathway", cat: "BASAL" },
+            { term: "Thalamus", cat: "BASAL" },
+            { term: "Dopamine", cat: "BASAL" },
+            { term: "GABA", cat: "BASAL" },
+            { term: "Glutamate", cat: "BASAL" },
+            { term: "Acetylcholine", cat: "BASAL" },
+            { term: "D1 receptor", cat: "BASAL" },
+            { term: "D2 receptor", cat: "BASAL" },
+            { term: "Parkinson disease", cat: "BASAL" },
+            { term: "Dopaminergic neuron loss", cat: "BASAL" },
+            { term: "Alpha-synuclein", cat: "BASAL" },
+            { term: "Lewy body", cat: "BASAL" },
+            { term: "Lewy neurite", cat: "BASAL" },
+            { term: "Bradykinesia", cat: "BASAL" },
+            { term: "Resting tremor", cat: "BASAL" },
+            { term: "Rigidity", cat: "BASAL" },
+            { term: "Postural instability", cat: "BASAL" },
+            { term: "Shuffling gait", cat: "BASAL" },
+            { term: "Masked facies", cat: "BASAL" },
+            { term: "Hypophonia", cat: "BASAL" },
+            { term: "Micrographia", cat: "BASAL" },
+            { term: "Freezing", cat: "BASAL" },
+            { term: "Festinating gait", cat: "BASAL" },
+            { term: "Huntington disease", cat: "BASAL" },
+            { term: "HTT gene", cat: "BASAL" },
+            { term: "CAG repeat", cat: "BASAL" },
+            { term: "Trinucleotide repeat", cat: "BASAL" },
+            { term: "Anticipation", cat: "BASAL" },
+            { term: "Autosomal dominant", cat: "BASAL" },
+            { term: "Caudate atrophy", cat: "BASAL" },
+            { term: "Striatal degeneration", cat: "BASAL" },
+            { term: "GABAergic neurons", cat: "BASAL" },
+            { term: "Chorea", cat: "BASAL" },
+            { term: "Athetosis", cat: "BASAL" },
+            { term: "Dystonia", cat: "BASAL" },
+            { term: "Hemiballismus", cat: "BASAL" },
+            { term: "Tardive dyskinesia", cat: "BASAL" },
+            { term: "Acute dystonia", cat: "BASAL" },
+            { term: "Akathisia", cat: "BASAL" },
+            { term: "Drug-induced parkinsonism", cat: "BASAL" },
+            { term: "Dopamine D2 blockade", cat: "BASAL" },
+            { term: "Antipsychotics", cat: "BASAL" },
+            { term: "Neuroleptic malignant syndrome", cat: "BASAL" },
+            { term: "Hyperthermia", cat: "BASAL" },
+            { term: "Autonomic instability", cat: "BASAL" },
+            { term: "Creatine kinase", cat: "BASAL" },
+            { term: "Extrapyramidal symptoms", cat: "BASAL" },
+
+            // Category 3: Dementias & Neurodegenerative
+            { term: "Alzheimer disease", cat: "DEMENTIA" },
+            { term: "Beta-amyloid", cat: "DEMENTIA" },
+            { term: "Amyloid precursor protein", cat: "DEMENTIA" },
+            { term: "APP", cat: "DEMENTIA" },
+            { term: "Beta-secretase", cat: "DEMENTIA" },
+            { term: "Gamma-secretase", cat: "DEMENTIA" },
+            { term: "A-beta", cat: "DEMENTIA" },
+            { term: "Amyloid plaques", cat: "DEMENTIA" },
+            { term: "Tau protein", cat: "DEMENTIA" },
+            { term: "Neurofibrillary tangles", cat: "DEMENTIA" },
+            { term: "Microtubules", cat: "DEMENTIA" },
+            { term: "GSK-3-beta", cat: "DEMENTIA" },
+            { term: "Presenilin 1", cat: "DEMENTIA" },
+            { term: "Presenilin 2", cat: "DEMENTIA" },
+            { term: "APOE epsilon 4", cat: "DEMENTIA" },
+            { term: "Cholinergic neurons", cat: "DEMENTIA" },
+            { term: "Nucleus basalis of Meynert", cat: "DEMENTIA" },
+            { term: "Progressive memory loss", cat: "DEMENTIA" },
+            { term: "Anterograde memory", cat: "DEMENTIA" },
+            { term: "Episodic memory", cat: "DEMENTIA" },
+            { term: "Language impairment", cat: "DEMENTIA" },
+            { term: "Visuospatial dysfunction", cat: "DEMENTIA" },
+            { term: "Executive dysfunction", cat: "DEMENTIA" },
+            { term: "Aphasia", cat: "DEMENTIA" },
+            { term: "Apraxia", cat: "DEMENTIA" },
+            { term: "Agnosia", cat: "DEMENTIA" },
+            { term: "Hippocampal atrophy", cat: "DEMENTIA" },
+            { term: "Medial temporal lobe atrophy", cat: "DEMENTIA" },
+            { term: "Cortical atrophy", cat: "DEMENTIA" },
+            { term: "Ex vacuo ventriculomegaly", cat: "DEMENTIA" },
+            { term: "Frontotemporal dementia", cat: "DEMENTIA" },
+            { term: "Primary progressive aphasia", cat: "DEMENTIA" },
+            { term: "Frontal lobe", cat: "DEMENTIA" },
+            { term: "Anterior temporal lobe", cat: "DEMENTIA" },
+            { term: "TDP-43", cat: "DEMENTIA" },
+            { term: "Progranulin", cat: "DEMENTIA" },
+            { term: "MAPT", cat: "DEMENTIA" },
+            { term: "Personality change", cat: "DEMENTIA" },
+            { term: "Disinhibition", cat: "DEMENTIA" },
+            { term: "Apathy", cat: "DEMENTIA" },
+            { term: "Loss of empathy", cat: "DEMENTIA" },
+            { term: "Compulsive behavior", cat: "DEMENTIA" },
+            { term: "Fluctuating cognition", cat: "DEMENTIA" },
+            { term: "Visual hallucinations", cat: "DEMENTIA" },
+            { term: "Parkinsonism", cat: "DEMENTIA" },
+            { term: "REM sleep behavior disorder", cat: "DEMENTIA" },
+            { term: "Neuroleptic sensitivity", cat: "DEMENTIA" },
+            { term: "Autonomic dysfunction", cat: "DEMENTIA" },
+            { term: "Vascular dementia", cat: "DEMENTIA" },
+            { term: "Cerebrovascular disease", cat: "DEMENTIA" },
+            { term: "Small-vessel disease", cat: "DEMENTIA" },
+            { term: "Lacunar infarct", cat: "DEMENTIA" },
+            { term: "Multi-infarct dementia", cat: "DEMENTIA" },
+            { term: "Multiple system atrophy", cat: "DEMENTIA" },
+            { term: "Alpha-synucleinopathy", cat: "DEMENTIA" },
+            { term: "Oligodendroglial cytoplasmic inclusions", cat: "DEMENTIA" },
+            { term: "Glial cytoplasmic inclusions", cat: "DEMENTIA" },
+            { term: "Autonomic failure", cat: "DEMENTIA" },
+            { term: "Orthostatic hypotension", cat: "DEMENTIA" },
+            { term: "Urinary dysfunction", cat: "DEMENTIA" },
+            { term: "Erectile dysfunction", cat: "DEMENTIA" },
+            { term: "Poor levodopa response", cat: "DEMENTIA" },
+            { term: "Cerebellar ataxia", cat: "DEMENTIA" },
+
+            // Category 4: Demyelinating Diseases & Demyelination
+            { term: "Oligodendrocyte", cat: "DEMYELINATION" },
+            { term: "Myelin sheath", cat: "DEMYELINATION" },
+            { term: "Node of Ranvier", cat: "DEMYELINATION" },
+            { term: "Saltatory conduction", cat: "DEMYELINATION" },
+            { term: "Myelin basic protein", cat: "DEMYELINATION" },
+            { term: "Proteolipid protein", cat: "DEMYELINATION" },
+            { term: "Myelin oligodendrocyte glycoprotein", cat: "DEMYELINATION" },
+            { term: "Central nervous system demyelination", cat: "DEMYELINATION" },
+            { term: "Multiple sclerosis", cat: "DEMYELINATION" },
+            { term: "Autoimmune demyelination", cat: "DEMYELINATION" },
+            { term: "T cells", cat: "DEMYELINATION" },
+            { term: "B cells", cat: "DEMYELINATION" },
+            { term: "Macrophages", cat: "DEMYELINATION" },
+            { term: "Microglia", cat: "DEMYELINATION" },
+            { term: "Oligodendrocyte injury", cat: "DEMYELINATION" },
+            { term: "Demyelinating plaque", cat: "DEMYELINATION" },
+            { term: "Optic neuritis", cat: "DEMYELINATION" },
+            { term: "Internuclear ophthalmoplegia", cat: "DEMYELINATION" },
+            { term: "Medial longitudinal fasciculus", cat: "DEMYELINATION" },
+            { term: "Uhthoff phenomenon", cat: "DEMYELINATION" },
+            { term: "Lhermitte sign", cat: "DEMYELINATION" },
+            { term: "Sensory loss", cat: "DEMYELINATION" },
+            { term: "Upper motor neuron weakness", cat: "DEMYELINATION" },
+            { term: "Ataxia", cat: "DEMYELINATION" },
+            { term: "Bladder dysfunction", cat: "DEMYELINATION" },
+            { term: "Periventricular lesions", cat: "DEMYELINATION" },
+            { term: "Spinal cord lesions", cat: "DEMYELINATION" },
+            { term: "Dawson fingers", cat: "DEMYELINATION" },
+            { term: "Oligoclonal bands", cat: "DEMYELINATION" },
+            { term: "P100 latency", cat: "DEMYELINATION" },
+            { term: "Neuromyelitis optica spectrum disorder", cat: "DEMYELINATION" },
+            { term: "Aquaporin-4", cat: "DEMYELINATION" },
+            { term: "AQP4", cat: "DEMYELINATION" },
+            { term: "AQP4-IgG", cat: "DEMYELINATION" },
+            { term: "Astrocyte", cat: "DEMYELINATION" },
+            { term: "Complement", cat: "DEMYELINATION" },
+            { term: "Astrocytopathy", cat: "DEMYELINATION" },
+            { term: "Longitudinally extensive transverse myelitis", cat: "DEMYELINATION" },
+            { term: "Severe optic neuritis", cat: "DEMYELINATION" },
+            { term: "Area postrema", cat: "DEMYELINATION" },
+            { term: "Intractable nausea", cat: "DEMYELINATION" },
+            { term: "Intractable vomiting", cat: "DEMYELINATION" },
+            { term: "Intractable hiccups", cat: "DEMYELINATION" },
+            { term: "Acute disseminated encephalomyelitis", cat: "DEMYELINATION" },
+            { term: "ADEM", cat: "DEMYELINATION" },
+            { term: "Post-infectious demyelination", cat: "DEMYELINATION" },
+            { term: "Post-vaccination demyelination", cat: "DEMYELINATION" },
+            { term: "Monophasic disease", cat: "DEMYELINATION" },
+            { term: "Encephalopathy", cat: "DEMYELINATION" },
+            { term: "Multifocal neurological deficits", cat: "DEMYELINATION" },
+            { term: "Progressive multifocal leukoencephalopathy", cat: "DEMYELINATION" },
+            { term: "JC virus", cat: "DEMYELINATION" },
+            { term: "Immunosuppression", cat: "DEMYELINATION" },
+            { term: "HIV/AIDS", cat: "DEMYELINATION" },
+            { term: "Natalizumab", cat: "DEMYELINATION" },
+            { term: "Multifocal white-matter lesions", cat: "DEMYELINATION" },
+            { term: "Oligodendrocyte infection", cat: "DEMYELINATION" },
+            { term: "Metachromatic leukodystrophy", cat: "DEMYELINATION" },
+            { term: "Arylsulfatase A", cat: "DEMYELINATION" },
+            { term: "Sulfatides", cat: "DEMYELINATION" },
+            { term: "Metachromatic granules", cat: "DEMYELINATION" },
+            { term: "CNS demyelination", cat: "DEMYELINATION" },
+            { term: "Peripheral demyelination", cat: "DEMYELINATION" },
+            { term: "Krabbe disease", cat: "DEMYELINATION" },
+            { term: "Galactocerebrosidase", cat: "DEMYELINATION" },
+            { term: "GALC", cat: "DEMYELINATION" },
+            { term: "Psychosine", cat: "DEMYELINATION" },
+            { term: "Galactocerebroside", cat: "DEMYELINATION" },
+            { term: "Globoid cells", cat: "DEMYELINATION" },
+            { term: "Adrenoleukodystrophy", cat: "DEMYELINATION" },
+            { term: "ABCD1", cat: "DEMYELINATION" },
+            { term: "Peroxisome", cat: "DEMYELINATION" },
+            { term: "Very-long-chain fatty acids", cat: "DEMYELINATION" },
+            { term: "X-linked recessive", cat: "DEMYELINATION" },
+            { term: "Adrenal insufficiency", cat: "DEMYELINATION" },
+            { term: "Addison disease", cat: "DEMYELINATION" },
+
+            // Category 5: Electrolytes, Pontine Lesions & PRES
+            { term: "Sodium", cat: "PRES" },
+            { term: "Potassium", cat: "PRES" },
+            { term: "Chloride", cat: "PRES" },
+            { term: "Na-K ATPase", cat: "PRES" },
+            { term: "Hypovolemic hyponatremia", cat: "PRES" },
+            { term: "Euvolemic hyponatremia", cat: "PRES" },
+            { term: "Hypervolemic hyponatremia", cat: "PRES" },
+            { term: "SIADH", cat: "PRES" },
+            { term: "Syndrome of inappropriate antidiuretic hormone secretion", cat: "PRES" },
+            { term: "ADH", cat: "PRES" },
+            { term: "Vasopressin", cat: "PRES" },
+            { term: "Neuronal dehydration", cat: "PRES" },
+            { term: "Central diabetes insipidus", cat: "PRES" },
+            { term: "Nephrogenic diabetes insipidus", cat: "PRES" },
+            { term: "Desmopressin", cat: "PRES" },
+            { term: "Lithium", cat: "PRES" },
+            { term: "Free water", cat: "PRES" },
+            { term: "Rapid sodium correction", cat: "PRES" },
+            { term: "Chronic hyponatremia", cat: "PRES" },
+            { term: "Osmotic adaptation", cat: "PRES" },
+            { term: "Osmotic demyelination syndrome", cat: "PRES" },
+            { term: "Central pontine myelinolysis", cat: "PRES" },
+            { term: "Extrapontine myelinolysis", cat: "PRES" },
+            { term: "Noninflammatory demyelination", cat: "PRES" },
+            { term: "Basis pontis", cat: "PRES" },
+            { term: "Corticospinal tract", cat: "PRES" },
+            { term: "Corticobulbar tract", cat: "PRES" },
+            { term: "Quadriparesis", cat: "PRES" },
+            { term: "Quadriplegia", cat: "PRES" },
+            { term: "Dysarthria", cat: "PRES" },
+            { term: "Dysphagia", cat: "PRES" },
+            { term: "Seizures", cat: "PRES" },
+            { term: "Malnutrition", cat: "PRES" },
+            { term: "Liver disease", cat: "PRES" },
+            { term: "Liver transplantation", cat: "PRES" },
+            { term: "Hypokalemia", cat: "PRES" },
+            { term: "Locked-in syndrome", cat: "PRES" },
+            { term: "Ventral pons", cat: "PRES" },
+            { term: "Basilar artery", cat: "PRES" },
+            { term: "Pontine infarction", cat: "PRES" },
+            { term: "Pontine hemorrhage", cat: "PRES" },
+            { term: "Reticular activating system", cat: "PRES" },
+            { term: "Vertical gaze", cat: "PRES" },
+            { term: "Vertical eye movements", cat: "PRES" },
+            { term: "Anarthria", cat: "PRES" },
+            { term: "Facial paralysis", cat: "PRES" },
+            { term: "Preserved consciousness", cat: "PRES" },
+            { term: "Blinking", cat: "PRES" },
+            { term: "Eye movement communication", cat: "PRES" },
+            { term: "Brainstem lesion", cat: "PRES" },
+            { term: "Posterior reversible encephalopathy syndrome", cat: "PRES" },
+            { term: "PRES", cat: "PRES" },
+            { term: "Blood-brain barrier", cat: "PRES" },
+            { term: "Cerebral autoregulation", cat: "PRES" },
+            { term: "Endothelial dysfunction", cat: "PRES" },
+            { term: "Vasogenic edema", cat: "PRES" },
+            { term: "Cytotoxic edema", cat: "PRES" },
+            { term: "Parieto-occipital edema", cat: "PRES" },
+            { term: "Parieto-occipital white matter", cat: "PRES" },
+            { term: "Severe hypertension", cat: "PRES" },
+            { term: "Preeclampsia", cat: "PRES" },
+            { term: "Eclampsia", cat: "PRES" },
+            { term: "Renal disease", cat: "PRES" },
+            { term: "Autoimmune disease", cat: "PRES" },
+            { term: "Tacrolimus", cat: "PRES" },
+            { term: "Cyclosporine", cat: "PRES" },
+            { term: "Chemotherapy", cat: "PRES" },
+            { term: "Transplantation", cat: "PRES" },
+            { term: "Visual disturbance", cat: "PRES" },
+            { term: "Cortical blindness", cat: "PRES" },
+            { term: "T2 hyperintensity", cat: "PRES" },
+            { term: "FLAIR hyperintensity", cat: "PRES" }
+        ];
+
+        class SoundEffects {
+            constructor() {
+                this.ctx = null;
+                this.muted = false;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) {
+                        this.ctx = new AudioContext();
+                    }
+                }
+            }
+
+            playCorrect() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+                
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, now); // D5
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
+
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+
+            playSkip() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now); // A3
+                osc.frequency.setValueAtTime(164.81, now + 0.1); // E3
+
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+
+            playTick() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(800, now);
+
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.04);
+            }
+
+            playAlarm() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.setValueAtTime(880, now + 0.15);
+                osc.frequency.setValueAtTime(440, now + 0.3);
+
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.5);
+            }
+        }
+
+        class NeurologyAliasApp {
+            constructor() {
+                this.sound = new SoundEffects();
+                this.gameMode = 'team'; // 'team' or 'classic'
+                this.selectedCategory = 'ALL';
+                
+                // Deck state
+                this.masterDeck = [];
+                this.availableDeck = [];
+                this.usedDeck = [];
+
+                // Teams state
+                this.teams = [
+                    { name: 'Team Alpha', score: 0 },
+                    { name: 'Team Beta', score: 0 }
+                ];
+                this.currentTeamIndex = 0;
+                this.targetScore = 30;
+                this.roundDuration = 60;
+
+                // Active Round state
+                this.timer = null;
+                this.timeLeft = 60;
+                this.currentTerm = null;
+                this.roundAnswers = []; // array of { term, status: 'correct'|'skip'|'pass' }
+                
+                // Classic Deck state
+                this.classicCardCount = 0;
+
+                this.init();
+            }
+
+            init() {
+                this.renderTeamInputs();
+                this.resetDeck();
+                this.setupKeyboardListeners();
+            }
+
+            // Shuffle array using Fisher-Yates algorithm
+            shuffle(array) {
+                const arr = [...array];
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+
+            // Reset or initialize deck based on category filter
+            resetDeck() {
+                if (this.selectedCategory === 'ALL') {
+                    this.masterDeck = [...MASTER_TERMS];
+                } else {
+                    this.masterDeck = MASTER_TERMS.filter(item => item.cat === this.selectedCategory);
+                }
+                this.availableDeck = this.shuffle(this.masterDeck);
+                this.usedDeck = [];
+                this.updateDeckCounter();
+            }
+
+            updateDeckCounter() {
+                const total = this.masterDeck.length;
+                const remaining = this.availableDeck.length;
+                document.getElementById('deck-counter-text').innerText = `${remaining} / ${total} terms`;
+                
+                const catMap = {
+                    'ALL': 'All Topics',
+                    'CSF': '1. CSF & ICP',
+                    'BASAL': '2. Basal Ganglia',
+                    'DEMENTIA': '3. Dementia',
+                    'DEMYELINATION': '4. Demyelination',
+                    'PRES': '5. Pontine & PRES'
+                };
+                document.getElementById('active-category-badge').innerText = catMap[this.selectedCategory] || 'All Topics';
+            }
+
+            onCategoryChange() {
+                this.selectedCategory = document.getElementById('category-select').value;
+                this.resetDeck();
+            }
+
+            setGameMode(mode) {
+                this.gameMode = mode;
+                const teamBtn = document.getElementById('mode-btn-team');
+                const classicBtn = document.getElementById('mode-btn-classic');
+                const teamSettings = document.getElementById('team-settings-container');
+
+                if (mode === 'team') {
+                    teamBtn.className = 'p-4 rounded-lg border-2 border-red-600 bg-red-50 text-left transition flex items-start gap-3';
+                    classicBtn.className = 'p-4 rounded-lg border-2 border-gray-200 bg-white hover:border-gray-400 text-left transition flex items-start gap-3';
+                    teamSettings.classList.remove('hidden');
+                } else {
+                    classicBtn.className = 'p-4 rounded-lg border-2 border-red-600 bg-red-50 text-left transition flex items-start gap-3';
+                    teamBtn.className = 'p-4 rounded-lg border-2 border-gray-200 bg-white hover:border-gray-400 text-left transition flex items-start gap-3';
+                    teamSettings.classList.add('hidden');
+                }
+            }
+
+            renderTeamInputs() {
+                const container = document.getElementById('teams-list');
+                container.innerHTML = '';
+                this.teams.forEach((t, i) => {
+                    const row = document.createElement('div');
+                    row.className = 'flex items-center gap-2';
+                    row.innerHTML = `
+                        <input type="text" value="${t.name}" onchange="app.teams[${i}].name = this.value" class="flex-grow p-2 bg-gray-50 border border-gray-300 rounded-md text-sm font-semibold text-gray-800">
+                        ${this.teams.length > 2 ? `
+                            <button type="button" onclick="app.removeTeamInput(${i})" class="p-2 text-red-600 hover:text-red-800 font-bold">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        ` : ''}
+                    `;
+                    container.appendChild(row);
+                });
+            }
+
+            addTeamInput() {
+                if (this.teams.length >= 6) return;
+                this.teams.push({ name: `Team ${this.teams.length + 1}`, score: 0 });
+                this.renderTeamInputs();
+            }
+
+            removeTeamInput(index) {
+                if (this.teams.length <= 2) return;
+                this.teams.splice(index, 1);
+                this.renderTeamInputs();
+            }
+
+            showSetupScreen() {
+                clearInterval(this.timer);
+                document.getElementById('screen-setup').classList.remove('hidden');
+                document.getElementById('screen-ready').classList.add('hidden');
+                document.getElementById('screen-game').classList.add('hidden');
+                document.getElementById('screen-classic').classList.add('hidden');
+            }
+
+            startGame() {
+                if (this.availableDeck.length < 5) {
+                    this.resetDeck();
+                }
+
+                if (this.gameMode === 'classic') {
+                    this.classicCardCount = 0;
+                    document.getElementById('screen-setup').classList.add('hidden');
+                    document.getElementById('screen-classic').classList.remove('hidden');
+                    this.generateNextClassicCard();
+                } else {
+                    // Timed Team mode
+                    this.roundDuration = parseInt(document.getElementById('timer-select').value, 10);
+                    this.targetScore = parseInt(document.getElementById('target-score-input').value, 10) || 30;
+                    this.currentTeamIndex = 0;
+                    this.teams.forEach(t => t.score = 0);
+
+                    this.showTurnReadyScreen();
+                }
+            }
+
+            showTurnReadyScreen() {
+                document.getElementById('screen-setup').classList.add('hidden');
+                document.getElementById('screen-game').classList.add('hidden');
+                document.getElementById('screen-ready').classList.remove('hidden');
+
+                const team = this.teams[this.currentTeamIndex];
+                document.getElementById('ready-team-name').innerText = team.name;
+
+                const summary = document.getElementById('ready-scores-summary');
+                summary.innerHTML = this.teams.map((t, idx) => `
+                    <div class="flex justify-between items-center ${idx === this.currentTeamIndex ? 'font-bold text-red-700 bg-red-50 p-1.5 rounded' : 'text-gray-700 p-1'}">
+                        <span>${t.name}</span>
+                        <span>${t.score} pts</span>
+                    </div>
+                `).join('');
+            }
+
+            startTurn() {
+                this.roundAnswers = [];
+                this.timeLeft = this.roundDuration;
+                
+                document.getElementById('screen-ready').classList.add('hidden');
+                document.getElementById('screen-game').classList.remove('hidden');
+
+                const activeTeam = this.teams[this.currentTeamIndex];
+                document.getElementById('active-team-display').innerText = activeTeam.name;
+                document.getElementById('active-round-points').innerText = '+0';
+                document.getElementById('timer-display').innerText = this.timeLeft;
+
+                this.drawNextCard();
+
+                // Start Timer
+                clearInterval(this.timer);
+                this.timer = setInterval(() => {
+                    this.timeLeft--;
+                    document.getElementById('timer-display').innerText = this.timeLeft;
+                    
+                    if (this.timeLeft <= 5 && this.timeLeft > 0) {
+                        this.sound.playTick();
+                    }
+
+                    if (this.timeLeft <= 0) {
+                        clearInterval(this.timer);
+                        this.sound.playAlarm();
+                        this.endRound();
+                    }
+                }, 1000);
+            }
+
+            // Draw non-repeating term from deck
+            drawNextCard() {
+                if (this.availableDeck.length === 0) {
+                    // Reshuffle used cards if available deck is exhausted
+                    if (this.usedDeck.length === 0) {
+                        this.resetDeck();
+                    } else {
+                        this.availableDeck = this.shuffle(this.usedDeck);
+                        this.usedDeck = [];
+                    }
+                }
+
+                this.currentTerm = this.availableDeck.pop();
+                this.usedDeck.push(this.currentTerm);
+                this.updateDeckCounter();
+
+                // Render Card
+                const cardBox = document.getElementById('active-card-box');
+                cardBox.classList.remove('animate-card');
+                void cardBox.offsetWidth; // trigger reflow
+                cardBox.classList.add('animate-card');
+
+                document.getElementById('current-term-text').innerText = this.currentTerm.term;
+                
+                const catLabels = {
+                    'CSF': 'CSF, ICP & Hydrocephalus',
+                    'BASAL': 'Basal Ganglia & Movement',
+                    'DEMENTIA': 'Dementias & Degenerative',
+                    'DEMYELINATION': 'Demyelinating Diseases',
+                    'PRES': 'Electrolytes & PRES'
+                };
+                document.getElementById('card-category-label').innerText = catLabels[this.currentTerm.cat] || 'NEUROLOGY TERM';
+            }
+
+            recordAnswer(status) {
+                if (!this.currentTerm) return;
+
+                if (status === 'correct') {
+                    this.sound.playCorrect();
+                } else if (status === 'skip') {
+                    this.sound.playSkip();
+                } else {
+                    this.sound.playTick();
+                }
+
+                this.roundAnswers.push({
+                    term: this.currentTerm.term,
+                    status: status // 'correct', 'skip', 'pass'
+                });
+
+                this.updateActiveRoundScoreDisplay();
+                this.drawNextCard();
+            }
+
+            updateActiveRoundScoreDisplay() {
+                const pts = this.calculateRoundPoints(this.roundAnswers);
+                document.getElementById('active-round-points').innerText = (pts >= 0 ? '+' : '') + pts;
+            }
+
+            calculateRoundPoints(answers) {
+                return answers.reduce((sum, item) => {
+                    if (item.status === 'correct') return sum + 1;
+                    if (item.status === 'skip') return sum - 1;
+                    return sum; // pass = 0
+                }, 0);
+            }
+
+            endRound() {
+                const team = this.teams[this.currentTeamIndex];
+                document.getElementById('review-team-name').innerText = team.name;
+                
+                this.renderReviewList();
+                document.getElementById('modal-round-review').classList.remove('hidden');
+            }
+
+            renderReviewList() {
+                const container = document.getElementById('review-words-list');
+                container.innerHTML = '';
+
+                if (this.roundAnswers.length === 0) {
+                    container.innerHTML = `<div class="text-center py-6 text-gray-500 font-medium">No words answered during this round.</div>`;
+                } else {
+                    this.roundAnswers.forEach((ans, idx) => {
+                        const row = document.createElement('div');
+                        row.className = 'flex justify-between items-center p-3 rounded-lg border border-gray-200 bg-gray-50 text-sm';
+                        
+                        let badgeClass = '';
+                        if (ans.status === 'correct') badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-300';
+                        else if (ans.status === 'skip') badgeClass = 'bg-amber-100 text-amber-800 border-amber-300';
+                        else badgeClass = 'bg-gray-200 text-gray-800 border-gray-400';
+
+                        row.innerHTML = `
+                            <span class="font-bold text-gray-800 flex-grow pr-2">${idx + 1}. ${ans.term}</span>
+                            <select onchange="app.updateReviewAnswer(${idx}, this.value)" class="p-1.5 rounded border text-xs font-bold ${badgeClass}">
+                                <option value="correct" ${ans.status === 'correct' ? 'selected' : ''}>Correct (+1)</option>
+                                <option value="skip" ${ans.status === 'skip' ? 'selected' : ''}>Skip (-1)</option>
+                                <option value="pass" ${ans.status === 'pass' ? 'selected' : ''}>Pass (0)</option>
+                            </select>
+                        `;
+                        container.appendChild(row);
+                    });
+                }
+
+                const pts = this.calculateRoundPoints(this.roundAnswers);
+                document.getElementById('review-total-points').innerText = (pts >= 0 ? '+' : '') + pts;
+            }
+
+            updateReviewAnswer(index, newStatus) {
+                this.roundAnswers[index].status = newStatus;
+                this.renderReviewList();
+            }
+
+            confirmRoundScore() {
+                const pts = this.calculateRoundPoints(this.roundAnswers);
+                this.teams[this.currentTeamIndex].score += pts;
+
+                document.getElementById('modal-round-review').classList.add('hidden');
+
+                // Check for Winner
+                if (this.teams[this.currentTeamIndex].score >= this.targetScore) {
+                    this.showGameOverModal();
+                } else {
+                    // Next team turn
+                    this.currentTeamIndex = (this.currentTeamIndex + 1) % this.teams.length;
+                    this.showTurnReadyScreen();
+                }
+            }
+
+            showGameOverModal() {
+                const sorted = [...this.teams].sort((a, b) => b.score - a.score);
+                const winner = sorted[0];
+
+                document.getElementById('winner-team-text').innerText = `${winner.name} Wins with ${winner.score} Points!`;
+
+                const leaderboard = document.getElementById('final-leaderboard');
+                leaderboard.innerHTML = sorted.map((t, i) => `
+                    <div class="flex justify-between items-center p-2 ${i === 0 ? 'bg-amber-100 text-amber-900 font-extrabold rounded-lg' : 'text-gray-700'}">
+                        <span>#${i + 1} ${t.name}</span>
+                        <span>${t.score} pts</span>
+                    </div>
+                `).join('');
+
+                document.getElementById('modal-game-over').classList.remove('hidden');
+            }
+
+            generateNextClassicCard() {
+                if (this.availableDeck.length < 5) {
+                    this.resetDeck();
+                }
+
+                this.classicCardCount++;
+                document.getElementById('classic-card-number').innerText = `Card #${this.classicCardCount}`;
+
+                const termsForCard = [];
+                for (let i = 0; i < 5; i++) {
+                    if (this.availableDeck.length === 0) this.resetDeck();
+                    const cardItem = this.availableDeck.pop();
+                    this.usedDeck.push(cardItem);
+                    termsForCard.push(cardItem);
+                }
+                this.updateDeckCounter();
+
+                const container = document.getElementById('classic-terms-container');
+                container.innerHTML = termsForCard.map((item, idx) => `
+                    <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <span class="w-7 h-7 rounded-full bg-red-600 text-white font-bold flex items-center justify-center text-xs flex-shrink-0">
+                            ${idx + 1}
+                        </span>
+                        <span class="font-bold text-gray-900 text-base md:text-lg flex-grow">${item.term}</span>
+                        <input type="checkbox" class="w-5 h-5 text-red-600 rounded border-gray-300 focus:ring-red-500">
+                    </div>
+                `).join('');
+            }
+
+            setupKeyboardListeners() {
+                document.addEventListener('keydown', (e) => {
+                    const gameScreenVisible = !document.getElementById('screen-game').classList.contains('hidden');
+                    if (!gameScreenVisible) return;
+
+                    if (e.key === 'ArrowRight' || e.key === ' ') {
+                        e.preventDefault();
+                        this.recordAnswer('correct');
+                    } else if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        this.recordAnswer('skip');
+                    } else if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        this.recordAnswer('pass');
+                    }
+                });
+            }
+
+            toggleSound() {
+                this.sound.muted = !this.sound.muted;
+                document.getElementById('sound-icon').className = this.sound.muted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+                document.getElementById('sound-label').innerText = this.sound.muted ? 'Audio Off' : 'Audio On';
+            }
+
+            toggleFullscreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                }
+            }
+
+            openDeckModal() {
+                this.renderDeckList('ALL');
+                document.getElementById('modal-deck').classList.remove('hidden');
+            }
+
+            closeDeckModal() {
+                document.getElementById('modal-deck').classList.add('hidden');
+            }
+
+            renderDeckList(cat) {
+                const container = document.getElementById('deck-list-container');
+                container.innerHTML = '';
+
+                const filtered = cat === 'ALL' ? MASTER_TERMS : MASTER_TERMS.filter(t => t.cat === cat);
+                document.getElementById('deck-modal-count').innerText = `Displaying ${filtered.length} terms`;
+
+                filtered.forEach((item, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'bg-white p-2 rounded border border-gray-200 text-xs font-semibold text-gray-800 flex items-center gap-2';
+                    div.innerHTML = `<span class="text-red-600 font-bold w-6">${idx + 1}.</span> ${item.term}`;
+                    container.appendChild(div);
+                });
+            }
+        }
+
+        // Initialize Application
+        let app;
+        window.onload = function() {
+            app = new NeurologyAliasApp();
+        };
+    </script>
+</body>
+</html>
