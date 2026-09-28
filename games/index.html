@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ACSOM Buzzword Drill</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --acsom-red: #E31B23;
+            --acsom-red-dark: #C4121A;
+            --acsom-red-light: #FFEBEE;
+            --bg-main: #F4F5F7;
+            --card-bg: #FFFFFF;
+            --text-dark: #1A1A1A;
+            --text-muted: #555555;
+            --border-color: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 0;
+            user-select: none;
+        }
+
+        /* Top decorative red slide accent */
+        .header-banner {
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, var(--acsom-red) 0%, var(--acsom-red-dark) 100%);
+            color: #FFFFFF;
+            text-align: center;
+            padding: 24px 16px 28px 16px;
+            box-shadow: 0 4px 12px rgba(227, 27, 35, 0.25);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        .brand-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #FFFFFF;
+            font-weight: 800;
+            font-size: 0.78rem;
+            letter-spacing: 1.5px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .brand-badge:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 900;
+            line-height: 1.25;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #FFFFFF;
+        }
+
+        .subtitle {
+            font-size: 0.82rem;
+            opacity: 0.92;
+            margin-top: 6px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto;
+            padding: 16px;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        .trainer-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-left: 6px solid var(--acsom-red);
+            border-radius: 16px;
+            padding: 16px;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .trainer-card:active {
+            transform: scale(0.98);
+            background: var(--acsom-red-light);
+            border-color: var(--acsom-red);
+        }
+
+        .card-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .card-icon {
+            width: 46px;
+            height: 46px;
+            background: var(--acsom-red-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            border: 1px solid rgba(227, 27, 35, 0.2);
+        }
+
+        .card-text h2 {
+            font-size: 0.98rem;
+            font-weight: 800;
+            margin-bottom: 3px;
+            color: var(--text-dark);
+        }
+
+        .card-text p {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .arrow-icon {
+            width: 22px;
+            height: 22px;
+            fill: var(--acsom-red);
+            flex-shrink: 0;
+            margin-left: 6px;
+            transition: transform 0.2s ease;
+        }
+
+        .trainer-card:active .arrow-icon {
+            transform: translateX(3px);
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 12px 16px 20px 16px;
+        }
+
+        .instagram-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--acsom-red);
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 0.82rem;
+            padding: 10px 20px;
+            border-radius: 24px;
+            background: var(--card-bg);
+            border: 1.5px solid var(--acsom-red);
+            box-shadow: 0 4px 12px rgba(227, 27, 35, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .instagram-link:active {
+            transform: scale(0.95);
+            background: var(--acsom-red);
+            color: #FFFFFF;
+        }
+
+        .instagram-link:active svg {
+            fill: #FFFFFF;
+        }
+
+        .instagram-icon {
+            width: 18px;
+            height: 18px;
+            fill: var(--acsom-red);
+            transition: fill 0.2s ease;
+        }
+
+        /* Mobile viewport adaptations */
+        @media (max-height: 660px) {
+            .header-banner { padding: 18px 14px 22px 14px; }
+            h1 { font-size: 1.1rem; }
+            .subtitle { font-size: 0.75rem; }
+            main { gap: 10px; padding: 12px; }
+            .trainer-card { padding: 12px 14px; }
+            .card-icon { width: 40px; height: 40px; font-size: 1.2rem; }
+            .card-text h2 { font-size: 0.9rem; }
+            .card-text p { font-size: 0.68rem; }
+            .instagram-link { padding: 8px 16px; font-size: 0.78rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-banner">
+        <a href="https://acsom.edu.dm" target="_blank" class="brand-badge">ACSOM ↗</a>
+        <h1>AMERICAN CANADIAN SCHOOL OF MEDICINE</h1>
+        <p class="subtitle">Buzzword drill!</p>
+    </header>
+
+    <main>
+                <!-- ALIAS -->
+        <a href="./games/neuroalias/" class="trainer-card">
+            <div class="card-content">
+                <div class="card-icon">🎮</div>
+                <div class="card-text">
+                    <h2>Neuro ALIAS</h2>
+                    <p>week 3</p>
+                </div>
+            </div>
+            <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+        </a>
+
+                        <!-- CODENAMES -->
+        <a href="./games/neurocodes/" class="trainer-card">
+            <div class="card-content">
+                <div class="card-icon">🎮</div>
+                <div class="card-text">
+                    <h2>Neuro CODENAMES</h2>
+                    <p>week 3</p>
+                </div>
+            </div>
+            <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+        </a>
+        
+    </main>
+
+    <footer>
+        <a href="https://www.instagram.com/americancanadiansom/" target="_blank" class="instagram-link">
+            <svg class="instagram-icon" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+            <span>ACSOM INSTAGRAM</span>
+        </a>
+    </footer>
+
+</body>
+</html>
