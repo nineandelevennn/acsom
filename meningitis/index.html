@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meningitis Interactive Learning Module | Case-Based Curriculum</title>
+  <style>
+    :root {
+      --header-red: #d00a00;
+      --header-red-dark: #b00800;
+      --body-bg: #f5f5f7;
+      --card-bg: #ffffff;
+      --text-dark: #222222;
+      --text-muted: #666666;
+      --border-color: #e0e0e0;
+      --accent-blue: #0066cc;
+      --success-green: #2e7d32;
+      --danger-red: #c62828;
+      --radius: 8px;
+      --shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background: var(--body-bg); color: var(--text-dark); line-height: 1.6; padding-bottom: 60px; }
+
+    /* Top Red Presentation Header (Matching Screenshot Style) */
+    header {
+      background: var(--header-red);
+      color: white;
+      padding: 1.2rem 2.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-title {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .brand-subtitle {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: right;
+      line-height: 1.2;
+    }
+
+    .nav-controls { display: flex; gap: 15px; align-items: center; }
+    .btn {
+      background: white;
+      color: var(--header-red);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .btn:hover { background: #f0f0f0; transform: translateY(-1px); }
+    .btn-secondary { background: var(--accent-blue); color: white; }
+    .btn-secondary:hover { background: #0052a3; }
+    .btn-outline { background: transparent; border: 1px solid white; color: white; box-shadow: none; }
+    .btn-outline:hover { background: rgba(255, 255, 255, 0.15); }
+    
+    /* Progress Bar */
+    .progress-container { width: 100%; background: #e0e0e0; height: 5px; position: fixed; top: 68px; left: 0; z-index: 99; }
+    .progress-bar { width: 0%; height: 100%; background: var(--header-red); transition: width 0.3s; }
+
+    /* Main Layout */
+    .dashboard { display: grid; grid-template-columns: 280px 1fr; gap: 24px; max-width: 1600px; margin: 30px auto; padding: 0 24px; }
+    
+    /* Clean Medical Sidebar */
+    .sidebar {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 20px 15px;
+      border: 1px solid var(--border-color);
+      height: calc(100vh - 120px);
+      position: sticky;
+      top: 90px;
+      overflow-y: auto;
+      box-shadow: var(--shadow);
+    }
+    .sidebar h3 { font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; letter-spacing: 0.05em; padding-left: 10px; }
+    .nav-list { list-style: none; }
+    .nav-item {
+      padding: 10px 12px;
+      margin-bottom: 4px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-item:hover { background: #f8f9fa; color: var(--header-red); }
+    .nav-item.active { background: #fff0f0; color: var(--header-red); font-weight: 600; border-left: 4px solid var(--header-red); }
+    .nav-badge { background: #f0f0f0; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; color: #555; }
+
+    /* Content Cards */
+    .main-content { min-width: 0; }
+    
+    .section-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 28px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow);
+    }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 2px solid #f0f0f0; padding-bottom: 12px; }
+    .section-title { font-size: 1.6rem; color: var(--text-dark); font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    
+    /* Clean Callouts */
+    .hy-callout {
+      background: #fff8f8;
+      border-left: 4px solid var(--header-red);
+      padding: 18px;
+      border-radius: 4px;
+      margin: 20px 0;
+      font-size: 0.95rem;
+    }
+    .hy-callout strong { color: var(--header-red); text-transform: uppercase; font-size: 0.82rem; letter-spacing: 0.05em; display: block; margin-bottom: 6px; }
+
+    /* Step 1 Mode */
+    body.step1-mode .non-hy { display: none !important; }
+    body.step1-mode .hy-callout { background: #fff0f0; border-left-width: 6px; font-size: 1rem; }
+
+    /* Pathway Steps */
+    .pathway { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; justify-content: space-between; }
+    .pathway-step {
+      flex: 1; min-width: 140px; background: #f8f9fa; border: 1px solid var(--border-color); padding: 14px; border-radius: 6px; text-align: center; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; color: var(--text-muted);
+    }
+    .pathway-step:hover { background: #fff0f0; border-color: var(--header-red); color: var(--header-red); }
+    .pathway-step.active { background: var(--header-red); color: white; border-color: var(--header-red); }
+
+    /* Interactive Medical Diagram Style */
+    .anatomy-container { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center; margin: 20px 0; }
+    .interactive-canvas {
+      width: 100%; height: 340px; background: #fafafa; border: 1px solid var(--border-color); border-radius: 8px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-around; padding: 20px;
+    }
+    .anatomy-layer {
+      padding: 14px; text-align: center; color: white; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .layer-dura { background: #888888; }
+    .layer-arachnoid { background: #4b8cc8; }
+    .layer-sas { background: #e3f2fd; border: 2px dashed #2196f3; color: #0d47a1; }
+    .layer-pia { background: var(--header-red); }
+    .anatomy-layer:hover { transform: scale(1.01); opacity: 0.95; }
+
+    /* Predict Box */
+    .predict-box { background: #f9f9f9; border: 1px border var(--border-color); border-radius: 6px; padding: 18px; margin: 16px 0; border: 1px solid #e5e5e5; }
+    .reveal-content { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color); animation: fadeIn 0.3s ease; }
+
+    /* Clean Medical Data Tables */
+    .data-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.92rem; }
+    .data-table th, .data-table td { padding: 12px 16px; border: 1px solid var(--border-color); text-align: left; }
+    .data-table th { background: #f5f5f5; color: var(--text-dark); font-weight: 700; border-bottom: 2px solid var(--border-color); }
+    .data-table tr:hover { background: #fdfdfd; }
+
+    /* CSF Simulator (Medical Display Style) */
+    .csf-lab { background: #ffffff; color: var(--text-dark); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin: 20px 0; box-shadow: var(--shadow); }
+    .csf-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .csf-card { background: #f8f9fa; padding: 14px; border-radius: 6px; text-align: center; border: 1px solid var(--border-color); }
+    .csf-card .val { font-size: 1.25rem; font-weight: 700; color: var(--header-red); margin-top: 4px; }
+
+    /* Interactive Options */
+    .quiz-option {
+      background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 12px 16px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; font-weight: 500;
+    }
+    .quiz-option:hover { border-color: var(--header-red); background: #fff0f0; }
+    .quiz-option.correct { border-color: var(--success-green); background: #e8f5e9; color: #1b5e20; }
+    .quiz-option.incorrect { border-color: var(--danger-red); background: #ffebee; color: #b71c1c; }
+
+    /* Decision Nodes */
+    .tree-node { background: #f9f9f9; border: 1px solid var(--border-color); border-radius: 6px; padding: 18px; margin: 12px 0; }
+    .tree-actions { display: flex; gap: 10px; margin-top: 14px; }
+
+    /* Matching Grid */
+    .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+    .match-card { background: #f8f9fa; border: 1px dashed #cccccc; padding: 14px; border-radius: 6px; text-align: center; cursor: pointer; min-height: 52px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+    .match-card.selected { border-color: var(--header-red); background: #fff0f0; color: var(--header-red); }
+    .match-card.matched { border-color: var(--success-green); background: #e8f5e9; color: var(--success-green); cursor: default; }
+
+    /* Flashcard Design */
+    .flashcard-box {
+      perspective: 1000px; width: 100%; max-width: 550px; height: 260px; margin: 20px auto; cursor: pointer;
+    }
+    .flashcard-inner {
+      position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d;
+    }
+    .flashcard-box.flipped .flashcard-inner { transform: rotateY(180deg); }
+    .flashcard-front, .flashcard-back {
+      position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: var(--radius); padding: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: var(--shadow); border: 1px solid var(--border-color); background: white;
+    }
+    .flashcard-back { transform: rotateY(180deg); background: #222222; color: white; }
+
+    /* Animations */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .dashboard { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .anatomy-container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Clean Slide-Style Header -->
+  <header>
+    <div class="brand-title">Meninges (Cerebrum)</div>
+    <div class="nav-controls">
+      <button class="btn btn-outline" id="toggle-hy-btn" onclick="toggleStep1Mode()">
+        ⚡ High-Yield Mode: <span id="hy-status">OFF</span>
+      </button>
+      <div style="color: white; font-weight: 600; font-size: 0.95rem;">
+        Score: <span id="score-display" style="color: #ffeb3b; font-weight: 700;">0</span> pts
+      </div>
+      <div class="brand-subtitle">
+        AMERICAN CANADIAN<br>SCHOOL OF MEDICINE
+      </div>
+    </div>
+  </header>
+
+  <!-- Global Progress Tracker Bar -->
+  <div class="progress-container">
+    <div class="progress-bar" id="module-progress"></div>
+  </div>
+
+  <div class="dashboard">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <h3>Module Index</h3>
+      <ul class="nav-list">
+        <li class="nav-item active" onclick="scrollToSec('sec-objectives')">1. Objectives <span class="nav-badge">Core</span></li>
+        <li class="nav-item" onclick="scrollToSec('sec-pathway')">2. Concept Pathway <span class="nav-badge">Flow</span></li>
+        <li class="nav-item" onclick="scrollToSec('sec-anatomy')">3. Meningeal Anatomy <span class="nav-badge">Interactive</span></li>
+        <li class="nav-item" onclick="scrollToSec('sec-pathophys')">4. Pathophysiology <span class="nav-badge">Mechanisms</span></li>
+        <li class="nav-item" onclick="scrollToSec('sec-clinical')">5. Clinical Presentation <span class="nav-badge">Signs</span></li>
+        <li class="nav-item" onclick="scrollToSec('sec-ddx')">6. Meningitis vs Encephalitis <span class="nav-badge">DDx</span></li>
+        <li class="nav-item" onclick="scrollToSec('sec-csf-lab')">7. CSF Interpretation Lab <span class="nav-badge">Simulator</span></li>
+        <li class="nav-item" onclick="scrollToSec('sec-etiology')">8. Microbial Etiologies <span class="nav-badge">Comparison</span></li>
+        <li class="nav-item" onclick="scrollToSec('sec-lp-decision')">9. LP & CT Decision Tree <span class="nav-badge">Protocol</span></li>
+        <li class="nav-item" onclick="scrollToSec('sec-organism-match')">10. Organism Matching <span class="nav-badge">Practice</span></li>
+        <li class="nav-item" onclick="scrollToSec('sec-treatment')">11. Treatment Simulator <span class="nav-badge">Rx</span></li>
+        <li class="nav-item" onclick="scrollToSec('sec-complications')">12. Complications <span class="nav-badge">High-Yield</span></li>
+        <li class="nav-item" onclick="scrollToSec('sec-buzzwords')">13. USMLE Buzzwords <span class="nav-badge">Rapid</span></li>
+        <li class="nav-item" onclick="scrollToSec('sec-cases')">14. Case-Based Learning <span class="nav-badge">Clinical</span></li>
+        <li class="nav-item" onclick="scrollToSec('sec-final-quiz')">15. Step 1 Board Exam <span class="nav-badge">15 Qs</span></li>
+        <li class="nav-item" onclick="scrollToSec('sec-flashcards')">16. Active Recall Cards <span class="nav-badge">Review</span></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content Container -->
+    <main class="main-content">
+
+      <!-- SECTION 1: LEARNING OBJECTIVES -->
+      <section id="sec-objectives" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">🎯 1. Learning Objectives</h2>
+        </div>
+        <p>By completing this module, medical students will actively master:</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-top: 18px;">
+          <div style="background: #f8f9fa; padding: 14px; border-radius: 6px; border-left: 3px solid var(--header-red); border: 1px solid #e2e8f0; border-left-width: 4px;">
+            <strong>1. Definition & Anatomy:</strong> Define meningitis; describe meningeal layers & CSF flow dynamics.
+          </div>
+          <div style="background: #f8f9fa; padding: 14px; border-radius: 6px; border-left: 3px solid var(--header-red); border: 1px solid #e2e8f0; border-left-width: 4px;">
+            <strong>2. Etiology & Pathophysiology:</strong> Contrast infectious/noninfectious causes & BBB disruption mechanisms.
+          </div>
+          <div style="background: #f8f9fa; padding: 14px; border-radius: 6px; border-left: 3px solid var(--header-red); border: 1px solid #e2e8f0; border-left-width: 4px;">
+            <strong>3. Diagnostics & CSF:</strong> Differentiate Bacterial, Viral, Fungal, and TB meningitis using lab profiles.
+          </div>
+          <div style="background: #f8f9fa; padding: 14px; border-radius: 6px; border-left: 3px solid var(--header-red); border: 1px solid #e2e8f0; border-left-width: 4px;">
+            <strong>4. Clinical Protocols:</strong> Identify indications for pre-LP head CT & select empiric antimicrobial therapy.
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: CORE CONCEPT PATHWAY -->
+      <section id="sec-pathway" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">🔗 2. Core Concept Pathway</h2>
+        </div>
+        <p>Click each sequential step below to trace the pathophysiological progression of meningeal disease:</p>
+        <div class="pathway">
+          <div class="pathway-step active" onclick="showPathway(0)">1. Meninges Anatomy</div>
+          <div class="pathway-step" onclick="showPathway(1)">2. Pathogen Invasion</div>
+          <div class="pathway-step" onclick="showPathway(2)">3. Cytokine Cascade</div>
+          <div class="pathway-step" onclick="showPathway(3)">4. BBB & CSF Changes</div>
+          <div class="pathway-step" onclick="showPathway(4)">5. Clinical Signs</div>
+          <div class="pathway-step" onclick="showPathway(5)">6. Complications</div>
+        </div>
+        <div id="pathway-details" class="predict-box" style="background: #fdfdfd; display: block;">
+          <strong style="color: var(--header-red);">Step 1: Meninges Anatomy & Subarachnoid Space</strong>
+          <p>Inflammation primarily affects the <em>leptomeninges</em> (arachnoid and pia mater) and the subarachnoid space (SAS) through which CSF circulates.</p>
+        </div>
+      </section>
+
+      <!-- SECTION 3: INTERACTIVE MENINGES ANATOMY -->
+      <section id="sec-anatomy" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">🧠 3. Interactive Meningeal Anatomy</h2>
+        </div>
+        <p>Select a layer on the anatomical schematic to inspect its physiological function and clinical significance:</p>
+        <div class="anatomy-container">
+          <div class="interactive-canvas">
+            <div style="color: #666; font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">Cranium / Bone / Scalp</div>
+            <div class="anatomy-layer layer-dura" onclick="inspectLayer('dura')">Dura Mater (Outer & Inner Layers)</div>
+            <div class="anatomy-layer layer-arachnoid" onclick="inspectLayer('arachnoid')">Arachnoid Mater & Trabeculae</div>
+            <div class="anatomy-layer layer-sas" onclick="inspectLayer('sas')">Subarachnoid Space (CSF Flow & Superior Cerebral Veins)</div>
+            <div class="anatomy-layer layer-pia" onclick="inspectLayer('pia')">Pia Mater (Adherent to Cortex)</div>
+            <div style="color: #666; font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">Cerebral Cortex Parenchyma / Falx Cerebri</div>
+          </div>
+          <div id="anatomy-info" class="predict-box" style="margin: 0; min-height: 280px; display: flex; flex-direction: column; justify-content: center;">
+            <h4 style="color: var(--header-red);">Select a Meningeal Layer</h4>
+            <p class="text-muted">Click any structure on the left diagram to view structural, anatomical, and pathological high-yield details.</p>
+          </div>
+        </div>
+        <div class="hy-callout">
+          <strong>USMLE Step 1 Anatomical Associations:</strong>
+          <ul style="margin-left: 20px; margin-top: 6px;">
+            <li>Meningitis involves inflammation of the <strong>Leptomeninges</strong> (Arachnoid + Pia mater).</li>
+            <li>CSF circulates in the <strong>Subarachnoid Space</strong> (between arachnoid and pia).</li>
+            <li>Arachnoid granulations reabsorb CSF into the superior sagittal sinus; bacterial exudate obstructs these granulations leading to <strong>communicating hydrocephalus</strong>.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECTION 4: PATHOPHYSIOLOGY -->
+      <section id="sec-pathophys" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">⚡ 4. Pathophysiology: "Why Does This Symptom Occur?"</h2>
+        </div>
+        <p>Active Recall: Predict the physiological mechanism before clicking to reveal!</p>
+        
+        <div class="predict-box">
+          <strong>Question: Why do patients develop Nuchal Rigidity, Kernig, and Brudzinski signs?</strong><br>
+          <button class="btn btn-secondary" style="margin-top: 10px;" onclick="togglePredict('pred1')">Predict & Reveal Mechanism</button>
+          <div id="pred1" class="reveal-content">
+            <p><strong>Mechanism:</strong> Inflammation in the subarachnoid space irritates meningeal nociceptors. Stretching inflamed spinal nerve roots (flexing the neck or extending the knee with hip flexed) increases tension on the hypersensitive meninges, triggering severe pain and involuntary protective muscle spasm (rigidity).</p>
+          </div>
+        </div>
+
+        <div class="predict-box">
+          <strong>Question: What causes Cerebral Edema & Elevated ICP in Bacterial Meningitis?</strong><br>
+          <button class="btn btn-secondary" style="margin-top: 10px;" onclick="togglePredict('pred2')">Predict & Reveal Mechanism</button>
+          <div id="pred2" class="reveal-content">
+            <p><strong>Triple Edema Mechanism:</strong></p>
+            <ol style="margin-left: 20px; margin-top: 6px;">
+              <li><strong>Vasogenic Edema:</strong> Inflammatory cytokines (TNF-α, IL-1) disrupt blood-brain barrier (BBB) tight junctions.</li>
+              <li><strong>Cytotoxic Edema:</strong> Neutrophil degranulation and bacterial toxins cause cell death and neuronal swelling.</li>
+              <li><strong>Interstitial Edema:</strong> Purulent exudate blocks arachnoid villi, impairing CSF reabsorption (communicating hydrocephalus).</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5: CLINICAL PRESENTATION -->
+      <section id="sec-clinical" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">🩺 5. Clinical Presentation & Physical Signs</h2>
+        </div>
+        <p>The classic triad of acute bacterial meningitis consists of: <strong>Fever, Nuchal Rigidity, and Altered Mental Status</strong> (present in ~44% of patients; >95% have at least 2 of: fever, headache, neck stiffness, altered mental status).</p>
+        
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Physical Sign</th>
+              <th>Elicitation Technique</th>
+              <th>Positive Response</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Kernig Sign</strong></td>
+              <td>Flex hip and knee to 90°, then passively extend the knee.</td>
+              <td>Resistance or pain in lower back/hamstrings.</td>
+            </tr>
+            <tr>
+              <td><strong>Brudzinski Sign</strong></td>
+              <td>Passively flex the patient's neck in supine position.</td>
+              <td>Involuntary flexion of hips and knees.</td>
+            </tr>
+            <tr>
+              <td><strong>Jolt Accentuation</strong></td>
+              <td>Ask patient to rotate head horizontally 2-3 times per second.</td>
+              <td>Worsening of baseline headache.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- SECTION 6: MENINGITIS VS ENCEPHALITIS -->
+      <section id="sec-ddx" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">⚖️ 6. Differential Diagnosis: Meningitis vs Encephalitis</h2>
+        </div>
+        <p>Distinguishing brain parenchymal involvement from leptomeningeal inflammation is critical:</p>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Meningitis</th>
+              <th>Encephalitis</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Primary Tissue Affected</strong></td>
+              <td>Leptomeninges & Subarachnoid Space</td>
+              <td>Brain Parenchyma</td>
+            </tr>
+            <tr>
+              <td><strong>Cerebral Function</strong></td>
+              <td>Preserved early (headache, stiff neck, photophobia)</td>
+              <td><strong>Prominently Abnormal:</strong> Confusion, altered personality, focal deficits, seizures</td>
+            </tr>
+            <tr>
+              <td><strong>Classic Etiology</strong></td>
+              <td>S. pneumoniae, N. meningitidis, Enteroviruses</td>
+              <td><strong>HSV-1</strong> (temporal lobe focus), Arboviruses (WNV)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- SECTION 7: CSF INTERPRETATION LAB -->
+      <section id="sec-csf-lab" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">🧪 7. Interactive CSF Analysis Lab</h2>
+        </div>
+        <p>Adjust parameters or select presets to interpret CSF profiles:</p>
+        
+        <div style="margin-bottom: 15px;">
+          <button class="btn btn-outline" style="color: var(--text-dark); border-color: var(--border-color);" onclick="loadCSFPreset('normal')">Preset: Normal</button>
+          <button class="btn btn-outline" style="color: var(--text-dark); border-color: var(--border-color);" onclick="loadCSFPreset('bacterial')">Preset: Bacterial</button>
+          <button class="btn btn-outline" style="color: var(--text-dark); border-color: var(--border-color);" onclick="loadCSFPreset('viral')">Preset: Viral</button>
+          <button class="btn btn-outline" style="color: var(--text-dark); border-color: var(--border-color);" onclick="loadCSFPreset('tb')">Preset: TB/Fungal</button>
+        </div>
+
+        <div class="csf-lab">
+          <div class="csf-inputs">
+            <div class="csf-card">
+              <div>Opening Pressure</div>
+              <div class="val" id="csf-op-val">150 mmH2O</div>
+            </div>
+            <div class="csf-card">
+              <div>WBC Count</div>
+              <div class="val" id="csf-wbc-val">3 cells/mm³</div>
+            </div>
+            <div class="csf-card">
+              <div>Predominant Cell</div>
+              <div class="val" id="csf-diff-val">Lymphocytes</div>
+            </div>
+            <div class="csf-card">
+              <div>Protein</div>
+              <div class="val" id="csf-prot-val">30 mg/dL</div>
+            </div>
+            <div class="csf-card">
+              <div>CSF / Serum Glucose Ratio</div>
+              <div class="val" id="csf-glu-val">0.65 (>0.6)</div>
+            </div>
+          </div>
+          <button class="btn btn-secondary" onclick="analyzeCSF()">Analyze Laboratory Profile</button>
+          <div id="csf-result" style="margin-top: 15px; padding: 14px; background: #f8f9fa; border: 1px solid var(--border-color); border-radius: 6px; font-weight: 600; display: none;"></div>
+        </div>
+      </section>
+
+      <!-- SECTION 8: MICROBIAL ETIOLOGIES -->
+      <section id="sec-etiology" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">🦠 8. Meningitis Etiologies Comparison</h2>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Etiology</th>
+              <th>Opening Pressure</th>
+              <th>Cell Count / Differential</th>
+              <th>Protein</th>
+              <th>Glucose (CSF:Serum)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Bacterial</strong></td>
+              <td>Elevated (&gt;200 mmH2O)</td>
+              <td><strong>PMNs / Neutrophils</strong> (&gt;1,000)</td>
+              <td>Markedly Elevated (&gt;100-500)</td>
+              <td><strong>Markedly Decreased</strong> (&lt;0.4)</td>
+            </tr>
+            <tr>
+              <td><strong>Viral (Aseptic)</strong></td>
+              <td>Normal to Slightly High</td>
+              <td><strong>Lymphocytes</strong> (10-500)</td>
+              <td>Normal to Mildly High</td>
+              <td><strong>Normal</strong> (&gt;0.6)</td>
+            </tr>
+            <tr>
+              <td><strong>Fungal / TB</strong></td>
+              <td>Elevated</td>
+              <td><strong>Lymphocytes</strong> (10-500)</td>
+              <td>Markedly Elevated</td>
+              <td><strong>Decreased</strong> (&lt;0.4)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- SECTION 9: LP AND CT DECISION TREE -->
+      <section id="sec-lp-decision" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">📐 9. Clinical Decision Protocol: LP vs Head CT</h2>
+        </div>
+        <div class="hy-callout">
+          <strong>🚨 GOLDEN RULE:</strong> NEVER delay empiric antibiotic therapy for diagnostic procedures! If head CT is required prior to LP, blood cultures must be drawn and empiric antibiotics/dexamethasone administered IMMEDIATELY prior to transport to CT.
+        </div>
+
+        <div class="tree-node">
+          <strong>Step 1: Patient suspected of acute bacterial meningitis. Does the patient have high-risk criteria for herniation?</strong>
+          <p class="text-muted" style="margin-top: 4px;">High-risk criteria: Focal neurological deficits, papilledema, altered consciousness/coma, new-onset seizures, severe immunocompromise.</p>
+          <div class="tree-actions">
+            <button class="btn btn-secondary" onclick="treeDecision('yes')">YES (High-Risk Present)</button>
+            <button class="btn btn-outline" style="color: var(--text-dark); border-color: var(--border-color);" onclick="treeDecision('no')">NO (High-Risk Absent)</button>
+          </div>
+          <div id="tree-outcome" class="predict-box" style="display: none; margin-top: 15px;"></div>
+        </div>
+      </section>
+
+      <!-- SECTION 10: ORGANISM RECOGNITION MATCHING -->
+      <section id="sec-organism-match" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">🧩 10. High-Yield Organism Matching Exercise</h2>
+        </div>
+        <p>Click a clinical clue on the left, then click its corresponding pathogen/association on the right:</p>
+        <div class="match-grid">
+          <div id="match-left">
+            <div class="match-card" data-id="1" onclick="selectMatch('left', 1, this)">Neonates (&lt;1 mo): Sepsis & Meningitis</div>
+            <div class="match-card" data-id="2" onclick="selectMatch('left', 2, this)">Teens/Dormitories + Petechial Rash</div>
+            <div class="match-card" data-id="3" onclick="selectMatch('left', 3, this)">Elderly/Pregnancy/Cell-Mediated Immunodeficiency</div>
+            <div class="match-card" data-id="4" onclick="selectMatch('left', 4, this)">AIDS patient + India Ink / Mucicarmine (+)</div>
+            <div class="match-card" data-id="5" onclick="selectMatch('left', 5, this)">Temporal Lobe Hemorrhagic Necrosis</div>
+          </div>
+          <div id="match-right">
+            <div class="match-card" data-id="3" onclick="selectMatch('right', 3, this)">Listeria monocytogenes</div>
+            <div class="match-card" data-id="1" onclick="selectMatch('right', 1, this)">GBS (S. agalactiae), E. coli, Listeria</div>
+            <div class="match-card" data-id="5" onclick="selectMatch('right', 5, this)">HSV-1 Encephalitis</div>
+            <div class="match-card" data-id="2" onclick="selectMatch('right', 2, this)">Neisseria meningitidis</div>
+            <div class="match-card" data-id="4" onclick="selectMatch('right', 4, this)">Cryptococcus neoformans</div>
+          </div>
+        </div>
+        <div id="match-feedback" style="font-weight: bold; text-align: center; color: var(--success-green);"></div>
+      </section>
+
+      <!-- SECTION 11: TREATMENT DECISION SIMULATOR -->
+      <section id="sec-treatment" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">💊 11. Empiric Treatment Decision Simulator</h2>
+        </div>
+        <p>Select the patient demographic to determine the appropriate empiric antimicrobial regimen:</p>
+        <div style="margin-bottom: 15px;">
+          <button class="btn btn-outline" style="color: var(--text-dark); border-color: var(--border-color);" onclick="simTreatment('neonate')">Neonate (&lt;1 month)</button>
+          <button class="btn btn-outline" style="color: var(--text-dark); border-color: var(--border-color);" onclick="simTreatment('adult')">Child / Adult (1 mo - 50 yrs)</button>
+          <button class="btn btn-outline" style="color: var(--text-dark); border-color: var(--border-color);" onclick="simTreatment('elderly')">Older Adult (&gt;50 yrs) or Immunocompromised</button>
+        </div>
+        <div id="treatment-output" class="predict-box" style="display: none; background: #e8f5e9; border-color: var(--success-green);"></div>
+        <div class="hy-callout">
+          <strong>USMLE High-Yield Fact: Dexamethasone Co-administration</strong>
+          <p>Administer IV <strong>dexamethasone</strong> prior to or concurrently with the first dose of antibiotics in pneumococcal meningitis to decrease neurological sequelae (especially <strong>sensorineural hearing loss</strong> caused by inner ear inflammatory damage).</p>
+        </div>
+      </section>
+
+      <!-- SECTION 12: COMPLICATIONS -->
+      <section id="sec-complications" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">⚠️ 12. Meningitis Complications</h2>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px;">
+          <div style="background: #f8f9fa; padding: 16px; border-radius: 6px; border: 1px solid var(--border-color);">
+            <h4 style="color: var(--danger-red);">Sensorineural Hearing Loss</h4>
+            <p style="font-size: 0.88rem; margin-top: 4px;">Most common long-term complication of pneumococcal meningitis. Caused by inflammatory damage to cochlear hair cells.</p>
+          </div>
+          <div style="background: #f8f9fa; padding: 16px; border-radius: 6px; border: 1px solid var(--border-color);">
+            <h4 style="color: var(--danger-red);">Waterhouse-Friderichsen</h4>
+            <p style="font-size: 0.88rem; margin-top: 4px;">Adrenal hemorrhage secondary to N. meningitidis endotoxemia/DIC → acute adrenal failure and refractory shock.</p>
+          </div>
+          <div style="background: #f8f9fa; padding: 16px; border-radius: 6px; border: 1px solid var(--border-color);">
+            <h4 style="color: var(--danger-red);">Communicating Hydrocephalus</h4>
+            <p style="font-size: 0.88rem; margin-top: 4px;">Inflammatory purulent exudate permanently scarring or plugging arachnoid granulations impairing CSF reabsorption.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 13: USMLE BUZZWORDS -->
+      <section id="sec-buzzwords" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">⚡ 13. USMLE Step 1 Rapid Recall & Buzzwords</h2>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Buzzword / Exam Clue</th>
+              <th>High-Yield Association</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Late Complement Deficiency (C5-C9)</td>
+              <td>Recurrent <em>Neisseria meningitidis</em> infections.</td>
+            </tr>
+            <tr>
+              <td>Asplenic / Sickle Cell Patient</td>
+              <td>Increased susceptibility to encapsulated organisms (<em>S. pneumoniae</em>).</td>
+            </tr>
+            <tr>
+              <td>Soap bubble brain lesions / Soap bubble parenchyma</td>
+              <td><em>Cryptococcus neoformans</em> meningitis.</td>
+            </tr>
+            <tr>
+              <td>Basilar meningeal exudate + Cranial Neuropathies (CN VI palsy)</td>
+              <td>Tuberculous (TB) Meningitis.</td>
+            </tr>
+            <tr>
+              <td>Gram-positive rods with tumbling motility</td>
+              <td><em>Listeria monocytogenes</em> (treat with Ampicillin).</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- SECTION 14: INTERACTIVE CLINICAL CASES -->
+      <section id="sec-cases" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">🏥 14. Case-Based Learning Module</h2>
+        </div>
+        
+        <!-- Case 1 -->
+        <div class="predict-box" style="background: white;">
+          <h4>Case 1: The College Freshman</h4>
+          <p style="margin: 10px 0;">An 18-year-old college freshman presents with abrupt onset of fever, severe headache, neck stiffness, and a petechial/purpuric rash on his lower extremities. LP shows neutrophils with intra-cellular Gram-negative diplococci.</p>
+          <strong>What is the primary virulence factor responsible for the petechiae and severity of this condition?</strong>
+          <div style="margin-top: 10px;">
+            <div class="quiz-option" onclick="checkCase(this, false, 'case1')">A) IgA Protease</div>
+            <div class="quiz-option" onclick="checkCase(this, false, 'case1')">B) Polysaccharide Capsule</div>
+            <div class="quiz-option" onclick="checkCase(this, true, 'case1')">C) Lipo-oligosaccharide (LOS) Endotoxin</div>
+            <div class="quiz-option" onclick="checkCase(this, false, 'case1')">D) M Protein</div>
+          </div>
+          <div id="case1-fb" style="display: none; margin-top: 10px; padding: 10px; border-radius: 6px;"></div>
+        </div>
+
+        <!-- Case 2 -->
+        <div class="predict-box" style="background: white; margin-top: 20px;">
+          <h4>Case 2: The Immunocompromised Renal Transplant Patient</h4>
+          <p style="margin: 10px 0;">A 62-year-old renal transplant recipient on immunosuppression presents with fever, headache, and confusion. CSF analysis shows 450 WBCs/mm³ (80% lymphocytes), elevated protein, and low-normal glucose. Gram stain is negative, but wet mount reveals motile rods at room temperature.</p>
+          <strong>Which antibiotic MUST be added to the empiric regimen for this patient?</strong>
+          <div style="margin-top: 10px;">
+            <div class="quiz-option" onclick="checkCase(this, false, 'case2')">A) Vancomycin</div>
+            <div class="quiz-option" onclick="checkCase(this, true, 'case2')">B) Ampicillin</div>
+            <div class="quiz-option" onclick="checkCase(this, false, 'case2')">C) Acyclovir</div>
+            <div class="quiz-option" onclick="checkCase(this, false, 'case2')">D) Ceftriaxone</div>
+          </div>
+          <div id="case2-fb" style="display: none; margin-top: 10px; padding: 10px; border-radius: 6px;"></div>
+        </div>
+      </section>
+
+      <!-- SECTION 15: COMPREHENSIVE FINAL QUIZ -->
+      <section id="sec-final-quiz" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">📝 15. USMLE Step 1 Board Examination Quiz</h2>
+        </div>
+        <p>Test your active mastery with 15 USMLE-style questions:</p>
+        
+        <div id="quiz-container">
+          <!-- Quiz Questions rendered dynamically via JS -->
+        </div>
+      </section>
+
+      <!-- SECTION 16: ACTIVE RECALL FLASHCARDS -->
+      <section id="sec-flashcards" class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">🎴 16. Rapid Active Recall Flashcards</h2>
+        </div>
+        <p>Click the card below to flip between question and high-yield answer:</p>
+
+        <div class="flashcard-box" onclick="this.classList.toggle('flipped')">
+          <div class="flashcard-inner">
+            <div class="flashcard-front">
+              <span style="color: var(--header-red); font-weight: bold; font-size: 0.8rem; text-transform: uppercase;">Flashcard 1 / 5</span>
+              <h3 style="margin-top: 15px; color: var(--text-dark);">What mechanism causes low CSF glucose in bacterial meningitis?</h3>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 20px;">(Click card to flip)</p>
+            </div>
+            <div class="flashcard-back">
+              <h3>Answer:</h3>
+              <p style="margin-top: 10px;">Impaired GLUT-1 glucose transport across the inflamed blood-brain barrier combined with increased bacterial and leukocyte glycolytic consumption.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- JavaScript Module Logic -->
+  <script>
+    // Global State
+    let userScore = 0;
+    let step1Mode = false;
+    let matchSelection = { left: null, right: null, leftEl: null, rightEl: null };
+
+    // Pathway data
+    const pathwayData = [
+      { title: "1. Meninges Anatomy", text: "Inflammation involves the leptomeninges (arachnoid and pia mater) and CSF within the subarachnoid space." },
+      { title: "2. Pathogen Invasion", text: "Pathogens colonize nasopharynx → invade bloodstream → cross Blood-Brain Barrier (BBB) at choroid plexus." },
+      { title: "3. Cytokine Cascade", text: "Bacterial lysis releases peptidoglycans/LPS → triggers microglia & astrocytes to release TNF-α, IL-1β, IL-6." },
+      { title: "4. BBB & CSF Changes", text: "Endothelial tight junctions open → neutrophil recruitment → protein leaks into CSF, glucose transport impaired." },
+      { title: "5. Clinical Signs", text: "Increased ICP & meningeal irritation cause severe headache, fever, nuchal rigidity, Kernig/Brudzinski signs." },
+      { title: "6. Complications", text: "Cerebral edema, arterial thrombosis/vasospasm, sensorineural hearing loss, hydrocephalus, or adrenal necrosis." }
+    ];
+
+    // Final Quiz Question Bank (15 USMLE Questions)
+    const quizQuestions = [
+      {
+        q: "1. A 3-week-old neonate is brought to the ED with fever, lethargy, and a bulging anterior fontanelle. CSF shows elevated neutrophils and Gram-positive bacilli. What is the organism?",
+        options: ["Streptococcus agalactiae", "Listeria monocytogenes", "Escherichia coli", "Streptococcus pneumoniae"],
+        correct: 1,
+        exp: "Listeria monocytogenes is a Gram-positive rod causing neonatal meningitis, acquired in utero or transvaginally. Ampicillin is added to cover Listeria."
+      },
+      {
+        q: "2. An 18-year-old military recruit develops fever, severe headache, and purpuric skin lesions. Blood cultures grow Gram-negative diplococci that ferment maltose and glucose. Which complement component deficiency predisposed him?",
+        options: ["C1 esterase inhibitor", "C3 deficiency", "C5-C9 deficiency", "Factor H deficiency"],
+        correct: 2,
+        exp: "Deficiency in the membrane attack complex (C5-C9) prevents MAC lysis of Neisseria species, predisposing to recurrent Neisserial infections."
+      },
+      {
+        q: "3. A 45-year-old male with pneumococcal meningitis receives antibiotic therapy without steroids. Which long-term complication is he at highest risk for?",
+        options: ["Sensorineural hearing loss", "Optic atrophy", "Huntington-like chorea", "Peripheral neuropathy"],
+        correct: 0,
+        exp: "Sensorineural hearing loss is the most common neurologic sequela of bacterial meningitis due to cochlear inflammation; reduced by dexamethasone."
+      },
+      {
+        q: "4. A 28-year-old HIV-positive patient (CD4 count 45/mm³) presents with subacute headache and low-grade fever. CSF India ink preparation displays round budding yeast with clear halos. What is the finding?",
+        options: ["Histoplasma capsulatum", "Cryptococcus neoformans", "Coccidioides immitis", "Blastomyces dermatitidis"],
+        correct: 1,
+        exp: "Cryptococcus neoformans has a heavy polysaccharide capsule creating a clear halo on India ink. Common in advanced AIDS."
+      },
+      {
+        q: "5. A 4-year-old unvaccinated child presents with fever, stiff neck, and altered sensorium. Gram-negative coccobacilli requiring factors X (hematin) and V (NAD) are isolated. What is the organism?",
+        options: ["Haemophilus influenzae type b", "Neisseria meningitidis", "Moraxella catarrhalis", "Bordetella pertussis"],
+        correct: 0,
+        exp: "Haemophilus influenzae is a Gram-negative coccobacillus requiring Factors X and V for growth on chocolate agar."
+      },
+      {
+        q: "6. A 22-year-old woman presents with mild fever, headache, photophobia, and normal mental status. CSF shows 120 WBCs (90% lymphocytes), normal glucose, and slightly elevated protein. Which etiology is most probable?",
+        options: ["Streptococcus pneumoniae", "Coxsackievirus B", "Cryptococcus neoformans", "Mycobacterium tuberculosis"],
+        correct: 1,
+        exp: "Non-polio Enteroviruses (Coxsackievirus, Echovirus) are the leading cause of aseptic (viral) meningitis with lymphocytic predominance and normal glucose."
+      },
+      {
+        q: "7. A patient with suspected bacterial meningitis exhibits papilledema on fundoscopy. What is the immediate next step in management?",
+        options: ["Immediate Lumbar Puncture", "Perform Head CT prior to LP, but give IV antibiotics immediately", "Delay antibiotics until CT is completed", "Give oral steroids only"],
+        correct: 1,
+        exp: "Papilledema signals elevated ICP and risk of brain herniation during LP. Head CT is required first, but empiric antibiotics must NEVER be delayed."
+      },
+      {
+        q: "8. Which CSF profile is characteristic of Tuberculous Meningitis?",
+        options: ["PMN predominance, High Glucose, Normal Protein", "Lymphocyte predominance, Low Glucose, Markedly High Protein", "Lymphocyte predominance, High Glucose, Low Protein", "PMN predominance, Low Glucose, Low Protein"],
+        correct: 1,
+        exp: "TB meningitis presents with lymphocytic predominance, low CSF glucose, markedly elevated protein, and basilar exudates."
+      },
+      {
+        q: "9. HSV-1 encephalitis classically affects which anatomic region of the brain?",
+        options: ["Occipital lobe", "Temporal lobe", "Cerebellum", "Basal ganglia"],
+        correct: 1,
+        exp: "HSV-1 encephalitis causes hemorrhagic necrosis of the temporal lobes, leading to aphasia, seizures, and altered personality."
+      },
+      {
+        q: "10. What is the mechanism of action of Ceftriaxone used in empiric meningitis treatment?",
+        options: ["Inhibits 30S ribosomal subunit", "Binds penicillin-binding proteins to inhibit peptidoglycan cross-linking", "Inhibits DNA gyrase", "Inhibits cell membrane synthesis"],
+        correct: 1,
+        exp: "Ceftriaxone is a 3rd generation cephalosporin that inhibits bacterial cell wall peptidoglycan synthesis by binding PBPs."
+      },
+      {
+        q: "11. Waterhouse-Friderichsen syndrome is characterized by adrenal failure secondary to hemorrhage. Which pathogen is classic?",
+        options: ["Streptococcus pneumoniae", "Neisseria meningitidis", "Listeria monocytogenes", "Escherichia coli"],
+        correct: 1,
+        exp: "N. meningitidis endotoxemia triggers severe DIC, bilateral adrenal hemorrhagic necrosis, and septic shock."
+      },
+      {
+        q: "12. Why is Ampicillin added to Vancomycin + Ceftriaxone for meningitis in patients >50 years old?",
+        options: ["To cover resistant S. pneumoniae", "To cover Listeria monocytogenes", "To cover Pseudomonas aeruginosa", "To cover Enterovirus"],
+        correct: 1,
+        exp: "Listeria monocytogenes is inherently resistant to cephalosporins. Ampicillin must be added for patients >50 or immunocompromised."
+      },
+      {
+        q: "13. A 60-year-old splenectomized patient is at highest risk for severe fulminant meningitis caused by which encapsulated organism?",
+        options: ["Streptococcus pneumoniae", "Listeria monocytogenes", "HSV-1", "Borrelia burgdorferi"],
+        correct: 0,
+        exp: "Asplenic patients lack splenic macrophages for opsonized phagocytosis, placing them at severe risk for encapsulated pathogens (S. pneumoniae)."
+      },
+      {
+        q: "14. A CSF sample displays a positive Quellung reaction. What structural component is identified?",
+        options: ["Lipopolysaccharide endotoxin", "Bacterial Polysaccharide Capsule", "Flagella", "Outer membrane porin"],
+        correct: 1,
+        exp: "The Quellung reaction causes capsular swelling in the presence of specific anticapsular antibodies (identifying S. pneumoniae, N. meningitidis)."
+      },
+      {
+        q: "15. Brudzinski sign is positive when passive neck flexion results in:",
+        options: ["Severe back pain on knee extension", "Involuntary hip and knee flexion", "Accentuation of headache on head turning", "Pupillary dilation"],
+        correct: 1,
+        exp: "Brudzinski sign is positive when passive neck flexion elicits involuntary flexion of the hips and knees due to meningeal irritation."
+      }
+    ];
+
+    // Page Load Setup
+    window.addEventListener('DOMContentLoaded', () => {
+      renderQuiz();
+      updateProgress();
+    });
+
+    // Toggle High-Yield Step 1 Mode
+    function toggleStep1Mode() {
+      step1Mode = !step1Mode;
+      document.body.classList.toggle('step1-mode', step1Mode);
+      document.getElementById('hy-status').innerText = step1Mode ? "ON" : "OFF";
+      document.getElementById('toggle-hy-btn').style.background = step1Mode ? "#ffffff" : "transparent";
+      document.getElementById('toggle-hy-btn').style.color = step1Mode ? "var(--header-red)" : "white";
+    }
+
+    // Scroll to section
+    function scrollToSec(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Interactive Pathway Sequence
+    function showPathway(index) {
+      const steps = document.querySelectorAll('.pathway-step');
+      steps.forEach((s, i) => s.classList.toggle('active', i === index));
+      const info = pathwayData[index];
+      document.getElementById('pathway-details').innerHTML = `<strong style="color: var(--header-red);">${info.title}</strong><p>${info.text}</p>`;
+      addScore(5);
+    }
+
+    // Anatomy Inspection
+    function inspectLayer(layer) {
+      const infoBox = document.getElementById('anatomy-info');
+      if (layer === 'dura') {
+        infoBox.innerHTML = `<h4 style="color: #666666;">Dura Mater (Pachymeninx)</h4><p>Outer thick fibrous double-layered membrane (outer periosteal and inner meningeal layers). Dural venous sinuses run between them. Bridging veins traverse the subdural space to reach sinuses.</p>`;
+      } else if (layer === 'arachnoid') {
+        infoBox.innerHTML = `<h4 style="color: #4b8cc8;">Arachnoid Mater & Trabeculae</h4><p>Avascular middle membrane. Contains arachnoid trabeculae extending across the subarachnoid space and arachnoid granulations that reabsorb CSF into dural venous sinuses.</p>`;
+      } else if (layer === 'sas') {
+        infoBox.innerHTML = `<h4 style="color: #0d47a1;">Subarachnoid Space (SAS)</h4><p>Located between arachnoid and pia mater. Contains CSF and major cerebral vessels (e.g., superior cerebral veins). Inflammatory purulent exudate in meningitis accumulates here.</p>`;
+      } else if (layer === 'pia') {
+        infoBox.innerHTML = `<h4 style="color: var(--header-red);">Pia Mater</h4><p>Delicate, highly vascular inner layer directly adherent to the surface of the brain and gyri/sulci. Leptomeninges = Arachnoid + Pia.</p>`;
+      }
+      addScore(5);
+    }
+
+    // Predict & Reveal
+    function togglePredict(id) {
+      const el = document.getElementById(id);
+      if (el.style.display === 'block') {
+        el.style.display = 'none';
+      } else {
+        el.style.display = 'block';
+        addScore(5);
+      }
+    }
+
+    // CSF Simulator Lab
+    function loadCSFPreset(type) {
+      if (type === 'normal') {
+        setCSF(150, 3, "Lymphocytes", 30, "> 0.6");
+      } else if (type === 'bacterial') {
+        setCSF(320, 2400, "PMNs (Neutrophils)", 280, "< 0.4 (Markedly Low)");
+      } else if (type === 'viral') {
+        setCSF(160, 180, "Lymphocytes", 65, "> 0.6 (Normal)");
+      } else if (type === 'tb') {
+        setCSF(280, 350, "Lymphocytes", 320, "< 0.3 (Low)");
+      }
+    }
+
+    function setCSF(op, wbc, diff, prot, glu) {
+      document.getElementById('csf-op-val').innerText = op + " mmH2O";
+      document.getElementById('csf-wbc-val').innerText = wbc + " cells/mm³";
+      document.getElementById('csf-diff-val').innerText = diff;
+      document.getElementById('csf-prot-val').innerText = prot + " mg/dL";
+      document.getElementById('csf-glu-val').innerText = glu;
+    }
+
+    function analyzeCSF() {
+      const res = document.getElementById('csf-result');
+      const diff = document.getElementById('csf-diff-val').innerText;
+      const glu = document.getElementById('csf-glu-val').innerText;
+
+      res.style.display = "block";
+      if (diff.includes("PMNs")) {
+        res.innerHTML = `<span style="color: var(--danger-red);">DIAGNOSIS: ACUTE BACTERIAL MENINGITIS</span><br>High WBC with PMN predominance + Low CSF Glucose ratio (&lt;0.4) + High Protein confirms bacterial etiology.`;
+      } else if (diff.includes("Lymphocytes") && glu.includes("Normal")) {
+        res.innerHTML = `<span style="color: var(--accent-blue);">DIAGNOSIS: VIRAL (ASEPTIC) MENINGITIS</span><br>Lymphocytic differential with normal CSF glucose ratio is classic for Enteroviral infection.`;
+      } else if (diff.includes("Lymphocytes") && glu.includes("Low")) {
+        res.innerHTML = `<span style="color: #d97706;">DIAGNOSIS: FUNGAL OR TUBERCULOUS (TB) MENINGITIS</span><br>Lymphocytic pleocytosis with low CSF glucose indicates fungal (Cryptococcus) or M. tuberculosis infection.`;
+      } else {
+        res.innerHTML = `<span style="color: var(--success-green);">NORMAL CSF PROFILE</span><br>Parameters within physiological limits.`;
+      }
+      addScore(10);
+    }
+
+    // Decision Tree Logic
+    function treeDecision(choice) {
+      const out = document.getElementById('tree-outcome');
+      out.style.display = "block";
+      if (choice === 'yes') {
+        out.innerHTML = `<strong>PROTOCOL: HEAD CT REQUIRED FIRST</strong><br>
+        1. Draw Blood Cultures IMMEDIATELY.<br>
+        2. Administer IV Dexamethasone + Empiric Antibiotics (Vancomycin + Ceftriaxone +/- Ampicillin) IMMEDIATELY.<br>
+        3. Send patient for Head CT scan to rule out mass effect/herniation risk.<br>
+        4. Perform Lumbar Puncture if CT shows no mass effect.`;
+      } else {
+        out.innerHTML = `<strong>PROTOCOL: IMMEDIATE LUMBAR PUNCTURE</strong><br>
+        1. Perform Lumbar Puncture immediately for CSF analysis and cultures.<br>
+        2. Administer IV Dexamethasone + Empiric Antibiotics immediately following LP.`;
+      }
+      addScore(10);
+    }
+
+    // Organism Matching Game
+    function selectMatch(side, id, el) {
+      if (side === 'left') {
+        if (matchSelection.leftEl) matchSelection.leftEl.classList.remove('selected');
+        matchSelection.left = id;
+        matchSelection.leftEl = el;
+        el.classList.add('selected');
+      } else {
+        if (matchSelection.rightEl) matchSelection.rightEl.classList.remove('selected');
+        matchSelection.right = id;
+        matchSelection.rightEl = el;
+        el.classList.add('selected');
+      }
+
+      if (matchSelection.left && matchSelection.right) {
+        if (matchSelection.left == matchSelection.right) {
+          matchSelection.leftEl.classList.add('matched');
+          matchSelection.rightEl.classList.add('matched');
+          document.getElementById('match-feedback').innerText = "Correct Match! +10 Points";
+          addScore(10);
+        } else {
+          document.getElementById('match-feedback').innerText = "Incorrect match. Try again!";
+          matchSelection.leftEl.classList.remove('selected');
+          matchSelection.rightEl.classList.remove('selected');
+        }
+        matchSelection.left = null;
+        matchSelection.right = null;
+      }
+    }
+
+    // Treatment Simulator
+    function simTreatment(group) {
+      const out = document.getElementById('treatment-output');
+      out.style.display = "block";
+      if (group === 'neonate') {
+        out.innerHTML = `<strong>Empiric Regimen for Neonates (&lt;1 month):</strong><br>
+        <strong>Ampicillin + Cefotaxime</strong> (or Ampicillin + Gentamicin).<br>
+        <em>Rationale:</em> Covers GBS, E. coli, and Listeria. Ceftriaxone is avoided in neonates as it displaces bilirubin from albumin causing kernicterus.`;
+      } else if (group === 'adult') {
+        out.innerHTML = `<strong>Empiric Regimen for Age 1 mo - 50 yrs:</strong><br>
+        <strong>Vancomycin + Ceftriaxone (or Cefotaxime) + Dexamethasone</strong>.<br>
+        <em>Rationale:</em> Covers S. pneumoniae (Vancomycin added for resistant strains) and N. meningitidis.`;
+      } else if (group === 'elderly') {
+        out.innerHTML = `<strong>Empiric Regimen for &gt;50 yrs or Immunocompromised:</strong><br>
+        <strong>Vancomycin + Ceftriaxone + Ampicillin + Dexamethasone</strong>.<br>
+        <em>Rationale:</em> Ampicillin MUST be added to cover Listeria monocytogenes.`;
+      }
+      addScore(10);
+    }
+
+    // Case Check
+    function checkCase(el, isCorrect, caseId) {
+      const fb = document.getElementById(caseId + '-fb');
+      fb.style.display = 'block';
+      if (isCorrect) {
+        el.classList.add('correct');
+        fb.style.background = '#e8f5e9';
+        fb.style.color = '#1b5e20';
+        fb.innerText = "Correct! LOS Endotoxin release during bacterial lysis correlates directly with purpura and Waterhouse-Friderichsen adrenal crisis.";
+        addScore(15);
+      } else {
+        el.classList.add('incorrect');
+        fb.style.background = '#ffebee';
+        fb.style.color = '#b71c1c';
+        fb.innerText = "Incorrect. Review the pathophysiology of meningococcal endotoxemia.";
+      }
+    }
+
+    // Render Final Quiz
+    function renderQuiz() {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = '';
+      quizQuestions.forEach((q, idx) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = 'predict-box';
+        qDiv.style.background = 'white';
+        qDiv.style.marginBottom = '20px';
+        
+        let optsHtml = '';
+        q.options.forEach((opt, oIdx) => {
+          optsHtml += `<div class="quiz-option" onclick="submitQuizAnswer(this, ${idx}, ${oIdx})">${opt}</div>`;
+        });
+
+        qDiv.innerHTML = `
+          <h4>${q.q}</h4>
+          <div style="margin-top: 10px;">${optsHtml}</div>
+          <div id="q-exp-${idx}" style="display:none; margin-top: 10px; padding: 10px; border-radius: 6px; font-size: 0.9rem;"></div>
+        `;
+        container.appendChild(qDiv);
+      });
+    }
+
+    function submitQuizAnswer(el, qIdx, oIdx) {
+      const q = quizQuestions[qIdx];
+      const exp = document.getElementById(`q-exp-${qIdx}`);
+      exp.style.display = 'block';
+
+      if (oIdx === q.correct) {
+        el.classList.add('correct');
+        exp.style.background = '#e8f5e9';
+        exp.style.color = '#1b5e20';
+        exp.innerHTML = `<strong>Correct!</strong> ${q.exp}`;
+        addScore(10);
+      } else {
+        el.classList.add('incorrect');
+        exp.style.background = '#ffebee';
+        exp.style.color = '#b71c1c';
+        exp.innerHTML = `<strong>Incorrect.</strong> ${q.exp}`;
+      }
+    }
+
+    // Score & Progress Tracking
+    function addScore(pts) {
+      userScore += pts;
+      document.getElementById('score-display').innerText = userScore;
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const maxEstimatedScore = 300;
+      const pct = Math.min(100, Math.round((userScore / maxEstimatedScore) * 100));
+      document.getElementById('module-progress').style.width = pct + '%';
+    }
+  </script>
+</body>
+</html>
