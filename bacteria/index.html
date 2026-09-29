@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USMLE Step 1 Bacteriology Trainer & Board Drill</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        
+        /* Slide presentation typography & bullet hierarchy strictly mimicking reference */
+        .slide-title {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Reference slide bullet hierarchy styles */
+        ul.slide-disc {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+        }
+        ul.slide-circle {
+            list-style-type: circle;
+            padding-left: 1.5rem;
+        }
+        ul.slide-square {
+            list-style-type: square;
+            padding-left: 1.5rem;
+        }
+
+        .citation {
+            font-size: 0.75rem;
+            color: #64748b;
+            vertical-align: super;
+            margin-left: 2px;
+        }
+
+        .badge-red {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        /* Custom scrollbar for clean UI */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-100 text-slate-800">
+
+    <!-- Slide Header Banner (Exact visual style from screenshot) -->
+    <header class="bg-red-600 text-white shadow-md relative z-10 flex-shrink-0">
+        <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex items-center space-x-3">
+                <div class="p-1.5 bg-white text-red-600 rounded font-black text-xl tracking-tighter">USMLE</div>
+                <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-center sm:text-left text-white" id="header-slide-title">
+                    Bacteriology Trainer - Step 1 Board Review
+                </h1>
+            </div>
+            <div class="text-right flex flex-col items-end">
+                <span class="text-xs sm:text-sm font-extrabold tracking-wider uppercase leading-tight text-white/95">AMERICAN CANADIAN</span>
+                <span class="text-[10px] sm:text-xs font-semibold tracking-widest uppercase text-red-100">SCHOOL OF MEDICINE</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Bar & Mode Controls -->
+    <nav class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap items-center justify-between gap-3 py-2.5">
+                <div class="flex flex-wrap gap-1 sm:gap-2 text-sm font-medium">
+                    <button id="nav-slides" onclick="switchMode('slides')" class="mode-btn px-3 py-1.5 rounded-md bg-red-50 text-red-700 font-semibold border border-red-200 hover:bg-red-100 transition">
+                        📄 Presentation Slides
+                    </button>
+                    <button id="nav-forward" onclick="switchMode('forward')" class="mode-btn px-3 py-1.5 rounded-md text-slate-600 hover:bg-slate-100 transition">
+                        🧬 Pathogen ➔ Characteristics
+                    </button>
+                    <button id="nav-reverse" onclick="switchMode('reverse')" class="mode-btn px-3 py-1.5 rounded-md text-slate-600 hover:bg-slate-100 transition">
+                        🔍 Characteristics ➔ Pathogen
+                    </button>
+                    <button id="nav-vignette" onclick="switchMode('vignette')" class="mode-btn px-3 py-1.5 rounded-md text-slate-600 hover:bg-slate-100 transition">
+                        🩺 Clinical Vignette Challenge
+                    </button>
+                    <button id="nav-matrix" onclick="switchMode('matrix')" class="mode-btn px-3 py-1.5 rounded-md text-slate-600 hover:bg-slate-100 transition">
+                        📊 Matrix / Table Search
+                    </button>
+                </div>
+                <!-- Stats Counter -->
+                <div class="flex items-center space-x-3 text-xs sm:text-sm font-semibold bg-slate-50 px-3 py-1 rounded-lg border border-slate-200">
+                    <span class="text-slate-600">Score: <strong id="score-val" class="text-slate-900">0</strong></span>
+                    <span class="text-slate-300">|</span>
+                    <span class="text-slate-600">Streak: <strong id="streak-val" class="text-amber-600">🔥 0</strong></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-3 sm:p-6 flex flex-col">
+
+        <!-- ================= MODE 1: SLIDE PRESENTATION VIEW ================= -->
+        <section id="view-slides" class="flex-grow flex flex-col gap-4">
+            <!-- Slide Control Toolbar -->
+            <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-center gap-3">
+                <div class="flex items-center gap-2 w-full md:w-auto">
+                    <label for="category-select" class="text-xs font-bold uppercase text-slate-500 whitespace-nowrap">Category:</label>
+                    <select id="category-select" onchange="filterSlideCategory()" class="bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-md p-1.5 w-full md:w-64 focus:ring-red-500 focus:border-red-500">
+                        <option value="ALL">All Categories (40 Pathogens)</option>
+                        <option value="Gram-Positive Cocci">Gram-Positive Cocci</option>
+                        <option value="Gram-Positive Bacilli">Gram-Positive Bacilli</option>
+                        <option value="Gram-Negative Cocci/Coccobacilli">Gram-Negative Cocci/Coccobacilli</option>
+                        <option value="Gram-Negative Bacilli (Enteric & Others)">Gram-Negative Bacilli</option>
+                        <option value="Acid-Fast / Atypicals / Spirochetes">Acid-Fast / Atypicals / Spirochetes</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end">
+                    <button onclick="prevSlide()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-semibold rounded-md transition">
+                        ◀ Previous
+                    </button>
+                    <span id="slide-index-indicator" class="text-xs font-semibold text-slate-500 min-w-[80px] text-center">Slide 1 / 40</span>
+                    <button onclick="nextSlide()" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-md transition">
+                        Next ▶
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Slide Card (Matching User Screenshot Layout) -->
+            <div id="slide-card-container" class="bg-white rounded-lg border border-slate-200 shadow-lg p-6 sm:p-10 flex-grow flex flex-col min-h-[500px]">
+                <!-- Slide Title Banner Inside Slide Card -->
+                <div class="border-b-2 border-red-600 pb-3 mb-6 flex justify-between items-end">
+                    <div>
+                        <span id="slide-group-tag" class="text-xs font-bold uppercase tracking-widest text-red-600 block mb-1">Gram-Positive Cocci</span>
+                        <h2 id="slide-pathogen-name" class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Streptococcus pneumoniae</h2>
+                    </div>
+                    <span id="slide-gram-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800 border border-purple-200">
+                        Gram Positive Lancet-shaped Diplococci
+                    </span>
+                </div>
+
+                <!-- Slide Body Content (Nested Bullets exact style) -->
+                <div id="slide-body-content" class="space-y-6 text-slate-800 text-sm sm:text-base leading-relaxed flex-grow">
+                    <!-- Dynamic Slide HTML injected here -->
+                </div>
+
+                <!-- Slide Footer Footnote/Citation Bar -->
+                <div class="mt-8 pt-4 border-t border-slate-100 flex flex-wrap justify-between items-center text-xs text-slate-400 gap-2">
+                    <span>USMLE Step 1 High-Yield Medical Curriculum</span>
+                    <span id="slide-mnemonic" class="italic text-slate-500 font-medium bg-amber-50 px-2 py-1 rounded border border-amber-200"></span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= MODE 2: FORWARD DRILL (Pathogen -> Characteristics) ================= -->
+        <section id="view-forward" class="hidden flex-grow flex flex-col">
+            <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-md max-w-3xl mx-auto w-full">
+                <div class="flex justify-between items-center border-b pb-3 mb-4">
+                    <span class="text-xs font-bold uppercase text-red-600 tracking-wider">Drill Mode 1: Recall Characteristics</span>
+                    <span class="text-xs text-slate-500">Mastery Assessment</span>
+                </div>
+
+                <div class="text-center my-4">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Target Pathogen</span>
+                    <h2 id="fwd-pathogen-title" class="text-3xl font-black text-slate-900 mt-1">Staphylococcus aureus</h2>
+                </div>
+
+                <!-- Interactive Question Form -->
+                <div id="fwd-question-container" class="space-y-5 my-6">
+                    <!-- Dynamic Question Stem -->
+                </div>
+
+                <div id="fwd-feedback" class="hidden p-4 rounded-lg mb-4 text-sm leading-normal"></div>
+
+                <div class="flex justify-between items-center pt-2">
+                    <button id="fwd-submit-btn" onclick="checkForwardAnswer()" class="w-full sm:w-auto px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition shadow-sm">
+                        Submit Answer
+                    </button>
+                    <button id="fwd-next-btn" onclick="loadNextForwardDrill()" class="hidden w-full sm:w-auto px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg transition shadow-sm">
+                        Next Pathogen ➔
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= MODE 3: REVERSE DRILL (Characteristics -> Pathogen) ================= -->
+        <section id="view-reverse" class="hidden flex-grow flex flex-col">
+            <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-md max-w-3xl mx-auto w-full">
+                <div class="flex justify-between items-center border-b pb-3 mb-4">
+                    <span class="text-xs font-bold uppercase text-red-600 tracking-wider">Drill Mode 2: Identify Pathogen</span>
+                    <span class="text-xs text-slate-500">Reverse Diagnostic Drill</span>
+                </div>
+
+                <!-- Characteristic Clues Card -->
+                <div class="bg-slate-50 border border-slate-200 p-5 rounded-lg mb-6">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Laboratory & Clinical Vignette Clues</h3>
+                    <ul id="rev-clues-list" class="slide-disc space-y-2 text-sm sm:text-base font-medium text-slate-800">
+                        <!-- Clues inserted dynamically -->
+                    </ul>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Select Correct Pathogen:</label>
+                    <div id="rev-options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Options injected dynamically -->
+                    </div>
+                </div>
+
+                <div id="rev-feedback" class="hidden p-4 rounded-lg mb-4 text-sm"></div>
+
+                <div class="flex justify-end pt-2">
+                    <button id="rev-next-btn" onclick="loadNextReverseDrill()" class="hidden px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg transition">
+                        Next Case ➔
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= MODE 4: USMLE VIGNETTE CHALLENGE ================= -->
+        <section id="view-vignette" class="hidden flex-grow flex flex-col">
+            <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-md max-w-3xl mx-auto w-full">
+                <div class="flex justify-between items-center border-b pb-3 mb-4">
+                    <span class="text-xs font-bold uppercase text-red-600 tracking-wider">USMLE Step 1 Clinical Vignette</span>
+                    <span class="text-xs bg-red-100 text-red-800 font-semibold px-2 py-0.5 rounded">High Yield Exam Q</span>
+                </div>
+
+                <div class="mb-5">
+                    <div id="vignette-stem" class="text-slate-800 text-base leading-relaxed font-serif bg-slate-50 p-4 rounded-lg border border-slate-200 mb-4">
+                        <!-- Stem inserted here -->
+                    </div>
+                    <p id="vignette-question" class="font-bold text-slate-900 text-sm sm:text-base mb-3">
+                        Which of the following characteristics or first-line therapies is correct for this organism?
+                    </p>
+                </div>
+
+                <div id="vignette-options" class="space-y-2.5 mb-6">
+                    <!-- Vignette Options -->
+                </div>
+
+                <div id="vignette-explanation" class="hidden p-4 rounded-lg mb-4 text-sm leading-relaxed border"></div>
+
+                <div class="flex justify-end pt-2">
+                    <button id="vignette-next-btn" onclick="loadNextVignette()" class="hidden px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg transition">
+                        Next Vignette ➔
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= MODE 5: MATRIX / DATABASE SEARCH ================= -->
+        <section id="view-matrix" class="hidden flex-grow flex flex-col">
+            <div class="bg-white p-4 sm:p-6 rounded-lg border border-slate-200 shadow-md">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 border-b pb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Bacteriology Matrix & Reference Database</h2>
+                        <p class="text-xs text-slate-500">Filter, search, and review characteristics across all pathogens</p>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                        <input type="text" id="matrix-search" oninput="renderMatrix()" placeholder="Search pathogen, agar, drug, toxin..." class="px-3 py-1.5 border border-slate-300 rounded-md text-sm w-full sm:w-64 focus:ring-red-500 focus:border-red-500">
+                        <select id="matrix-filter-gram" onchange="renderMatrix()" class="px-3 py-1.5 border border-slate-300 rounded-md text-sm bg-slate-50">
+                            <option value="ALL">All Gram Types</option>
+                            <option value="Gram Positive">Gram Positive</option>
+                            <option value="Gram Negative">Gram Negative</option>
+                            <option value="Acid-Fast / Atypical / Spirochete">Atypical / Acid-Fast / Spirochete</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto max-h-[600px] overflow-y-auto border border-slate-200 rounded-lg">
+                    <table class="w-full text-left text-xs sm:text-sm text-slate-700">
+                        <thead class="bg-slate-100 text-slate-900 uppercase text-[11px] font-bold tracking-wider sticky top-0 border-b border-slate-200">
+                            <tr>
+                                <th class="p-3">Pathogen</th>
+                                <th class="p-3">Morphology & Gram</th>
+                                <th class="p-3">Key Lab Tests & Agars</th>
+                                <th class="p-3">Virulence / Toxins</th>
+                                <th class="p-3">Clinical Diagnoses</th>
+                                <th class="p-3">First-Line Antibiotics</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matrix-table-body" class="divide-y divide-slate-200">
+                            <!-- Matrix rows injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        /* USMLE STEP 1 HIGH-YIELD BACTERIOLOGY DATABASE */
+        const BACTERIA_DATABASE = [
+            // --- GRAM-POSITIVE COCCI ---
+            {
+                id: "strep-pneumo",
+                name: "Streptococcus pneumoniae",
+                category: "Gram-Positive Cocci",
+                gram: "Gram Positive",
+                morphology: "Lancet-shaped diplococci, encapsulated",
+                oxygen: "Facultative anaerobe",
+                labTests: "Catalase (-), Optochin Sensitive, Bile soluble, Quellung test (+)",
+                agarBehavior: "Alpha-hemolytic (green zone) on blood agar",
+                virulence: "IgA protease, Polysaccharide Capsule (major virulence factor), Pneumolysin",
+                diagnoses: ["Meningitis (Adults)", "Otitis Media", "Pneumonia (Lobar)", "Sinusitis"],
+                treatment: "Penicillin G/V (if sensitive), Ceftriaxone/Cefotaxime, Vancomycin (if resistant)",
+                resistanceNote: "Altered Penicillin-Binding Proteins (PBPs)",
+                mnemonic: "MOPS (Meningitis, Otitis media, Pneumonia, Sinusitis)"
+            },
+            {
+                id: "strep-pyogenes",
+                name: "Streptococcus pyogenes (GAS)",
+                category: "Gram-Positive Cocci",
+                gram: "Gram Positive",
+                morphology: "Cocci in chains",
+                oxygen: "Facultative anaerobe",
+                labTests: "Catalase (-), Bacitracin Sensitive (Group A), PYR positive",
+                agarBehavior: "Beta-hemolytic (clear zone on blood agar)",
+                virulence: "M protein (anti-phagocytic), Streptolysin O/S, Exotoxin A (TSLS), Erythrogenic toxin",
+                diagnoses: ["Pharyngitis", "Cellulitis / Impetigo", "Scarlet Fever", "Toxic Shock-Like Syndrome", "Rheumatic Fever", "Post-streptococcal Glomerulonephritis"],
+                treatment: "Penicillin V / Penicillin G, Amoxicillin, Macrolides (if allergic)",
+                resistanceNote: "Rare penicillin resistance; macrolide resistance via ribosomal methylation",
+                mnemonic: "Bacitracin Sensitive: Group A strep (GAS)"
+            },
+            {
+                id: "strep-agalactiae",
+                name: "Streptococcus agalactiae (GBS)",
+                category: "Gram-Positive Cocci",
+                gram: "Gram Positive",
+                morphology: "Cocci in chains, encapsulated",
+                oxygen: "Facultative anaerobe",
+                labTests: "Catalase (-), Bacitracin Resistant, CAMP factor (+), Hippurate hydrolysis (+)",
+                agarBehavior: "Beta-hemolytic (narrow zone)",
+                virulence: "Polysaccharide capsule",
+                diagnoses: ["Neonatal Sepsis", "Neonatal Meningitis", "Neonatal Pneumonia"],
+                treatment: "Intrapartum Penicillin G or Ampicillin prophylaxis (at 36-37 weeks screening)",
+                resistanceNote: "Vancomycin or Clindamycin used if severe maternal penicillin allergy",
+                mnemonic: "CAMP factor enlarges hemolysis zone of S. aureus"
+            },
+            {
+                id: "enterococcus",
+                name: "Enterococcus faecalis / faecium",
+                category: "Gram-Positive Cocci",
+                gram: "Gram Positive",
+                morphology: "Diplococci or short chains",
+                oxygen: "Facultative anaerobe",
+                labTests: "Catalase (-), PYR positive, Grows in 6.5% NaCl & 40% bile",
+                agarBehavior: "Gamma-hemolytic (non-hemolytic) or Alpha-hemolytic",
+                virulence: "Biofilm formation, vanA gene resistance plasmid",
+                diagnoses: ["UTI / Pyelonephritis", "Subacute Bacterial Endocarditis", "Biliary tract infections"],
+                treatment: "Ampicillin + Gentamicin; Linezolid or Daptomycin for VRE",
+                resistanceNote: "Intrinsic cephalosporin resistance; VRE via D-Ala-D-Lac cell wall alterations",
+                mnemonic: "Entero-COCKY: Resistant to penicillin & cephalosporins"
+            },
+            {
+                id: "staph-aureus",
+                name: "Staphylococcus aureus",
+                category: "Gram-Positive Cocci",
+                gram: "Gram Positive",
+                morphology: "Cocci in grape-like clusters",
+                oxygen: "Facultative anaerobe",
+                labTests: "Catalase (+), Coagulase (+), Mannitol fermentation (+) (yellow on Mannitol Salt Agar)",
+                agarBehavior: "Beta-hemolytic on Blood Agar, Golden yellow colonies",
+                virulence: "Protein A (binds Fc region of IgG), TSST-1 (superantigen), Exfoliatin (SSSS), Enterotoxin (food poisoning)",
+                diagnoses: ["Abscess / Skin infections", "Acute Endocarditis", "Osteomyelitis (most common cause)", "Toxic Shock Syndrome", "Pneumonia (post-viral)"],
+                treatment: "MSSA: Nafcillin / Oxacillin / Cefazolin; MRSA: Vancomycin, Daptomycin, Ceftaroline",
+                resistanceNote: "MRSA mechanism: mecA gene encodes altered PBP2a",
+                mnemonic: "Protein A binds Fc portion of IgG, preventing opsonization"
+            },
+            {
+                id: "staph-epidermidis",
+                name: "Staphylococcus epidermidis",
+                category: "Gram-Positive Cocci",
+                gram: "Gram Positive",
+                morphology: "Cocci in clusters",
+                oxygen: "Facultative anaerobe",
+                labTests: "Catalase (+), Coagulase (-), Novobiocin Sensitive, Urease (+)",
+                agarBehavior: "Non-hemolytic (gamma), white colonies on Blood Agar",
+                virulence: "Adherent Biofilm formation (extracellular polysaccharide matrix / slime layer)",
+                diagnoses: ["Prosthetic Joint Infections", "Prosthetic Valve Endocarditis", "Intravenous Catheter Infections"],
+                treatment: "Vancomycin + Rifampin/Gentamicin for biofilmed devices",
+                resistanceNote: "Highly resistant to beta-lactams due to widespread mecA gene",
+                mnemonic: "Novobiocin Sensitive: Staph Epidermidis (NO-Staph-Epi)"
+            },
+            {
+                id: "staph-saprophyticus",
+                name: "Staphylococcus saprophyticus",
+                category: "Gram-Positive Cocci",
+                gram: "Gram Positive",
+                morphology: "Cocci in clusters",
+                oxygen: "Facultative anaerobe",
+                labTests: "Catalase (+), Coagulase (-), Novobiocin Resistant, Urease (+)",
+                agarBehavior: "Non-hemolytic, white-yellowish on Blood Agar",
+                virulence: "Urease, surface adhesins targeting uroepithelium",
+                diagnoses: ["Uncomplicated UTI in young sexually active females (2nd most common cause)"],
+                treatment: "TMP-SMX (Trimethoprim-Sulfamethoxazole), Nitrofurantoin, Fluoroquinolones",
+                resistanceNote: "Naturally novobiocin resistant",
+                mnemonic: "On the'Scent' (Saprophyticus) = Resistant to Novobiocin"
+            },
+            {
+                id: "viridans-strep",
+                name: "Viridans Group Streptococci (S. mutans, S. sanguinis)",
+                category: "Gram-Positive Cocci",
+                gram: "Gram Positive",
+                morphology: "Cocci in chains",
+                oxygen: "Facultative anaerobe",
+                labTests: "Catalase (-), Optochin Resistant, Bile Insoluble",
+                agarBehavior: "Alpha-hemolytic (green zone on blood agar)",
+                virulence: "Dextrans (binds fibrin-platelet aggregates on damaged heart valves)",
+                diagnoses: ["Subacute Bacterial Endocarditis", "Dental Caries (S. mutans)"],
+                treatment: "Penicillin G +/- Gentamicin, Ceftriaxone",
+                resistanceNote: "Low-level penicillin resistance in some strains",
+                mnemonic: "Viridans resistance: Optochin Resistant (Viridans lives in the Mouth/Orifice)"
+            },
+
+            // --- GRAM-POSITIVE BACILLI ---
+            {
+                id: "bacillus-anthracis",
+                name: "Bacillus anthracis",
+                category: "Gram-Positive Bacilli",
+                gram: "Gram Positive",
+                morphology: "Large spore-forming rods in chains, Poly-D-glutamate capsule",
+                oxygen: "Obligate aerobe",
+                labTests: "Non-motile, Non-hemolytic, 'Medusa head' colonies on agar",
+                agarBehavior: "Non-hemolytic on Blood Agar",
+                virulence: "Anthrax Toxin (Edema Factor: cAMP ↑; Lethal Factor: MAPKK cleavage), Poly-D-glutamate capsule (Protein capsule!)",
+                diagnoses: ["Cutaneous Anthrax (black eschar)", "Pulmonary Anthrax (Woolsorter's disease - widened mediastinum)"],
+                treatment: "Ciprofloxacin or Doxycycline",
+                resistanceNote: "Spore former - resistant to heat & desiccation",
+                mnemonic: "Unique Protein Capsule: Poly-D-Glutamic acid"
+            },
+            {
+                id: "listeria-monocytogenes",
+                name: "Listeria monocytogenes",
+                category: "Gram-Positive Bacilli",
+                gram: "Gram Positive",
+                morphology: "Small rod, facultative intracellular",
+                oxygen: "Facultative anaerobe",
+                labTests: "Catalase (+), Tumbling motility at room temp (25°C), Actin rockets (intracellular at 37°C)",
+                agarBehavior: "Narrow zone of Beta-hemolysis, Cold enrichment (grows at 4°C)",
+                virulence: "Listeriolysin O (pore-forming toxin), Actin tail polymerization (ActA)",
+                diagnoses: ["Neonatal Meningitis", "Meningitis in Elderly/Immunocompromised", "Gastroenteritis (unpasteurized dairy, deli meats)"],
+                treatment: "Ampicillin (Cephalosporins are INEFFECTIVE against Listeria!)",
+                resistanceNote: "Intrinsic resistance to ALL cephalosporins",
+                mnemonic: "Listeria: Tumbling Motility, Cold enrichment, Ampicillin"
+            },
+            {
+                id: "clostridium-difficile",
+                name: "Clostridioides difficile",
+                category: "Gram-Positive Bacilli",
+                gram: "Gram Positive",
+                morphology: "Spore-forming rod",
+                oxygen: "Obligate anaerobe",
+                labTests: "Stool PCR or toxin enzyme immunoassay (EIA) for Toxin A & B",
+                agarBehavior: "Selective Cycloserine-Cefoxitin-Fructose Agar (CCFA)",
+                virulence: "Toxin A (Enterotoxin - mucosal inflammation/diarrhea), Toxin B (Cytotoxin - actin depolymerization)",
+                diagnoses: ["Pseudomembranous Colitis (post-antibiotic usage, e.g., Clindamycin/Fluoroquinolones)"],
+                treatment: "Oral Vancomycin or Oral Fidaxomicin (Metronidazole second-line)",
+                resistanceNote: "Spores resistant to alcohol-based hand sanitizers (requires soap & water)",
+                mnemonic: "Toxin A = Attracts neutrophils; Toxin B = Breaks cytoskeletal actin"
+            },
+            {
+                id: "corynebacterium-diphtheriae",
+                name: "Corynebacterium diphtheriae",
+                category: "Gram-Positive Bacilli",
+                gram: "Gram Positive",
+                morphology: "Club-shaped rods in V/Y palisades, Metachromatic granules (Albert/Methylene blue stain)",
+                oxygen: "Facultative anaerobe",
+                labTests: "Elek test for toxin detection, Catalase (+)",
+                agarBehavior: "Black colonies on Cystine-Tellurite agar, Löffler medium",
+                virulence: "Diphtheria Exotoxin (ribosylates EF-2 -> inhibits protein synthesis)",
+                diagnoses: ["Pseudomembranous Pharyngitis", "Bull-neck lymphadenopathy", "Myocarditis", "Arrhythmias / Neuropathy"],
+                treatment: "Diphtheria Antitoxin (passive immunity) + Penicillin G or Erythromycin + Vaccine (DTaP)",
+                resistanceNote: "Toxin encoded by beta-lysogenic bacteriophage",
+                mnemonic: "EF-2 inhibition = Elongation Factor 2 shut down"
+            },
+
+            // --- GRAM-NEGATIVE COCCI / COCCOBACILLI ---
+            {
+                id: "neisseria-meningitidis",
+                name: "Neisseria meningitidis",
+                category: "Gram-Negative Cocci/Coccobacilli",
+                gram: "Gram Negative",
+                morphology: "Kidney bean-shaped diplococci, encapsulated",
+                oxygen: "Aerobe",
+                labTests: "Oxidase (+), Maltose & Glucose Fermenter (Maltose + Glucose = Meningitidis)",
+                agarBehavior: "Thayer-Martin / Chocolate agar growth",
+                virulence: "Polysaccharide capsule (Group B vaccine non-protective), IgA protease, Endotoxin (LOS - lipooligosaccharide)",
+                diagnoses: ["Meningococcal Meningitis", "Meningococcemia (Petechial rash, DIC)", "Waterhouse-Friderichsen Syndrome (Adrenal insufficiency)"],
+                treatment: "Ceftriaxone or Penicillin G; Rifampin/Ciprofloxacin prophylaxis for close contacts",
+                resistanceNote: "LOS triggers massive TNF-alpha and IL-1 release leading to septic shock",
+                mnemonic: "Maltose + Glucose = Meningitidis (Gonorrhoeae ferments Glucose ONLY)"
+            },
+            {
+                id: "neisseria-gonorrhoeae",
+                name: "Neisseria gonorrhoeae",
+                category: "Gram-Negative Cocci/Coccobacilli",
+                gram: "Gram Negative",
+                morphology: "Kidney bean-shaped intracellular diplococci in PMNs, No capsule",
+                oxygen: "Aerobe",
+                labTests: "Oxidase (+), Ferments Glucose ONLY (Not maltose)",
+                agarBehavior: "Thayer-Martin medium (contains Vancomycin, Colistin, Nystatin, Trimethoprim)",
+                virulence: "Pili (antigenic variation), IgA protease, OPA proteins",
+                diagnoses: ["Gonorrhea (Urethritis/Cervicitis)", "Pelvic Inflammatory Disease (PID)", "Disseminated Gonococcal Arthritis", "Neonatal Ophthalmia Neonatorum"],
+                treatment: "Ceftriaxone IM (plus Doxycycline if Chlamydia co-infection not ruled out)",
+                resistanceNote: "High plasmid and chromosomal antibiotic resistance (penicillinase)",
+                mnemonic: "Glucose ONLY = Gonorrhoeae"
+            },
+            {
+                id: "haemophilus-influenzae",
+                name: "Haemophilus influenzae",
+                category: "Gram-Negative Cocci/Coccobacilli",
+                gram: "Gram Negative",
+                morphology: "Small coccobacillus, encapsulated type b (Hib) most invasive",
+                oxygen: "Facultative anaerobe",
+                labTests: "Requires Factor V (NAD+) and Factor X (Hematin)",
+                agarBehavior: "Chocolate agar; Satellitism on Blood agar around S. aureus (which supplies Factor V)",
+                virulence: "Polyribosylribitol phosphate (PRP) capsule, IgA protease",
+                diagnoses: ["Epiglottitis ('Cherry red' epiglottis, thumbprint sign)", "Meningitis", "Otitis Media", "Pneumonia"],
+                treatment: "Ceftriaxone (severe/meningitis), Amoxicillin-clavulanate (otitis); Rifampin prophylaxis",
+                resistanceNote: "Beta-lactamase production common",
+                mnemonic: "haEMOphilus: Epiglottitis, Meningitis, Otitis media"
+            },
+
+            // --- GRAM-NEGATIVE BACILLI (ENTERICS & NON-FERMENTERS) ---
+            {
+                id: "escherichia-coli",
+                name: "Escherichia coli",
+                category: "Gram-Negative Bacilli (Enteric & Others)",
+                gram: "Gram Negative",
+                morphology: "Rod / Bacillus",
+                oxygen: "Facultative anaerobe",
+                labTests: "Lactose Fermenter (+), Indole (+), Oxidase (-)",
+                agarBehavior: "Pink colonies on MacConkey agar; Green metallic sheen on EMB agar",
+                virulence: "K1 capsule (neonatal meningitis), P-fimbriae (pyelonephritis), LT/ST toxins (ETEC), Shiga-like toxin (EHEC O157:H7)",
+                diagnoses: ["UTI / Pyelonephritis (#1 cause)", "Neonatal Meningitis (#2 cause)", "Traveler's Diarrhea (ETEC)", "Hemolytic Uremic Syndrome - HUS (EHEC)"],
+                treatment: "TMP-SMX, Nitrofurantoin, Fluoroquinolones (UTI); Ceftriaxone (Sepsis/Meningitis). Avoid antibiotics in EHEC (increases HUS risk!).",
+                resistanceNote: "ESBL (Extended-Spectrum Beta-Lactamases) plasmid-mediated resistance",
+                mnemonic: "Green Metallic Sheen on EMB agar = E. coli"
+            },
+            {
+                id: "pseudomonas-aeruginosa",
+                name: "Pseudomonas aeruginosa",
+                category: "Gram-Negative Bacilli (Enteric & Others)",
+                gram: "Gram Negative",
+                morphology: "Rod, motile (single polar flagellum)",
+                oxygen: "Obligate Aerobe",
+                labTests: "Oxidase (+), Non-lactose fermenter, Catalase (+), Grape-like / Fruity odor",
+                agarBehavior: "Blue-green pigment (Pyocyanin & Pyoverdin) on nutrient agar",
+                virulence: "Exotoxin A (inactivates EF-2 like diphtheria toxin), Endotoxin, Mucoid alginate capsule (CF patients), Phospholipase C",
+                diagnoses: ["Pneumonia (Cystic Fibrosis, Ventilator-associated)", "Burn wound sepsis", "Otitis Externa (Swimmer's ear)", "Ecthyma Gangrenosum", "UTI (catheter)"],
+                treatment: "Antipseudomonal Penicillins (Piperacillin-Tazobactam), Cefepime, Ceftazidime, Carbapenems (Meropenem), Ciprofloxacin",
+                resistanceNote: "Efflux pumps, porin loss, & beta-lactamases cause multidrug resistance",
+                mnemonic: "PSEUDO: Pneumonia, Sepsis, Ecthyma gangrenosum, External otitis, Diabetes/Drug use UTIs, Osteomyelitis"
+            },
+            {
+                id: "klebsiella-pneumoniae",
+                name: "Klebsiella pneumoniae",
+                category: "Gram-Negative Bacilli (Enteric & Others)",
+                gram: "Gram Negative",
+                morphology: "Plump rod, heavy polysaccharide capsule",
+                oxygen: "Facultative anaerobe",
+                labTests: "Lactose Fermenter (+), Urease (+), Oxidase (-), Non-motile",
+                agarBehavior: "Mucoid pink colonies on MacConkey agar",
+                virulence: "Large hypermucoviscosity polysaccharide capsule",
+                diagnoses: ["Aspiration Pneumonia in Alcoholics/Diabetics ('Currant jelly' sputum)", "Hospital-acquired UTI", "Liver abscess"],
+                treatment: "3rd/4th gen Cephalosporins (Ceftriaxone/Cefepime), Carbapenems",
+                resistanceNote: "KPC (Klebsiella pneumoniae carbapenemase) production",
+                mnemonic: "4 A's of Klebsiella: Aspiration pneumonia, Abscesses, Alcoholics, Abundant mucus"
+            },
+            {
+                id: "salmonella-enterica",
+                name: "Salmonella enterica (Typhi / Non-typhoidal)",
+                category: "Gram-Negative Bacilli (Enteric & Others)",
+                gram: "Gram Negative",
+                morphology: "Rod, flagellated (motile), encapsulated (Vi antigen)",
+                oxygen: "Facultative anaerobe",
+                labTests: "Non-lactose fermenter, Produces H2S (black colonies on Hektoen/TSI agar), Oxidase (-)",
+                agarBehavior: "Black-centered colonies on Hektoen Enteric Agar",
+                virulence: "Vi capsular antigen, Type III secretion system, Intracellular survival in macrophages",
+                diagnoses: ["Typhoid Fever (Rose spots, pulse-temperature dissociation, osteomyelitis in Sickle Cell)", "Gastroenteritis (poultry, eggs, reptiles)"],
+                treatment: "Ceftriaxone or Fluoroquinolones (for Typhoid); Supportive for uncomplicated gastroenteritis",
+                resistanceNote: "Multi-drug resistant Typhi strains emerging globally",
+                mnemonic: "Salmonella Swims (motile) and Stinks (H2S black colonies)"
+            },
+            {
+                id: "shigella-dysenteriae",
+                name: "Shigella dysenteriae / flexneri / sonnei",
+                category: "Gram-Negative Bacilli (Enteric & Others)",
+                gram: "Gram Negative",
+                morphology: "Rod, non-motile, non-encapsulated",
+                oxygen: "Facultative anaerobe",
+                labTests: "Non-lactose fermenter, Does NOT produce H2S (green colonies on Hektoen agar), Oxidase (-)",
+                agarBehavior: "Green/clear colonies on Hektoen Enteric Agar",
+                virulence: "Shiga Toxin (cleaves 60S ribosomal subunit), Actin rocket cell-to-cell spread, extremely low ID50 (<10 organisms)",
+                diagnoses: ["Bacillary Dysentery (Bloody diarrhea with tenesmus)", "Hemolytic Uremic Syndrome (HUS)"],
+                treatment: "Azithromycin, Ciprofloxacin, or Ceftriaxone",
+                resistanceNote: "Plasmid-mediated antibiotic resistance",
+                mnemonic: "Shigella does NOT swim (non-motile) and does NOT stink (No H2S)"
+            },
+
+            // --- ATYPICALS / ACID-FAST / SPIROCHETES ---
+            {
+                id: "mycobacterium-tuberculosis",
+                name: "Mycobacterium tuberculosis",
+                category: "Acid-Fast / Atypicals / Spirochetes",
+                gram: "Acid-Fast Bacilli",
+                morphology: "Slim rod with mycolic acid cell wall",
+                oxygen: "Obligate Aerobe",
+                labTests: "Ziehl-Neelsen / Kinyoun stain (Acid-fast red), Auramine-rhodamine fluorochrome stain, ADA (+) in fluids",
+                agarBehavior: "Löwenstein-Jensen agar (slow growth, weeks), Middlebrook medium",
+                virulence: "Cord factor (trehalose dimycolate - inhibits macrophage maturation), Sulfatides (inhibit phagolysosome fusion)",
+                diagnoses: ["Primary Pulmonary TB (Ghon complex)", "Reactivation TB (Cavitary apical lung lesions)", "Miliary TB", "Pott's Disease (vertebral osteomyelitis)", "Tuberculous Meningitis"],
+                treatment: "RIPE therapy: Rifampin, Isoniazid, Pyrazinamide, Ethambutol (2 mos) + Rifampin/Isoniazid (4 mos)",
+                resistanceNote: "MDR-TB (resistant to Rifampin & Isoniazid); XDR-TB",
+                mnemonic: "Acid-Fast Mycolic Acid; Cord Factor causes serpentine cords"
+            },
+            {
+                id: "mycoplasma-pneumoniae",
+                name: "Mycoplasma pneumoniae",
+                category: "Acid-Fast / Atypicals / Spirochetes",
+                gram: "No Gram Stain (No cell wall)",
+                morphology: "Pleomorphic, cell membrane contains cholesterol",
+                oxygen: "Aerobe",
+                labTests: "Cold agglutinins (IgM antibodies against RBCs), PCR",
+                agarBehavior: "Eaton Agar ('Fried egg' appearance colonies)",
+                virulence: "P1 adhesin (attaches to respiratory ciliated epithelium)",
+                diagnoses: ["'Walking' Atypical Pneumonia (insidious onset, patch infiltrate on X-ray > physical exam)", "Erythema multiforme"],
+                treatment: "Macrolides (Azithromycin), Doxycycline, or Respiratory Fluoroquinolones (Penicillins useless!)",
+                resistanceNote: "INTRINSICALLY RESISTANT to all Beta-lactams (No cell wall!)",
+                mnemonic: "Eaton agar fried egg colonies; IgM Cold Agglutinins"
+            },
+            {
+                id: "treponema-pallidum",
+                name: "Treponema pallidum",
+                category: "Acid-Fast / Atypicals / Spirochetes",
+                gram: "Spirochete (Too thin for Gram stain)",
+                morphology: "Thin corkscrew-shaped spirochete",
+                oxygen: "Microaerophilic",
+                labTests: "Dark-field microscopy, VDRL / RPR (non-treponemal screening), FTA-ABS / TP-PA (confirmatory treponemal test)",
+                agarBehavior: "Cannot be cultured in vitro on standard media",
+                virulence: "Hyaluronidase, outer membrane proteins, minimal immunogenic surface antigens",
+                diagnoses: ["Primary Syphilis (Painless chancre)", "Secondary Syphilis (Disseminated maculopapular rash including palms/soles, condyloma lata)", "Tertiary Syphilis (Gumma, Neurosyphilis, Tabes dorsalis, Argyll Robertson pupil)"],
+                treatment: "Penicillin G Benzathine (IM); IV Penicillin G for Neurosyphilis; Doxycycline if penicillin allergic",
+                resistanceNote: "Jarisch-Herxheimer reaction after initial penicillin dose due to endotoxin release",
+                mnemonic: "Palms & Soles rash: Syphilis, RMSF, Coxsackie A"
+            },
+            {
+                id: "borrelia-burgdorferi",
+                name: "Borrelia burgdorferi",
+                category: "Acid-Fast / Atypicals / Spirochetes",
+                gram: "Spirochete",
+                morphology: "Loose spiral spirochete",
+                oxygen: "Microaerophilic",
+                labTests: "Giemsa or Wright stain, Serology (ELISA + Western Blot confirmation)",
+                agarBehavior: "Barbour-Stoenner-Kelly (BSK) medium (rarely used clinical lab)",
+                virulence: "OspA/OspC outer surface proteins, antigenic variation",
+                diagnoses: ["Lyme Disease Stage 1: Erythema migrans ('Bull's-eye' rash)", "Stage 2: AV Block / Myocarditis, Bell's Palsy", "Stage 3: Chronic migratory polyarthritis"],
+                treatment: "Doxycycline (1st line); Amoxicillin or Cefuroxime in pregnant women/children < 8 yrs; Ceftriaxone for Lyme carditis/neurology",
+                resistanceNote: "Transmitted by Ixodes tick (Vector)",
+                mnemonic: "Key Lyme Pie: Facial palsy (Bell's), Erythema migrans, AV block, Arthritis"
+            }
+        ];
+
+        /* USMLE CLINICAL VIGNETTE QUESTION BANK */
+        const VIGNETTE_BANK = [
+            {
+                stem: "A 68-year-old male with a history of COPD presents to the emergency department with high fever, chills, and a cough productive of rust-colored sputum. Physical exam demonstrates dullness to percussion and bronchial breath sounds over the right lower lobe. Gram stain of the sputum reveals Gram-positive lancet-shaped diplococci.",
+                question: "Which of the following lab characteristics or virulence features is most strongly associated with this organism?",
+                options: [
+                    "Optochin sensitivity and bile solubility",
+                    "Bacitracin sensitivity and PYR positivity",
+                    "Growth on MacConkey agar with pink colonies",
+                    "Production of Coagulase and Protein A"
+                ],
+                correct: 0,
+                explanation: "Correct! The patient has lobar pneumonia caused by <strong>Streptococcus pneumoniae</strong> (Gram-positive lancet-shaped diplococci). Key lab identifiers for S. pneumoniae are <strong>Optochin sensitivity</strong> and <strong>Bile solubility</strong>. Major virulence factor is its polysaccharide capsule.",
+                tip: "USMLE Tip: S. pneumoniae is the #1 cause of MOPS (Meningitis, Otitis media, Pneumonia, Sinusitis)."
+            },
+            {
+                stem: "A 19-year-old college freshman is brought to the emergency department due to sudden onset fever, severe headache, neck stiffness, and a petechial skin rash on her lower extremities. Lumbar puncture reveals elevated opening pressure, neutrophils, low glucose, and Gram-negative kidney bean-shaped diplococci.",
+                question: "What carbohydrate fermentation pattern distinguishes this pathogen from related species?",
+                options: [
+                    "Ferments Glucose ONLY",
+                    "Ferments Maltose AND Glucose",
+                    "Lactose fermenter",
+                    "Non-fermenter of any sugar"
+                ],
+                correct: 1,
+                explanation: "Correct! The presentation is classic for <strong>Neisseria meningitidis</strong>. N. meningitidis ferments BOTH <strong>Maltose and Glucose</strong> (Remember: <strong>M</strong>eningitidis = <strong>M</strong>altose + <strong>G</strong>lucose), whereas Neisseria gonorrhoeae ferments Glucose ONLY.",
+                tip: "USMLE Tip: Waterhouse-Friderichsen syndrome is bilateral adrenal hemorrhage secondary to N. meningitidis endotoxin (LOS) sepsis."
+            },
+            {
+                stem: "A 32-year-old hospitalized patient receiving intravenous clindamycin for a skin infection develops profuse watery diarrhea, abdominal cramping, and leukocytosis. Sigmoidoscopy reveals yellow-white mucosal plaques (pseudomembranes).",
+                question: "What is the primary mechanism of action of Toxin B produced by this organism?",
+                options: [
+                    "Inhibition of Protein Synthesis via EF-2 ribosylation",
+                    "Disruption of actin cytoskeleton depolymerization leading to mucosal necrosis",
+                    "cAMP activation via Gs protein stimulation",
+                    "Cleavage of SNARE complex proteins inhibiting GABA release"
+                ],
+                correct: 1,
+                explanation: "Correct! The clinical scenario describes <strong>Clostridioides difficile</strong> colitis. C. diff produces Toxin A (enterotoxin) and Toxin B (cytotoxin). Toxin B causes <strong>actin depolymerization</strong>, destroying enterocyte cytoskeletal structure and forming pseudomembranes.",
+                tip: "USMLE Tip: Treatment of C. difficile colitis is oral Vancomycin or oral Fidaxomicin."
+            },
+            {
+                stem: "A 4-year-old unimmunized child presents with severe sore throat, low-grade fever, and difficulty swallowing. On physical examination, a dense, dirty-gray pseudomembrane is noted coating the posterior pharynx and tonsils. Attempting to scrape the membrane causes bleeding.",
+                question: "Which agar culture media is specially selected for isolating this pathogen?",
+                options: [
+                    "Thayer-Martin agar",
+                    "Cystine-Tellurite / Löffler medium",
+                    "Charcoal Yeast Extract (CYE) agar",
+                    "Lowenstein-Jensen medium"
+                ],
+                correct: 1,
+                explanation: "Correct! The diagnosis is <strong>Corynebacterium diphtheriae</strong>. C. diphtheriae forms black colonies on <strong>Cystine-Tellurite agar</strong> and grows characteristic metachromatic granules on Löffler medium.",
+                tip: "USMLE Tip: Diphtheria toxin ADP-ribosylates EF-2, halting translation. Complications include bull-neck lymphadenopathy and myocarditis."
+            }
+        ];
+
+        /* STATE VARIABLES */
+        let currentSlideIndex = 0;
+        let filteredSlides = [...BACTERIA_DATABASE];
+        let currentForwardItem = null;
+        let currentReverseItem = null;
+        let currentVignetteIndex = 0;
+        let score = 0;
+        let streak = 0;
+
+        /* INITIALIZATION */
+        window.onload = function() {
+            renderSlide(currentSlideIndex);
+            initForwardDrill();
+            initReverseDrill();
+            initVignette();
+            renderMatrix();
+        };
+
+        /* NAVIGATION & MODE SWITCHING */
+        function switchMode(mode) {
+            const views = ['slides', 'forward', 'reverse', 'vignette', 'matrix'];
+            views.forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hidden');
+                document.getElementById(`nav-${v}`).className = "mode-btn px-3 py-1.5 rounded-md text-slate-600 hover:bg-slate-100 transition";
+            });
+
+            document.getElementById(`view-${mode}`).classList.remove('hidden');
+            document.getElementById(`nav-${mode}`).className = "mode-btn px-3 py-1.5 rounded-md bg-red-50 text-red-700 font-semibold border border-red-200 hover:bg-red-100 transition";
+
+            if (mode === 'forward') initForwardDrill();
+            if (mode === 'reverse') initReverseDrill();
+            if (mode === 'vignette') initVignette();
+        }
+
+        function updateScore(isCorrect) {
+            if (isCorrect) {
+                score += 10;
+                streak += 1;
+            } else {
+                streak = 0;
+            }
+            document.getElementById('score-val').innerText = score;
+            document.getElementById('streak-val').innerText = `🔥 ${streak}`;
+        }
+
+        /* SLIDE PRESENTATION VIEW LOGIC (EXACT COPY OF ATTACHED SCREENSHOT LAYOUT) */
+        function filterSlideCategory() {
+            const cat = document.getElementById('category-select').value;
+            if (cat === 'ALL') {
+                filteredSlides = [...BACTERIA_DATABASE];
+            } else {
+                filteredSlides = BACTERIA_DATABASE.filter(b => b.category === cat);
+            }
+            currentSlideIndex = 0;
+            renderSlide(currentSlideIndex);
+        }
+
+        function prevSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                renderSlide(currentSlideIndex);
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < filteredSlides.length - 1) {
+                currentSlideIndex++;
+                renderSlide(currentSlideIndex);
+            }
+        }
+
+        function renderSlide(index) {
+            const item = filteredSlides[index];
+            if (!item) return;
+
+            document.getElementById('slide-index-indicator').innerText = `Slide ${index + 1} / ${filteredSlides.length}`;
+            document.getElementById('slide-group-tag').innerText = item.category;
+            document.getElementById('slide-pathogen-name').innerText = item.name;
+            document.getElementById('slide-gram-badge').innerText = `${item.gram} • ${item.morphology}`;
+            document.getElementById('slide-mnemonic').innerText = item.mnemonic ? `Mnemonic / USMLE Pearl: ${item.mnemonic}` : '';
+
+            // Render structured nested bullet hierarchy matching reference screenshot
+            const body = document.getElementById('slide-body-content');
+            body.innerHTML = `
+                <ul class="slide-disc space-y-4">
+                    <li>
+                        <strong class="text-slate-900 font-bold text-base sm:text-lg">Diagnostics & Lab Characteristics</strong>
+                        <ul class="slide-circle space-y-2 mt-2">
+                            <li><strong>Morphology & Gram Stain:</strong> ${item.gram}, ${item.morphology} <span class="citation">[USMLE]</span></li>
+                            <li><strong>Oxygen Requirement:</strong> ${item.oxygen}</li>
+                            <li><strong>Biochemical Tests / Enzymes:</strong> ${item.labTests}</li>
+                            <li><strong>Agar Media & Growth:</strong> ${item.agarBehavior} <span class="citation">[High Yield]</span></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <strong class="text-slate-900 font-bold text-base sm:text-lg">Virulence Factors & Toxins</strong>
+                        <ul class="slide-circle space-y-2 mt-2">
+                            <li>${item.virulence} <span class="citation">[Mechanisms]</span></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <strong class="text-slate-900 font-bold text-base sm:text-lg">Clinical Diagnoses & Specialties</strong>
+                        <ul class="slide-square space-y-1 mt-2 text-slate-800">
+                            ${item.diagnoses.map(d => `<li><span class="border-b border-dashed border-slate-400">${d}</span></li>`).join('')}
+                        </ul>
+                    </li>
+
+                    <li>
+                        <strong class="text-slate-900 font-bold text-base sm:text-lg">First-Line Antibacterial Treatment & Resistance</strong>
+                        <ul class="slide-circle space-y-2 mt-2">
+                            <li><strong class="text-emerald-700">Antibiotic Therapy:</strong> ${item.treatment}</li>
+                            <li><strong class="text-amber-700">Resistance Mechanism:</strong> ${item.resistanceNote}</li>
+                        </ul>
+                    </li>
+                </ul>
+            `;
+        }
+
+
+        /* FORWARD DRILL MODE LOGIC */
+        function initForwardDrill() {
+            const randomItem = BACTERIA_DATABASE[Math.floor(Math.random() * BACTERIA_DATABASE.length)];
+            currentForwardItem = randomItem;
+
+            document.getElementById('fwd-pathogen-title').innerText = randomItem.name;
+            document.getElementById('fwd-feedback').classList.add('hidden');
+            document.getElementById('fwd-submit-btn').classList.remove('hidden');
+            document.getElementById('fwd-next-btn').classList.add('hidden');
+
+            const container = document.getElementById('fwd-question-container');
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">1. Gram Stain & Morphology:</label>
+                        <select id="fwd-ans-gram" class="w-full bg-slate-50 border border-slate-300 rounded-md p-2 text-sm">
+                            <option value="">-- Select Gram & Morphology --</option>
+                            <option value="Gram Positive">Gram Positive</option>
+                            <option value="Gram Negative">Gram Negative</option>
+                            <option value="Acid-Fast / Atypical">Acid-Fast / Atypical / Spirochete</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">2. Key Lab Test / Agar Characteristic:</label>
+                        <select id="fwd-ans-lab" class="w-full bg-slate-50 border border-slate-300 rounded-md p-2 text-sm">
+                            <option value="">-- Select Key Lab Feature --</option>
+                            <option value="${randomItem.labTests}">${randomItem.labTests}</option>
+                            <option value="Fake Option 1">Catalase (+), Coagulase (-), Novobiocin Resistant</option>
+                            <option value="Fake Option 2">Lactose fermenter, Green metallic sheen on EMB</option>
+                            <option value="Fake Option 3">Oxidase (+), Maltose & Glucose Fermenter</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">3. First-Line Antibacterial Treatment:</label>
+                        <select id="fwd-ans-rx" class="w-full bg-slate-50 border border-slate-300 rounded-md p-2 text-sm">
+                            <option value="">-- Select Treatment --</option>
+                            <option value="${randomItem.treatment}">${randomItem.treatment}</option>
+                            <option value="Ampicillin">Ampicillin</option>
+                            <option value="Ciprofloxacin / Doxycycline">Ciprofloxacin / Doxycycline</option>
+                            <option value="RIPE Therapy">RIPE Therapy (Rifampin, Isoniazid, Pyrazinamide, Ethambutol)</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkForwardAnswer() {
+            const gramVal = document.getElementById('fwd-ans-gram').value;
+            const labVal = document.getElementById('fwd-ans-lab').value;
+            const rxVal = document.getElementById('fwd-ans-rx').value;
+
+            const isGramCorrect = gramVal === currentForwardItem.gram || (currentForwardItem.gram.includes("Acid-Fast") && gramVal.includes("Acid-Fast"));
+            const isLabCorrect = labVal === currentForwardItem.labTests;
+            const isRxCorrect = rxVal === currentForwardItem.treatment;
+
+            const feedback = document.getElementById('fwd-feedback');
+            feedback.classList.remove('hidden');
+
+            if (isGramCorrect && isLabCorrect && isRxCorrect) {
+                feedback.className = "p-4 rounded-lg mb-4 text-sm bg-emerald-100 text-emerald-900 border border-emerald-300 font-medium";
+                feedback.innerHTML = `<strong>Correct! 🎉</strong> Excellent recall. <br>• Gram: ${currentForwardItem.gram}<br>• Lab: ${currentForwardItem.labTests}<br>• Tx: ${currentForwardItem.treatment}`;
+                updateScore(true);
+            } else {
+                feedback.className = "p-4 rounded-lg mb-4 text-sm bg-red-100 text-red-900 border border-red-300 font-medium";
+                feedback.innerHTML = `<strong>Incorrect.</strong> <br>Correct profile for <strong>${currentForwardItem.name}</strong>:<br>• Gram: <em>${currentForwardItem.gram}</em><br>• Key Lab: <em>${currentForwardItem.labTests}</em><br>• Treatment: <em>${currentForwardItem.treatment}</em>`;
+                updateScore(false);
+            }
+
+            document.getElementById('fwd-submit-btn').classList.add('hidden');
+            document.getElementById('fwd-next-btn').classList.remove('hidden');
+        }
+
+        function loadNextForwardDrill() {
+            initForwardDrill();
+        }
+
+
+        /* REVERSE DRILL MODE LOGIC */
+        function initReverseDrill() {
+            const randomItem = BACTERIA_DATABASE[Math.floor(Math.random() * BACTERIA_DATABASE.length)];
+            currentReverseItem = randomItem;
+
+            document.getElementById('rev-feedback').classList.add('hidden');
+            document.getElementById('rev-next-btn').classList.add('hidden');
+
+            const cluesList = document.getElementById('rev-clues-list');
+            cluesList.innerHTML = `
+                <li><strong>Morphology:</strong> ${randomItem.gram} (${randomItem.morphology})</li>
+                <li><strong>Lab Behavior:</strong> ${randomItem.labTests}</li>
+                <li><strong>Agar Growth:</strong> ${randomItem.agarBehavior}</li>
+                <li><strong>Virulence:</strong> ${randomItem.virulence}</li>
+                <li><strong>Primary Diagnoses:</strong> ${randomItem.diagnoses.join(', ')}</li>
+            `;
+
+            // Generate 4 options including correct item
+            const options = [randomItem];
+            while (options.length < 4) {
+                const rand = BACTERIA_DATABASE[Math.floor(Math.random() * BACTERIA_DATABASE.length)];
+                if (!options.find(o => o.id === rand.id)) {
+                    options.push(rand);
+                }
+            }
+            // Shuffle
+            options.sort(() => Math.random() - 0.5);
+
+            const optionsContainer = document.getElementById('rev-options-container');
+            optionsContainer.innerHTML = options.map(opt => `
+                <button onclick="checkReverseAnswer('${opt.id}')" class="rev-opt-btn p-3 text-left border rounded-lg bg-slate-50 hover:bg-red-50 hover:border-red-300 transition font-semibold text-slate-800 text-sm">
+                    ${opt.name}
+                </button>
+            `).join('');
+        }
+
+        function checkReverseAnswer(selectedId) {
+            const feedback = document.getElementById('rev-feedback');
+            feedback.classList.remove('hidden');
+
+            // Disable option buttons
+            const btns = document.querySelectorAll('.rev-opt-btn');
+            btns.forEach(b => b.disabled = true);
+
+            if (selectedId === currentReverseItem.id) {
+                feedback.className = "p-4 rounded-lg mb-4 text-sm bg-emerald-100 text-emerald-900 border border-emerald-300 font-medium";
+                feedback.innerHTML = `<strong>Correct! 🎉</strong> It is indeed <strong>${currentReverseItem.name}</strong>.<br><em>First-line treatment: ${currentReverseItem.treatment}</em>`;
+                updateScore(true);
+            } else {
+                feedback.className = "p-4 rounded-lg mb-4 text-sm bg-red-100 text-red-900 border border-red-300 font-medium";
+                feedback.innerHTML = `<strong>Incorrect.</strong> The correct organism was <strong>${currentReverseItem.name}</strong>.<br><em>High-yield tip: ${currentReverseItem.mnemonic}</em>`;
+                updateScore(false);
+            }
+
+            document.getElementById('rev-next-btn').classList.remove('hidden');
+        }
+
+        function loadNextReverseDrill() {
+            initReverseDrill();
+        }
+
+
+        /* VIGNETTE BOARD EXAM CHALLENGE LOGIC */
+        function initVignette() {
+            const q = VIGNETTE_BANK[currentVignetteIndex];
+            document.getElementById('vignette-stem').innerText = q.stem;
+            document.getElementById('vignette-question').innerText = q.question;
+            document.getElementById('vignette-explanation').classList.add('hidden');
+            document.getElementById('vignette-next-btn').classList.add('hidden');
+
+            const container = document.getElementById('vignette-options');
+            container.innerHTML = q.options.map((opt, idx) => `
+                <button onclick="checkVignetteAnswer(${idx})" class="vignette-opt-btn w-full text-left p-3 border border-slate-200 rounded-lg hover:bg-slate-50 transition text-sm font-medium text-slate-800 flex items-center space-x-3">
+                    <span class="w-6 h-6 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center font-bold text-xs text-slate-600">${String.fromCharCode(65 + idx)}</span>
+                    <span>${opt}</span>
+                </button>
+            `).join('');
+        }
+
+        function checkVignetteAnswer(selectedIdx) {
+            const q = VIGNETTE_BANK[currentVignetteIndex];
+            const exp = document.getElementById('vignette-explanation');
+            exp.classList.remove('hidden');
+
+            const btns = document.querySelectorAll('.vignette-opt-btn');
+            btns.forEach(b => b.disabled = true);
+
+            if (selectedIdx === q.correct) {
+                exp.className = "p-4 rounded-lg mb-4 text-sm bg-emerald-100 text-emerald-900 border border-emerald-300";
+                exp.innerHTML = `${q.explanation}<br><br><span class="font-bold text-emerald-800">${q.tip}</span>`;
+                updateScore(true);
+            } else {
+                exp.className = "p-4 rounded-lg mb-4 text-sm bg-red-100 text-red-900 border border-red-300";
+                exp.innerHTML = `<strong>Incorrect.</strong> ${q.explanation}<br><br><span class="font-bold text-red-800">${q.tip}</span>`;
+                updateScore(false);
+            }
+
+            document.getElementById('vignette-next-btn').classList.remove('hidden');
+        }
+
+        function loadNextVignette() {
+            currentVignetteIndex = (currentVignetteIndex + 1) % VIGNETTE_BANK.length;
+            initVignette();
+        }
+
+
+        /* MATRIX TABLE SEARCH LOGIC */
+        function renderMatrix() {
+            const search = document.getElementById('matrix-search').value.toLowerCase();
+            const gramFilter = document.getElementById('matrix-filter-gram').value;
+
+            const tbody = document.getElementById('matrix-table-body');
+            tbody.innerHTML = '';
+
+            const filtered = BACTERIA_DATABASE.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(search) ||
+                                      item.labTests.toLowerCase().includes(search) ||
+                                      item.treatment.toLowerCase().includes(search) ||
+                                      item.agarBehavior.toLowerCase().includes(search) ||
+                                      item.diagnoses.some(d => d.toLowerCase().includes(search));
+
+                const matchesGram = gramFilter === 'ALL' || item.gram.includes(gramFilter);
+                return matchesSearch && matchesGram;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">No matching bacteria found.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-900">${item.name}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-800 border">${item.gram}</span><br><span class="text-xs text-slate-500">${item.morphology}</span></td>
+                    <td class="p-3 text-xs"><strong>Tests:</strong> ${item.labTests}<br><strong>Agar:</strong> ${item.agarBehavior}</td>
+                    <td class="p-3 text-xs text-slate-700">${item.virulence}</td>
+                    <td class="p-3 text-xs text-slate-700">${item.diagnoses.join(', ')}</td>
+                    <td class="p-3 text-xs font-semibold text-emerald-800">${item.treatment}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+</html>
