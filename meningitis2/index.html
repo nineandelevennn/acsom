@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USMLE Step 1 Meningitis Master Drill & Trainer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        /* Custom Red Header styling matching the input slide */
+        .slide-header {
+            background-color: #d32f2f;
+            color: #ffffff;
+        }
+        /* Card Flip Animation */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        /* Tab highlight style */
+        .tab-active {
+            border-bottom: 3px solid #d32f2f;
+            color: #d32f2f;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <div>
+        <!-- Top Banner matching American Canadian School of Medicine Slide Theme -->
+        <header class="slide-header shadow-md sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex flex-wrap justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <span class="text-3xl">🧠</span>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-black tracking-tight uppercase">Meningitis Master Drill</h1>
+                        <p class="text-xs font-semibold text-red-100 uppercase tracking-widest">USMLE Step 1 High-Yield Active Recall</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-2 text-xs font-bold uppercase tracking-wider bg-red-800 text-white px-3 py-1.5 rounded-md">
+                    <span>USMLE Step 1 High Yield</span>
+                    <span>•</span>
+                    <span id="overall-progress-text">0/10 Mastered</span>
+                </div>
+            </div>
+            <!-- Sub Navigation Tabs -->
+            <nav class="bg-white border-b border-gray-200 text-gray-700 text-sm font-medium shadow-inner">
+                <div class="max-w-7xl mx-auto px-4 flex overflow-x-auto space-x-8">
+                    <button id="tab-pathogens" onclick="switchTab('pathogens')" class="py-3 px-1 tab-active flex items-center space-x-2 whitespace-nowrap">
+                        <i class="fa-solid fa-virus"></i> <span>1. Pathogens Database</span>
+                    </button>
+                    <button id="tab-flashcards" onclick="switchTab('flashcards')" class="py-3 px-1 hover:text-red-600 transition flex items-center space-x-2 whitespace-nowrap">
+                        <i class="fa-solid fa-layer-group"></i> <span>2. Flashcard Drill</span>
+                    </button>
+                    <button id="tab-csf" onclick="switchTab('csf')" class="py-3 px-1 hover:text-red-600 transition flex items-center space-x-2 whitespace-nowrap">
+                        <i class="fa-solid fa-vial-circle-check"></i> <span>3. CSF Matrix</span>
+                    </button>
+                    <button id="tab-bigpicture" onclick="switchTab('bigpicture')" class="py-3 px-1 hover:text-red-600 transition flex items-center space-x-2 whitespace-nowrap">
+                        <i class="fa-solid fa-circle-question"></i> <span>4. Slide "Big Picture" Q&A</span>
+                    </button>
+                    <button id="tab-quiz" onclick="switchTab('quiz')" class="py-3 px-1 hover:text-red-600 transition flex items-center space-x-2 whitespace-nowrap">
+                        <i class="fa-solid fa-clipboard-question"></i> <span>5. Vignette Quiz</span>
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+            <!-- TAB 1: PATHOGENS DATABASE -->
+            <section id="view-pathogens" class="space-y-6">
+                <!-- Search and Filters -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <div class="relative w-full md:w-96">
+                        <i class="fa-solid fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                        <input type="text" id="search-input" onkeyup="filterPathogens()" placeholder="Search pathogen, age group, antibiotic, stain..." class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none text-sm">
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                        <button onclick="filterCategory('all')" class="cat-btn bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm hover:bg-red-700">All (10)</button>
+                        <button onclick="filterCategory('Neonates')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs font-bold px-3 py-1.5 rounded-full">Neonates (&lt;1m)</button>
+                        <button onclick="filterCategory('Children')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs font-bold px-3 py-1.5 rounded-full">Teens & Adults</button>
+                        <button onclick="filterCategory('Elderly')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs font-bold px-3 py-1.5 rounded-full">Elderly / Immunocompromised</button>
+                        <button onclick="filterCategory('Viral')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs font-bold px-3 py-1.5 rounded-full">Viral / Fungal / TB</button>
+                    </div>
+                </div>
+
+                <!-- Grid of Pathogen Cards -->
+                <div id="pathogens-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                    <!-- Pathogen Cards dynamically generated here -->
+                </div>
+            </section>
+
+            <!-- TAB 2: FLASHCARD DRILL -->
+            <section id="view-flashcards" class="hidden space-y-6">
+                <div class="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                    <div>
+                        <h2 class="text-xl font-black text-gray-900">Active Recall Flashcard Mode</h2>
+                        <p class="text-xs text-gray-500">Click card to flip. Test yourself on stain, presentation, mechanics, and treatment.</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="flashcard-counter" class="text-sm font-bold text-red-600">1 / 10</span>
+                    </div>
+                </div>
+
+                <!-- Flashcard Container -->
+                <div class="max-w-2xl mx-auto perspective-1000 my-8">
+                    <div id="flashcard" onclick="flipCard()" class="relative w-full h-[450px] transform-style-3d cursor-pointer shadow-xl rounded-2xl border-2 border-red-500 bg-white">
+                        <!-- Front Face -->
+                        <div id="flashcard-front" class="absolute inset-0 backface-hidden p-8 flex flex-col justify-between items-center text-center bg-gradient-to-b from-white to-red-50 rounded-2xl">
+                            <div class="w-full flex justify-between items-center text-xs font-bold uppercase text-gray-400">
+                                <span id="fc-age-front" class="bg-red-100 text-red-700 px-2.5 py-1 rounded-full">Age Group</span>
+                                <span>Click to Flip <i class="fa-solid fa-rotate"></i></span>
+                            </div>
+                            <div class="my-auto">
+                                <div id="fc-emoji" class="text-7xl mb-4 transform hover:scale-110 transition duration-200">🦄</div>
+                                <h3 id="fc-name" class="text-2xl sm:text-3xl font-black text-gray-900">Streptococcus agalactiae</h3>
+                                <p id="fc-subtitle" class="text-sm text-gray-500 mt-2 italic">(Group B Strep)</p>
+                            </div>
+                            <div class="text-xs text-gray-400 font-semibold">
+                                Prompt: Recount Gram stain, virulence factors, presentation & therapy.
+                            </div>
+                        </div>
+
+                        <!-- Back Face -->
+                        <div id="flashcard-back" class="absolute inset-0 backface-hidden rotate-y-180 p-6 flex flex-col justify-between bg-white rounded-2xl overflow-y-auto">
+                            <div class="border-b pb-2 flex justify-between items-center">
+                                <h4 id="fc-name-back" class="text-lg font-bold text-red-600">GBS Overview</h4>
+                                <span id="fc-emoji-back" class="text-2xl">🦄</span>
+                            </div>
+                            <div class="text-xs space-y-2.5 my-2">
+                                <p><strong>🔬 Micro/Stain:</strong> <span id="fc-micro"></span></p>
+                                <p><strong>⚡ Presentation:</strong> <span id="fc-presentation"></span></p>
+                                <p><strong>⚙️ Mechanism:</strong> <span id="fc-mechanism"></span></p>
+                                <p><strong>💊 Tx & Prophylaxis:</strong> <span id="fc-treatment"></span></p>
+                            </div>
+                            <div class="pt-2 border-t text-center text-xs text-gray-400">
+                                Tap anywhere to flip back
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls & Rating -->
+                <div class="max-w-2xl mx-auto flex flex-col gap-3">
+                    <div class="grid grid-cols-3 gap-3">
+                        <button onclick="rateCard('hard')" class="bg-red-100 text-red-700 hover:bg-red-200 font-bold py-3 rounded-xl text-xs sm:text-sm flex flex-col items-center">
+                            <span>🔴 HARD</span>
+                            <span class="text-[10px] font-normal">Review Soon</span>
+                        </button>
+                        <button onclick="rateCard('medium')" class="bg-amber-100 text-amber-700 hover:bg-amber-200 font-bold py-3 rounded-xl text-xs sm:text-sm flex flex-col items-center">
+                            <span>🟡 MEDIUM</span>
+                            <span class="text-[10px] font-normal">Fair Recall</span>
+                        </button>
+                        <button onclick="rateCard('easy')" class="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 font-bold py-3 rounded-xl text-xs sm:text-sm flex flex-col items-center">
+                            <span>🟢 EASY</span>
+                            <span class="text-[10px] font-normal">Mastered</span>
+                        </button>
+                    </div>
+                    <div class="flex justify-between items-center pt-2">
+                        <button onclick="prevCard()" class="px-4 py-2 border rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100"><i class="fa-solid fa-arrow-left mr-1"></i> Prev</button>
+                        <button onclick="nextCard()" class="px-4 py-2 bg-gray-900 text-white rounded-lg text-xs font-bold hover:bg-gray-800">Next <i class="fa-solid fa-arrow-right ml-1"></i></button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: CSF MATRIX -->
+            <section id="view-csf" class="hidden space-y-6">
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <h2 class="text-2xl font-black text-gray-900 mb-2">CSF Lumbar Puncture Differentiation Matrix</h2>
+                    <p class="text-xs text-gray-600 mb-6">Crucial USMLE Step 1 comparative table for CSF spinal tap interpretation across etiologies.</p>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-red-600 text-white font-bold text-xs uppercase tracking-wider">
+                                    <th class="p-3 rounded-tl-lg">Etiology</th>
+                                    <th class="p-3">Opening Pressure</th>
+                                    <th class="p-3">Cell Count & Type</th>
+                                    <th class="p-3">Glucose Level</th>
+                                    <th class="p-3">Protein Level</th>
+                                    <th class="p-3 rounded-tr-lg">Key Etiologic Clues</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white text-xs">
+                                <tr class="hover:bg-red-50 transition">
+                                    <td class="p-3 font-bold text-red-700">Normal CSF</td>
+                                    <td class="p-3">50 - 180 mm H₂O</td>
+                                    <td class="p-3">&lt; 5 cells/mm³ (Monocytes)</td>
+                                    <td class="p-3">40 - 70 mg/dL (&gt;60% serum)</td>
+                                    <td class="p-3">&lt; 45 mg/dL</td>
+                                    <td class="p-3 text-gray-500">Baseline reference values</td>
+                                </tr>
+                                <tr class="hover:bg-red-50 transition">
+                                    <td class="p-3 font-bold text-gray-900">Bacterial Meningitis</td>
+                                    <td class="p-3 text-red-600 font-bold">Elevated (&gt;200)</td>
+                                    <td class="p-3 font-bold text-red-700">Marked PMNs (&gt;80% Neutrophils, &gt;1000/mm³)</td>
+                                    <td class="p-3 text-red-600 font-bold">Markedly Low (&lt;40 mg/dL)</td>
+                                    <td class="p-3 text-red-600 font-bold">Markedly High (&gt;100 mg/dL)</td>
+                                    <td class="p-3">Bacteria consume glucose; PMNs cause purulent exude in subarachnoid space.</td>
+                                </tr>
+                                <tr class="hover:bg-red-50 transition">
+                                    <td class="p-3 font-bold text-gray-900">Viral (Aseptic) Meningitis</td>
+                                    <td class="p-3">Normal or Slightly ↑</td>
+                                    <td class="p-3 font-bold text-blue-700">Lymphocytes (10 - 500/mm³)</td>
+                                    <td class="p-3 font-bold text-emerald-600">Normal (&gt;60% serum)</td>
+                                    <td class="p-3">Normal to Slightly ↑ (&lt;100)</td>
+                                    <td class="p-3">Enteroviruses (90%), HSV-2. Glucose is maintained as viruses don't consume glucose!</td>
+                                </tr>
+                                <tr class="hover:bg-red-50 transition">
+                                    <td class="p-3 font-bold text-gray-900">Fungal (Cryptococcus)</td>
+                                    <td class="p-3 text-red-600 font-bold">Severely Elevated (&gt;300)</td>
+                                    <td class="p-3 text-purple-700 font-bold">Lymphocytes (10 - 500/mm³)</td>
+                                    <td class="p-3 text-red-600 font-bold">Low (&lt;40 mg/dL)</td>
+                                    <td class="p-3 text-red-600 font-bold">Elevated (&gt;100 mg/dL)</td>
+                                    <td class="p-3">India Ink (+) soap bubble brain lesions, LAT mucopolysaccharide capsular antigen (+).</td>
+                                </tr>
+                                <tr class="hover:bg-red-50 transition">
+                                    <td class="p-3 font-bold text-gray-900">TB Meningitis</td>
+                                    <td class="p-3 text-red-600 font-bold">Elevated</td>
+                                    <td class="p-3 text-purple-700 font-bold">Lymphocytes / Monocytes</td>
+                                    <td class="p-3 text-red-600 font-bold">Very Low (&lt;30 mg/dL)</td>
+                                    <td class="p-3 text-red-600 font-bold">Extremely High (100 - 500+)</td>
+                                    <td class="p-3">Basilar meningeal enhancement, cranial nerve palsies (CN VII, VI, III). Acid-fast stain.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Interactive CSF Lab Simulator -->
+                    <div class="mt-8 bg-gray-50 p-6 rounded-xl border border-gray-200">
+                        <h3 class="text-lg font-bold text-gray-900 mb-3"><i class="fa-solid fa-calculator text-red-600 mr-2"></i>Interactive CSF Interpretation Simulator</h3>
+                        <p class="text-xs text-gray-600 mb-4">Adjust the sliders to simulate spinal tap findings and instantly receive USMLE diagnostic feedback:</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">Predominant Cell Type:</label>
+                                <select id="sim-cell" onchange="updateCsfSim()" class="w-full border rounded-lg p-2 text-xs font-semibold">
+                                    <option value="pmn">Neutrophils (PMNs)</option>
+                                    <option value="lymph">Lymphocytes</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">Glucose Level:</label>
+                                <select id="sim-glucose" onchange="updateCsfSim()" class="w-full border rounded-lg p-2 text-xs font-semibold">
+                                    <option value="low">Markedly Low (&lt;40 mg/dL)</option>
+                                    <option value="normal">Normal (&gt;60% serum)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">Protein Level:</label>
+                                <select id="sim-protein" onchange="updateCsfSim()" class="w-full border rounded-lg p-2 text-xs font-semibold">
+                                    <option value="high">Markedly High (&gt;100 mg/dL)</option>
+                                    <option value="normal">Normal / Mild ↑</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="sim-result" class="p-4 rounded-lg bg-red-100 border border-red-300 text-red-900 font-bold text-xs sm:text-sm">
+                            Diagnosis: High likelihood of Acute Bacterial Meningitis. Immediate empiric Vancomycin + Ceftriaxone (+ Ampicillin if &lt;1m or &gt;50y).
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: SLIDE "BIG PICTURE" Q&A -->
+            <section id="view-bigpicture" class="hidden space-y-6">
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <div class="border-b-4 border-red-600 pb-3 mb-6 flex justify-between items-center">
+                        <div>
+                            <h2 class="text-2xl font-black text-gray-900 uppercase tracking-tight">Slide "Big Picture" Core Answers</h2>
+                            <p class="text-xs text-gray-500 font-semibold">Addressing all high-yield board questions from the slide layout</p>
+                        </div>
+                        <span class="text-2xl">📋</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Left Column -->
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-red-400 transition">
+                                <h3 class="font-bold text-sm text-red-600">1. Where is the problem in meningitis?</h3>
+                                <p class="text-xs text-gray-700 mt-1">Inflammation of the <strong>leptomeninges</strong> (arachnoid mater and pia mater) and the intervening subarachnoid space filled with CSF.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-red-400 transition">
+                                <h3 class="font-bold text-sm text-red-600">2. Where is CSF produced & absorbed?</h3>
+                                <p class="text-xs text-gray-700 mt-1">Produced by ependymal cells of the <strong>Choroid Plexus</strong> inside brain ventricles; absorbed into venous circulation via <strong>Arachnoid Granulations</strong> into dural venous sinuses.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-red-400 transition">
+                                <h3 class="font-bold text-sm text-red-600">3. Bacterial Meningitis by Age Breakdown</h3>
+                                <ul class="text-xs text-gray-700 mt-1 list-disc pl-4 space-y-1">
+                                    <li><strong>Neonates (&lt;1 month):</strong> Group B Strep, E. coli, Listeria.</li>
+                                    <li><strong>Children/Teens (1m - 18y):</strong> N. meningitidis, S. pneumoniae, H. influenzae type b.</li>
+                                    <li><strong>Adults (18 - 50y):</strong> S. pneumoniae, N. meningitidis.</li>
+                                    <li><strong>Elderly (&gt;50y / Immunocompromised):</strong> S. pneumoniae, Gram-neg bacilli, Listeria.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-red-400 transition">
+                                <h3 class="font-bold text-sm text-red-600">4. Which comes first: Head CT or LP?</h3>
+                                <p class="text-xs text-gray-700 mt-1"><strong>Lumbar Puncture first</strong> EXCEPT if focal neurological deficit, papilledema, new-onset seizures, or altered sensorium → perform Head CT first to rule out herniation risk, but start empiric antibiotics BEFORE CT!</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-red-400 transition">
+                                <h3 class="font-bold text-sm text-red-600">5. When is Dexamethasone used and why?</h3>
+                                <p class="text-xs text-gray-700 mt-1">Administered <strong>prior to or concurrently with first dose of antibiotics</strong> in suspected <em>S. pneumoniae</em> (and <em>H. influenzae</em>) to attenuate inflammatory response caused by antibiotic-induced bacterial lysis, reducing sensorineural hearing loss and mortality.</p>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-red-400 transition">
+                                <h3 class="font-bold text-sm text-red-600">6. Why headache, neck stiffness & photophobia?</h3>
+                                <p class="text-xs text-gray-700 mt-1"><strong>Meningeal Irritation Triad:</strong> Inflammation stretches trigeminal/cervical nerve roots → Nuchal rigidity, Kernig (+), Brudzinski (+), and photophobia (trigeminal-optic reflex sensitivity).</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-red-400 transition">
+                                <h3 class="font-bold text-sm text-red-600">7. Why Low Glucose & High Protein in Bacterial Meningitis?</h3>
+                                <p class="text-xs text-gray-700 mt-1"><strong>Low Glucose (&lt;40% blood glucose):</strong> Bacteria AND high density of infiltrating PMNs consume glucose + impaired hexose transport across blood-CSF barrier.<br><strong>High Protein (&gt;100 mg/dL):</strong> Massive breakdown of blood-brain barrier tight junctions allows serum proteins into CSF.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-red-400 transition">
+                                <h3 class="font-bold text-sm text-red-600">8. Standard Empirical Pharmacological Regimens</h3>
+                                <ul class="text-xs text-gray-700 mt-1 list-disc pl-4 space-y-1">
+                                    <li><strong>Neonates (&lt;1 mo):</strong> Ampicillin + Cefotaxime (or Gentamicin). <em>Avoid Ceftriaxone due to biliary sludging & kernicterus!</em></li>
+                                    <li><strong>Age 1 mo - 50 yrs:</strong> Vancomycin + Ceftriaxone (or Cefotaxime).</li>
+                                    <li><strong>Age &gt; 50 yrs / Immunocompromised:</strong> Vancomycin + Ceftriaxone + Ampicillin (for Listeria coverage).</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-red-400 transition">
+                                <h3 class="font-bold text-sm text-red-600">9. What is Waterhouse-Friderichsen Syndrome?</h3>
+                                <p class="text-xs text-gray-700 mt-1">Fulminant meningococcemia (<em>N. meningitidis</em>) leading to severe DIC, endotoxin shock, petechial/purpuric skin lesions, and bilateral adrenal hemorrhage causing acute adrenal insufficiency.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: VIGNETTE QUIZ -->
+            <section id="view-quiz" class="hidden space-y-6">
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm max-w-3xl mx-auto">
+                    <div class="flex justify-between items-center border-b pb-4 mb-4">
+                        <div>
+                            <h2 class="text-xl font-black text-gray-900">USMLE Clinical Vignette Practice</h2>
+                            <p class="text-xs text-gray-500">Board-style active recall questions</p>
+                        </div>
+                        <span id="quiz-score" class="text-sm font-extrabold text-red-600 bg-red-50 px-3 py-1.5 rounded-full border border-red-200">Score: 0 / 0</span>
+                    </div>
+
+                    <div id="quiz-container">
+                        <!-- Dynamic Question Card -->
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <footer class="bg-gray-900 text-gray-400 text-xs py-6 mt-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p class="font-semibold text-gray-300">USMLE Step 1 High-Yield Meningitis Active Recall Trainer</p>
+            <p>Designed in red & white minimalist medical presentation style. For educational study purposes.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Data structure containing the 10 core USMLE pathogens with detailed high-yield attributes & emoji memes
+        const PATHOGENS = [
+            {
+                id: 'gbs',
+                name: 'Streptococcus agalactiae',
+                subtitle: 'Group B Streptococcus (GBS)',
+                category: 'Neonates',
+                emoji: '🦄',
+                memeTitle: 'Unicorn Stamping out Neonates',
+                ageGroup: 'Neonates (< 1 month) - #1 Cause of Neonatal Meningitis!',
+                micro: 'Gram-positive cocci in chains. Catalase-negative, Bacitracin-resistant, Beta-hemolytic. CAMP test positive (enlarges zone of lysis with S. aureus), Hippurate hydrolysis positive.',
+                presentation: 'Neonatal sepsis, irritability, lethargy, bulging fontanelle, respiratory distress, poor feeding.',
+                mechanism: 'Colonizes maternal vagina (screen at 35-37 weeks). Transmitted during passage through birth canal. Polysaccharide capsule inhibits phagocytosis.',
+                treatment: 'Empiric: Ampicillin + Cefotaxime (or Gentamicin). Intrapartum Prophylaxis: Penicillin G or Ampicillin given to mother >4 hrs prior to delivery if GBS positive.',
+                mastered: false
+            },
+            {
+                id: 'ecoli',
+                name: 'Escherichia coli',
+                subtitle: 'K1 Capsular Antigen Strain',
+                category: 'Neonates',
+                emoji: '🥑',
+                memeTitle: 'Avocado K1 Shield',
+                ageGroup: 'Neonates (< 1 month) - #2 Cause of Neonatal Meningitis',
+                micro: 'Gram-negative rod (bacillus). Lactose fermenter (pink on MacConkey agar), Indole positive, Green metallic sheen on EMB agar.',
+                presentation: 'Fever/hypothermia, poor feeding, apnea, lethargy, jaundice, seizure in newborns.',
+                mechanism: 'K1 capsular antigen is the primary virulence factor for meningitis (prevents phagocytosis & complement-mediated killing by mimicking human sialic acid).',
+                treatment: 'Ampicillin + Cefotaxime (or Gentamicin). Note: Avoid Ceftriaxone in neonates due to risk of hyperbilirubinemia & kernicterus.',
+                mastered: false
+            },
+            {
+                id: 'listeria',
+                name: 'Listeria monocytogenes',
+                subtitle: 'Tumbling Motility & Cold Growth',
+                category: 'Elderly',
+                emoji: '🌮',
+                memeTitle: 'Tumbling Taco in Unpasteurized Cheese',
+                ageGroup: 'Neonates, Elderly (>50 yrs), Pregnant women, Immunocompromised (Cell-mediated immunity deficiency)',
+                micro: 'Gram-positive rod (coccobacillus). Facultative intracellular organism. Tumbling motility at room temp (25°C), Actin rockets (intracellular jet propulsion at 37°C). Grows at cold temperatures (4°C).',
+                presentation: 'Fever, altered mental status, brainstem encephalitis, gastroenteritis prior to onset. High mortality.',
+                mechanism: 'Ingested via unpasteurized milk/cheese or cold deli meats. Listeriolysin O forms pores to escape phagolysosome and replicates in cytosol.',
+                treatment: 'Ampicillin added to standard empiric Vancomycin + Ceftriaxone regimen. Resistant to cephalosporins!',
+                mastered: false
+            },
+            {
+                id: 'neisseria',
+                name: 'Neisseria meningitidis',
+                subtitle: 'Meningococcus',
+                category: 'Children',
+                emoji: '🚀',
+                memeTitle: 'Rocketing Petechial Blast',
+                ageGroup: 'Teens, College Dorms, Military Recruits, Children (1 month - 18 yrs)',
+                micro: 'Gram-negative diplococci with flattened sides (kidney bean shape). Ferments Maltose AND Glucose (Maltose + Glucose = Meningitidis). IgA protease. Chocolate agar / Thayer-Martin medium.',
+                presentation: 'Rapid onset fever, severe headache, nuchal rigidity, petechial or purpuric rash (skin lesions), DIC, shock. Waterhouse-Friderichsen syndrome (adrenal hemorrhage).',
+                mechanism: 'Colonizes nasopharynx via pili. IgA protease cleaves mucosal antibodies. Lipooligosaccharide (LOS) endotoxin triggers massive inflammatory cascade and septic shock.',
+                treatment: 'Ceftriaxone or Penicillin G. Dexamethasone reduces morbidity. Prophylaxis for close contacts: Rifampin, Ceftriaxone, or Ciprofloxacin.',
+                mastered: false
+            },
+            {
+                id: 'spneumo',
+                name: 'Streptococcus pneumoniae',
+                subtitle: 'Pneumococcus',
+                category: 'Children',
+                emoji: '🍍',
+                memeTitle: 'Pineapple Lancet Diplococcus',
+                ageGroup: '#1 Cause in Adults, Elderly & Children (>1 month)',
+                micro: 'Gram-positive lancet-shaped diplococci. Alpha-hemolytic (green on blood agar), Optochin sensitive, Bile soluble. IgA protease positive.',
+                presentation: 'Classic triad: Fever, nuchal rigidity, altered mental status. High association with preceding otitis media, sinusitis, or pneumonia. Asplenic patients at highest risk!',
+                mechanism: 'Polysaccharide capsule (90+ serotypes). IgA protease cleaves IgA at mucosal surfaces. Pneumolysin toxin destroys ciliated epithelium.',
+                treatment: 'Vancomycin + Ceftriaxone + Dexamethasone (give steroids BEFORE or WITH first dose of antibiotics to prevent inflammation-induced hearing loss!).',
+                mastered: false
+            },
+            {
+                id: 'hinfluenzae',
+                name: 'Haemophilus influenzae',
+                subtitle: 'Type b (Hib)',
+                category: 'Children',
+                emoji: '🎳',
+                memeTitle: 'Bowling Pins on Chocolate Agar',
+                ageGroup: 'Unvaccinated Children (6 months - 6 years)',
+                micro: 'Gram-negative pleomorphic coccobacilli. Requires Factor V (NAD+) and Factor X (Hemin) for growth. Satellite phenomenon around S. aureus on blood agar.',
+                presentation: 'Fever, stiff neck, lethargy, sensory neural hearing loss sequelae. Frequently causes otitis media and epiglottitis.',
+                mechanism: 'Polyribosylribitol phosphate (PRP) capsule is key virulence factor for Hib strain. Polyvalent conjugate vaccine available.',
+                treatment: 'Ceftriaxone. Dexamethasone reduces risk of hearing loss. Rifampin prophylaxis for close contacts with non-vaccinated children.',
+                mastered: false
+            },
+            {
+                id: 'crypto',
+                name: 'Cryptococcus neoformans',
+                subtitle: 'Opportunistic Fungal Meningitis',
+                category: 'Viral',
+                emoji: '🦩',
+                memeTitle: 'Flamingo in Pigeon Droppings',
+                ageGroup: 'Immunocompromised (HIV / AIDS with CD4 count < 100)',
+                micro: 'Heavily encapsulated budding yeast (not dimorphic!). Found in pigeon droppings & soil. India Ink stain shows halo. Mucicarmine stain shows red capsule. Latex agglutination detects capsular antigen.',
+                presentation: 'Subacute insidious onset: headache, fever, confusion, increased intracranial pressure (papilledema). Soap bubble lesions in basal ganglia.',
+                mechanism: 'Inhaled into lungs → hematogenous spread to meninges. Thick polysaccharide capsule impairs phagocytosis.',
+                treatment: 'Induction: Amphotericin B + Flucytosine. Consolidation/Maintenance: Fluconazole.',
+                mastered: false
+            },
+            {
+                id: 'enterovirus',
+                name: 'Enteroviruses',
+                subtitle: 'Coxsackievirus, Echovirus, Poliovirus',
+                category: 'Viral',
+                emoji: '🍦',
+                memeTitle: 'Ice Cream Summer Outbreak',
+                ageGroup: 'Children and Young Adults (Most common cause of Aseptic Meningitis overall)',
+                micro: 'Non-enveloped, positive-sense single-stranded (+ssRNA) Picornaviridae family.',
+                presentation: 'Fever, mild headache, photophobia, nuchal rigidity. Usually self-limiting. Normal CSF glucose, elevated lymphocytes.',
+                mechanism: 'Fecal-oral transmission (summer/autumn prevalence). Replicates in Peyer patches of intestine before viremic spread to CNS.',
+                treatment: 'Supportive care (Analgesics, hydration). Excellent prognosis.',
+                mastered: false
+            },
+            {
+                id: 'tb',
+                name: 'Mycobacterium tuberculosis',
+                subtitle: 'Tuberculous Meningitis',
+                category: 'Viral',
+                emoji: '🦖',
+                memeTitle: 'T-Rex Acid Fast Basilar Exudate',
+                ageGroup: 'Immigrants, Endemic areas, Immunocompromised, Unvaccinated children',
+                micro: 'Acid-fast bacilli (Ziehl-Neelsen stain positive). Aerobic, high lipid mycolic acid cell wall. Grows on Lowenstein-Jensen agar.',
+                presentation: 'Subacute onset: low-grade fever, night sweats, weight loss, progressive headache, cranial nerve palsies (CN VII, VI, III) due to thick basilar exudate.',
+                mechanism: 'Rupture of subependymal Rich focus into subarachnoid space → dense thick exudate at base of brain surrounding circle of Willis.',
+                treatment: 'RIPE therapy (Rifampin, Isoniazid, Pyrazinamide, Ethambutol) + Dexamethasone to prevent arachnoiditis & hydrocephalus.',
+                mastered: false
+            },
+            {
+                id: 'hsv',
+                name: 'Herpes Simplex Virus (HSV-2 / HSV-1)',
+                subtitle: 'Viral Encephalitis / Meningitis',
+                category: 'Viral',
+                emoji: '🛸',
+                memeTitle: 'Temporal Lobe Alien Abduction',
+                ageGroup: 'HSV-2: Neonates (birth passage) & Adults (aseptic meningitis). HSV-1: Temporal lobe encephalitis.',
+                micro: 'Enveloped, linear double-stranded DNA (dsDNA) herpesvirus. Tzanck smear / Cowdry A intranuclear inclusion bodies.',
+                presentation: 'HSV-2 causes benign recurrent lymphocytic meningitis (Mollaret meningitis). HSV-1 causes severe hemorrhagic temporal lobe encephalitis with bizarre behavior & seizures.',
+                mechanism: 'HSV-2 via genital transmission. HSV-1 retrogrades via Trigeminal nerve (V3) into temporal lobes.',
+                treatment: 'IV Acyclovir (Foscarnet if acyclovir resistant). Early intervention essential for HSV-1.',
+                mastered: false
+            }
+        ];
+
+        // Quiz Question Bank
+        const QUIZ_QUESTIONS = [
+            {
+                question: "A 3-week-old newborn presents with fever, lethargy, and bulging fontanelle. CSF shows 2,500 PMNs, low glucose, high protein. Gram stain reveals Gram-positive rods with tumbling motility at 25°C. What is the appropriate empirical treatment addition?",
+                options: ["Vancomycin", "Ampicillin", "Acyclovir", "Gentamicin alone"],
+                correct: 1,
+                explanation: "Listeria monocytogenes is a Gram-positive rod with tumbling motility. Ampicillin must be added to treat Listeria because cephalosporins are ineffective."
+            },
+            {
+                question: "When should Dexamethasone be administered in suspected bacterial meningitis in an adult?",
+                options: [
+                    "Only after CSF culture confirms S. pneumoniae",
+                    "24 hours after antibiotics have been started",
+                    "Prior to or concurrently with the first dose of antibiotics",
+                    "Only if lumbar puncture shows blood"
+                ],
+                correct: 2,
+                explanation: "Dexamethasone should be given prior to or with the first dose of antibiotics to attenuate inflammation caused by bacterial lysis, reducing hearing loss and mortality in pneumococcal meningitis."
+            },
+            {
+                question: "An 18-year-old college freshman presents with abrupt fever, neck stiffness, and petechial rash on legs. Which prophylaxis should be offered to dorm room contacts?",
+                options: ["Penicillin V", "Rifampin or Ciprofloxacin", "Acyclovir", "Amoxicillin"],
+                correct: 1,
+                explanation: "Neisseria meningitidis requires chemoprophylaxis for close contacts with Rifampin, Ciprofloxacin, or Ceftriaxone to eradicate nasopharyngeal carriage."
+            },
+            {
+                question: "An HIV-positive patient with CD4 count of 65/mm³ presents with subacute headache and papilledema. India Ink of CSF shows halos around budding yeast. Which CSF parameter is characteristic?",
+                options: [
+                    "Markedly elevated Glucose",
+                    "Severely elevated Opening Pressure (>300 mm H2O)",
+                    "Predominance of Neutrophils (>80%)",
+                    "Normal Protein"
+                ],
+                correct: 1,
+                explanation: "Cryptococcus neoformans causes fungal meningitis with markedly elevated CSF opening pressure due to capsular polysaccharide clogging arachnoid villi."
+            }
+        ];
+
+        // App State
+        let currentFlashcardIndex = 0;
+        let isFlipped = false;
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+
+        // Initialize App on DOM Load
+        window.onload = function() {
+            renderPathogenGrid(PATHOGENS);
+            updateFlashcard();
+            loadQuizQuestion();
+            updateCsfSim();
+        };
+
+        function renderPathogenGrid(data) {
+            const grid = document.getElementById('pathogens-grid');
+            grid.innerHTML = '';
+
+            data.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col justify-between";
+                card.innerHTML = `
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-3xl bg-red-50 p-2 rounded-xl border border-red-100">${p.emoji}</span>
+                                <div>
+                                    <h3 class="font-black text-gray-900 text-lg leading-tight">${p.name}</h3>
+                                    <p class="text-xs text-red-600 font-bold">${p.subtitle}</p>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-extrabold uppercase bg-gray-100 text-gray-700 px-2 py-1 rounded-md">${p.category}</span>
+                        </div>
+
+                        <div class="space-y-2 text-xs text-gray-700 mt-4">
+                            <div class="bg-red-50/60 p-2 rounded-lg border border-red-100">
+                                <strong class="text-red-800">👶 Most Common Age / Risk Group:</strong>
+                                <p class="text-gray-800 mt-0.5">${p.ageGroup}</p>
+                            </div>
+                            <div>
+                                <strong class="text-gray-900">🔬 Micro & Lab Details:</strong>
+                                <p class="text-gray-600">${p.micro}</p>
+                            </div>
+                            <div>
+                                <strong class="text-gray-900">⚡ Presentation & Key Signs:</strong>
+                                <p class="text-gray-600">${p.presentation}</p>
+                            </div>
+                            <div>
+                                <strong class="text-gray-900">⚙️ Pathogenesis & Virulence:</strong>
+                                <p class="text-gray-600">${p.mechanism}</p>
+                            </div>
+                            <div class="bg-emerald-50 p-2 rounded-lg border border-emerald-100 text-emerald-900">
+                                <strong>💊 First-Line Treatment & Prophylaxis:</strong>
+                                <p class="mt-0.5">${p.treatment}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-5 py-2.5 border-t border-gray-100 flex justify-between items-center text-[11px] text-gray-500">
+                        <span>Meme Cue: <strong>${p.memeTitle}</strong></span>
+                        <button onclick="quickTest('${p.id}')" class="text-red-600 font-bold hover:underline">Test Card <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterPathogens() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const filtered = PATHOGENS.filter(p => 
+                p.name.toLowerCase().includes(query) ||
+                p.subtitle.toLowerCase().includes(query) ||
+                p.micro.toLowerCase().includes(query) ||
+                p.ageGroup.toLowerCase().includes(query) ||
+                p.treatment.toLowerCase().includes(query)
+            );
+            renderPathogenGrid(filtered);
+        }
+
+        function filterCategory(cat) {
+            // Update Active Buttons
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = "cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs font-bold px-3 py-1.5 rounded-full";
+            });
+            event.target.className = "cat-btn bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm";
+
+            if (cat === 'all') {
+                renderPathogenGrid(PATHOGENS);
+            } else {
+                const filtered = PATHOGENS.filter(p => p.category === cat);
+                renderPathogenGrid(filtered);
+            }
+        }
+
+        function switchTab(tab) {
+            ['pathogens', 'flashcards', 'csf', 'bigpicture', 'quiz'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).className = "py-3 px-1 hover:text-red-600 transition flex items-center space-x-2 whitespace-nowrap text-gray-600 font-medium";
+            });
+            document.getElementById(`view-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-${tab}`).className = "py-3 px-1 tab-active flex items-center space-x-2 whitespace-nowrap";
+        }
+
+        function updateFlashcard() {
+            const card = PATHOGENS[currentFlashcardIndex];
+            const fcElement = document.getElementById('flashcard');
+            
+            // Reset Flip
+            if (isFlipped) {
+                fcElement.classList.remove('rotate-y-180');
+                isFlipped = false;
+            }
+
+            document.getElementById('flashcard-counter').innerText = `${currentFlashcardIndex + 1} / ${PATHOGENS.length}`;
+            document.getElementById('fc-age-front').innerText = card.category;
+            document.getElementById('fc-emoji').innerText = card.emoji;
+            document.getElementById('fc-name').innerText = card.name;
+            document.getElementById('fc-subtitle').innerText = card.subtitle;
+
+            // Back side
+            document.getElementById('fc-name-back').innerText = card.name;
+            document.getElementById('fc-emoji-back').innerText = card.emoji;
+            document.getElementById('fc-micro').innerText = card.micro;
+            document.getElementById('fc-presentation').innerText = card.presentation;
+            document.getElementById('fc-mechanism').innerText = card.mechanism;
+            document.getElementById('fc-treatment').innerText = card.treatment;
+        }
+
+        function flipCard() {
+            const fcElement = document.getElementById('flashcard');
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                fcElement.classList.add('rotate-y-180');
+            } else {
+                fcElement.classList.remove('rotate-y-180');
+            }
+        }
+
+        function nextCard() {
+            currentFlashcardIndex = (currentFlashcardIndex + 1) % PATHOGENS.length;
+            updateFlashcard();
+        }
+
+        function prevCard() {
+            currentFlashcardIndex = (currentFlashcardIndex - 1 + PATHOGENS.length) % PATHOGENS.length;
+            updateFlashcard();
+        }
+
+        function rateCard(rating) {
+            if (rating === 'easy') {
+                PATHOGENS[currentFlashcardIndex].mastered = true;
+            }
+            updateMasteryCounter();
+            nextCard();
+        }
+
+        function quickTest(id) {
+            const idx = PATHOGENS.findIndex(p => p.id === id);
+            if (idx !== -1) {
+                currentFlashcardIndex = idx;
+                switchTab('flashcards');
+                updateFlashcard();
+            }
+        }
+
+        function updateMasteryCounter() {
+            const count = PATHOGENS.filter(p => p.mastered).length;
+            document.getElementById('overall-progress-text').innerText = `${count}/${PATHOGENS.length} Mastered`;
+        }
+
+        function updateCsfSim() {
+            const cell = document.getElementById('sim-cell').value;
+            const glucose = document.getElementById('sim-glucose').value;
+            const protein = document.getElementById('sim-protein').value;
+            const resDiv = document.getElementById('sim-result');
+
+            if (cell === 'pmn' && glucose === 'low' && protein === 'high') {
+                resDiv.className = "p-4 rounded-lg bg-red-100 border border-red-300 text-red-900 font-bold text-xs sm:text-sm";
+                resDiv.innerHTML = "<strong>Diagnosis: Acute Bacterial Meningitis</strong><br>• Standard Empiric: Vancomycin + Ceftriaxone (+ Dexamethasone). Add Ampicillin if age <1m or >50y.";
+            } else if (cell === 'lymph' && glucose === 'normal') {
+                resDiv.className = "p-4 rounded-lg bg-blue-100 border border-blue-300 text-blue-900 font-bold text-xs sm:text-sm";
+                resDiv.innerHTML = "<strong>Diagnosis: Viral (Aseptic) Meningitis / Enterovirus or HSV-2</strong><br>• Treatment: Supportive for Enterovirus. IV Acyclovir if HSV encephalitis suspected.";
+            } else if (cell === 'lymph' && glucose === 'low') {
+                resDiv.className = "p-4 rounded-lg bg-purple-100 border border-purple-300 text-purple-900 font-bold text-xs sm:text-sm";
+                resDiv.innerHTML = "<strong>Diagnosis: Fungal (Cryptococcus) or Tuberculous (TB) Meningitis</strong><br>• Cryptococcus: Amphotericin B + Flucytosine. India Ink (+).<br>• TB: RIPE therapy + Dexamethasone. Acid-Fast (+).";
+            } else {
+                resDiv.className = "p-4 rounded-lg bg-gray-100 border border-gray-300 text-gray-800 font-bold text-xs sm:text-sm";
+                resDiv.innerHTML = "<strong>Diagnosis: Atypical / Mixed Pattern</strong><br>• Correlate with clinical history, Gram stain, and viral PCR panel.";
+            }
+        }
+
+        function loadQuizQuestion() {
+            const q = QUIZ_QUESTIONS[currentQuizIndex];
+            const container = document.getElementById('quiz-container');
+
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <p class="text-sm sm:text-base font-semibold text-gray-800 leading-relaxed">${q.question}</p>
+                    <div class="space-y-2 pt-2">
+                        ${q.options.map((opt, i) => `
+                            <button onclick="checkAnswer(${i})" class="quiz-opt-btn w-full text-left p-3 border rounded-xl hover:bg-red-50 text-xs sm:text-sm font-medium transition flex items-center justify-between">
+                                <span>${opt}</span>
+                                <i class="fa-regular fa-circle text-gray-300"></i>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="quiz-feedback" class="hidden p-4 rounded-xl text-xs sm:text-sm mt-4 font-semibold"></div>
+                    <div class="flex justify-end pt-2">
+                        <button id="next-q-btn" onclick="nextQuestion()" class="hidden bg-red-600 text-white font-bold px-5 py-2 rounded-lg text-xs hover:bg-red-700">Next Question <i class="fa-solid fa-arrow-right ml-1"></i></button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkAnswer(selected) {
+            const q = QUIZ_QUESTIONS[currentQuizIndex];
+            const feedback = document.getElementById('quiz-feedback');
+            const btns = document.querySelectorAll('.quiz-opt-btn');
+
+            btns.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === q.correct) {
+                    btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+                } else if (idx === selected) {
+                    btn.classList.add('bg-red-100', 'border-red-500', 'text-red-900');
+                }
+            });
+
+            if (selected === q.correct) {
+                quizScore++;
+                feedback.className = "p-4 rounded-xl text-xs sm:text-sm mt-4 bg-emerald-100 text-emerald-900 border border-emerald-300";
+                feedback.innerHTML = `<strong>Correct! 🎉</strong><br>${q.explanation}`;
+            } else {
+                feedback.className = "p-4 rounded-xl text-xs sm:text-sm mt-4 bg-red-100 text-red-900 border border-red-300";
+                feedback.innerHTML = `<strong>Incorrect.</strong><br>${q.explanation}`;
+            }
+
+            feedback.classList.remove('hidden');
+            document.getElementById('next-q-btn').classList.remove('hidden');
+            document.getElementById('quiz-score').innerText = `Score: ${quizScore} / ${QUIZ_QUESTIONS.length}`;
+        }
+
+        function nextQuestion() {
+            currentQuizIndex = (currentQuizIndex + 1) % QUIZ_QUESTIONS.length;
+            loadQuizQuestion();
+        }
+    </script>
+</body>
+</html>
