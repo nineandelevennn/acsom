@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACSOM USMLE Step 1 Differential Diagnosis Trainer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandRed: '#B91C1C',
+                        brandRedDark: '#991B1B',
+                        brandBg: '#FFFFFF',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #FFFFFF;
+        }
+        .custom-shadow {
+            box-shadow: 0 4px 20px -2px rgba(185, 28, 28, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800 min-h-screen flex flex-col antialiased selection:bg-red-100 selection:text-red-800">
+
+    <header class="bg-brandRed text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <!-- Go Back Link -->
+            <a href="https://nineandelevennn.github.io/acsom/sas_full" class="inline-flex items-center text-xs sm:text-sm font-semibold bg-white/10 hover:bg-white/20 active:bg-white/30 text-white px-3 py-1.5 rounded-lg transition-colors duration-150 border border-white/20">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Go Back
+            </a>
+            <!-- ACSOM Title -->
+            <div class="text-right">
+                <span class="text-xs sm:text-sm font-bold tracking-wide uppercase block text-red-100">American Canadian</span>
+                <span class="text-sm sm:text-base font-extrabold tracking-wider block">School of Medicine</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-6">
+
+        <!-- Title and Stats Bar -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b pb-4 border-gray-200 gap-3">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">Ophthalmology & Lens DDx Trainer</h1>
+                <p class="text-xs sm:text-sm text-gray-500 mt-1">Master USMLE Step 1 High-Yield Differentials & Mechanics</p>
+            </div>
+            
+            <div class="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-2 self-start sm:self-auto">
+                <i class="fa-solid fa-trophy text-brandRed text-xl"></i>
+                <div>
+                    <div class="text-xs font-semibold uppercase text-red-700">Progress</div>
+                    <div id="progress-text" class="text-sm font-bold text-gray-800">Case 1 of 6</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Case Selection Selector Dropdown -->
+        <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <label for="case-select" class="text-xs font-bold uppercase tracking-wider text-gray-600 whitespace-nowrap">
+                <i class="fa-solid fa-list-check text-brandRed mr-1"></i> Select Case Scenario:
+            </label>
+            <select id="case-select" class="w-full bg-white border border-gray-300 text-gray-800 text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-brandRed focus:border-brandRed outline-none font-medium cursor-pointer">
+                <!-- Dropdown populated via JS -->
+            </select>
+        </div>
+
+        <!-- Clinical Vignette Card -->
+        <div class="bg-white border-2 border-brandRed/20 rounded-2xl p-5 sm:p-6 shadow-sm custom-shadow relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-2 h-full bg-brandRed"></div>
+            <div class="flex items-center justify-between mb-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide bg-red-100 text-brandRed">
+                    <i class="fa-solid fa-user-doctor mr-1.5"></i> Step 1 Clinical Vignette
+                </span>
+                <span id="case-category" class="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded">Category</span>
+            </div>
+            <h2 id="case-title" class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Case Title</h2>
+            <p id="case-stem" class="text-gray-700 text-sm sm:text-base leading-relaxed bg-gray-50 p-4 rounded-xl border border-gray-100">
+                Loading vignette...
+            </p>
+        </div>
+
+        <!-- Differential Options Builder -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 shadow-sm">
+            <div class="mb-4">
+                <h3 class="text-lg font-bold text-gray-900 flex items-center">
+                    <i class="fa-solid fa-square-check text-brandRed mr-2"></i> Differential Diagnosis Evaluation
+                </h3>
+                <p class="text-xs sm:text-sm text-gray-500 mt-0.5">
+                    For each condition below, indicate whether it should be <span class="font-bold text-emerald-700">INCLUDED</span> in the differential diagnosis based on the clinical clue, or <span class="font-bold text-red-700">EXCLUDED</span>.
+                </p>
+            </div>
+
+            <!-- List Container -->
+            <div id="options-container" class="space-y-4">
+                <!-- Dynamically generated differential items -->
+            </div>
+
+            <!-- Controls / Buttons -->
+            <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-100">
+                <button id="submit-btn" class="w-full sm:w-auto bg-brandRed hover:bg-brandRedDark active:scale-[0.99] text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all duration-150 flex items-center justify-center text-base">
+                    <i class="fa-solid fa-paper-plane mr-2"></i> Submit & Check DDx
+                </button>
+
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button id="prev-btn" class="flex-1 sm:flex-none bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2.5 px-4 rounded-xl text-sm transition-colors border border-gray-300">
+                        <i class="fa-solid fa-chevron-left mr-1"></i> Previous
+                    </button>
+                    <button id="next-btn" class="flex-1 sm:flex-none bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2.5 px-4 rounded-xl text-sm transition-colors border border-gray-300">
+                        Next <i class="fa-solid fa-chevron-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feedback Summary Section -->
+        <div id="score-card" class="hidden bg-slate-900 text-white rounded-2xl p-6 shadow-lg border border-slate-800">
+            <div class="flex items-center justify-between mb-2">
+                <h4 class="text-lg font-bold flex items-center text-red-400">
+                    <i class="fa-solid fa-chart-line mr-2"></i> Performance Assessment
+                </h4>
+                <span id="score-badge" class="px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider"></span>
+            </div>
+            <p id="score-details" class="text-sm text-slate-300">Detailed breakdown of your inclusions and exclusions:</p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 border-t border-gray-200 mt-8 py-4 text-center text-xs text-gray-500">
+        <p>© American Canadian School of Medicine — USMLE Step 1 High-Yield Prep</p>
+    </footer>
+
+    <script>
+        // Case Database loaded with high-yield USMLE Step 1 facts
+        const cases = [
+            {
+                id: "case-1",
+                category: "Acute Ocular Emergency",
+                title: "Severe Unilateral Eye Pain and Halos",
+                stem: "A 62-year-old Asian female presents to the emergency room with sudden-onset severe right eye pain, severe frontal headache, nausea, and two episodes of vomiting. She was watching a movie in a dark theater when the symptoms began. On physical exam, her right eye is diffusely red, the cornea appears steamy/hazy, and her right pupil is fixed in a mid-dilated state. Palpation of the right globe reveals a firm, 'rock-hard' sensation. Visual field exam shows rainbow halos around light sources.",
+                options: [
+                    {
+                        id: "ddx-1",
+                        name: "Acute Primary Closed-Angle Glaucoma",
+                        correct: "include",
+                        explanation: "INCLUDED (Primary Diagnosis): Classic presentation! Triggered by pupil dilation in dim light (movie theater), leading to pupillary block, iris bombé, rapid elevation of IOP (>50 mmHg), fixed mid-dilated pupil, steamy cornea, severe pain, nausea, and halos."
+                    },
+                    {
+                        id: "ddx-2",
+                        name: "Primary Open-Angle Glaucoma (POAG)",
+                        correct: "exclude",
+                        explanation: "EXCLUDED: POAG is typically a chronic, PAINLESS condition with slow, insidious, bilateral peripheral vision loss over years. It does NOT present with sudden severe pain, nausea, red eye, or a fixed mid-dilated pupil."
+                    },
+                    {
+                        id: "ddx-3",
+                        name: "Phacomorphic Glaucoma",
+                        correct: "include",
+                        explanation: "INCLUDED: An important secondary acute angle-closure cause. An advanced/swollen mature cataractous lens can physically push the iris forward, causing acute angle closure that presents identically to primary acute angle-closure glaucoma."
+                    },
+                    {
+                        id: "ddx-4",
+                        name: "Migraine with Aura",
+                        correct: "exclude",
+                        explanation: "EXCLUDED: Although migraines present with severe headache, nausea, and visual aura, they do NOT produce a rock-hard eye, steamy cornea, fixed mid-dilated pupil, or ciliary flush/red eye."
+                    },
+                    {
+                        id: "ddx-5",
+                        name: "Uveitic Glaucoma",
+                        correct: "include",
+                        explanation: "INCLUDED: Anterior uveitis (iritis) presents with a painful red eye, photophobia, and headache, and secondary glaucoma can occur when inflammatory debris clogs the trabecular meshwork or forms posterior synechiae leading to angle closure."
+                    },
+                    {
+                        id: "ddx-6",
+                        name: "Central Retinal Artery Occlusion (CRAO)",
+                        correct: "exclude",
+                        explanation: "EXCLUDED: CRAO presents as SUDDEN, PAINLESS, monocular vision loss with a cherry-red spot on macula and pale fundus. It does not cause a fixed mid-dilated pupil with red eye and severe ocular pain."
+                    }
+                ]
+            },
+            {
+                id: "case-2",
+                category: "Chronic Progressive Neuropathy",
+                title: "Asymptomatic Visual Field Constriction",
+                stem: "A 68-year-old African American male with a history of type 2 diabetes mellitus presents for a routine eye exam. He has no visual complaints or pain. Fundoscopic examination reveals bilateral enlargement of the optic cup relative to the optic disc (cup-to-disc ratio of 0.7; baseline was 0.35). Automated perimetry demonstrates bilateral arcuate visual field defects restricted to the peripheral fields, with central acuity remaining 20/20. Intraocular pressure (IOP) measures 26 mmHg in both eyes (normal: 10–21 mmHg). Gonioscopy reveals open, normal-appearing iridocorneal angles.",
+                options: [
+                    {
+                        id: "ddx-1",
+                        name: "Primary Open-Angle Glaucoma (POAG)",
+                        correct: "include",
+                        explanation: "INCLUDED (Primary Diagnosis): Classic presentation! Painless, gradual peripheral vision loss ('sneak thief of sight'), increased cup-to-disc ratio from ganglion cell axon compression at the lamina cribrosa, elevated IOP (>21 mmHg), open angles, and higher prevalence in patients of African descent and diabetics."
+                    },
+                    {
+                        id: "ddx-2",
+                        name: "Normal-Tension Glaucoma",
+                        correct: "exclude",
+                        explanation: "EXCLUDED: Normal-tension glaucoma shows identical optic nerve cupping and visual field loss, BUT IOP is strictly within normal range (≤21 mmHg). This patient has elevated IOP (26 mmHg)."
+                    },
+                    {
+                        id: "ddx-3",
+                        name: "Age-Related Macular Degeneration (AMD)",
+                        correct: "exclude",
+                        explanation: "EXCLUDED: AMD presents with loss of CENTRAL vision (scotoma) and distortion (metamorphopsia), with drusen or neovascular membrane on fundoscopy. It spares peripheral vision, unlike glaucoma."
+                    },
+                    {
+                        id: "ddx-4",
+                        name: "Steroid-Induced Glaucoma",
+                        correct: "include",
+                        explanation: "INCLUDED: Secondary open-angle glaucoma caused by chronic corticosteroid use (topical or systemic), which decreases aqueous humor outflow facility through the trabecular meshwork. Must be in the differential for open-angle presentations."
+                    },
+                    {
+                        id: "ddx-5",
+                        name: "Pigmentary Glaucoma",
+                        correct: "include",
+                        explanation: "INCLUDED: A form of secondary open-angle glaucoma where pigment granules from the posterior iris surface rub off and obstruct the trabecular meshwork, causing painless IOP elevation and optic disc cupping."
+                    },
+                    {
+                        id: "ddx-6",
+                        name: "Acute Primary Closed-Angle Glaucoma",
+                        correct: "exclude",
+                        explanation: "EXCLUDED: Angles are open on gonioscopy, and the patient is completely asymptomatic/painless. Closed-angle is a painful emergency with shallow or occluded angles."
+                    }
+                ]
+            },
+            {
+                id: "case-3",
+                category: "Pediatric & Congenital",
+                title: "Infant with Abnormal Pupillary Reflex & Facial Lesion",
+                stem: "A 3-month-old infant is brought to the pediatric ophthalmology clinic by her mother, who noticed that the left eye appears larger than the right and waters constantly. The infant turns away from bright light (photophobia) and squints frequently (blepharospasm). Physical exam reveals clouding of the left cornea and buphthalmos (enlarged eye globe). On systemic exam, a large reddish-purple vascular lesion ('port-wine stain') is noted over the left forehead and upper eyelid in the V1 distribution of the trigeminal nerve. Red reflex examination shows elevated IOP in the left eye.",
+                options: [
+                    {
+                        id: "ddx-1",
+                        name: "Congenital Glaucoma (Primary)",
+                        correct: "include",
+                        explanation: "INCLUDED: Manifests with the triad of epiphora (tearing), photophobia, and blepharospasm, along with corneal edema/clouding and buphthalmos (enlarged globe due to elastic infant sclera reacting to elevated IOP)."
+                    },
+                    {
+                        id: "ddx-2",
+                        name: "Sturge-Weber Syndrome Associated Glaucoma",
+                        correct: "include",
+                        explanation: "INCLUDED (Primary Diagnosis): Encephalotrigeminal angiomatosis. Characterized by a facial cutaneous vascular nevus flammeus (port-wine stain) in the V1/V2 distribution, ipsilateral leptomeningeal angioma, seizures, and congenital/early-onset secondary glaucoma."
+                    },
+                    {
+                        id: "ddx-3",
+                        name: "Congenital Cataract",
+                        correct: "include",
+                        explanation: "INCLUDED: Must be in the differential for leukocoria/corneal opacity in infants. Caused by intrauterine infections (e.g., Congenital Rubella), metabolic disorders (Galactosemia), or genetic causes. Requires urgent treatment to prevent deprivation amblyopia."
+                    },
+                    {
+                        id: "ddx-4",
+                        name: "Retinoblastoma",
+                        correct: "include",
+                        explanation: "INCLUDED: The most common primary intraocular malignancy in children, presenting classically with leukocoria (white pupillary reflex) or strabismus. Must always be ruled out in infants presenting with white reflex/pupil abnormalities."
+                    },
+                    {
+                        id: "ddx-5",
+                        name: "Horner Syndrome",
+                        correct: "exclude",
+                        explanation: "EXCLUDED: Triad of miosis, ptosis, and anhidrosis due to sympathetic chain disruption. It causes a smaller pupil and mild ptosis, not buphthalmos, corneal clouding, or high IOP."
+                    }
+                ]
+            },
+            {
+                id: "case-4",
+                category: "Lens Displacement & Connective Tissue",
+                title: "Ectopia Lentis with Systemic Features",
+                stem: "A 15-year-old male is referred for visual evaluation. He reports progressive blurring of vision in both eyes. He is unusually tall and thin, with hyperflexible joints, chest pectus excavatum, and long, slender fingers (arachnodactyly). Slit-lamp exam reveals bilateral lens subluxation (ectopia lentis). Slit lamp evaluation demonstrates the lens is displaced superiorly and temporally (upward and outward). Cardiological evaluation reveals aortic root dilation.",
+                options: [
+                    {
+                        id: "ddx-1",
+                        name: "Marfan Syndrome",
+                        correct: "include",
+                        explanation: "INCLUDED (Primary Diagnosis): Autosomal dominant mutation in FBN1 gene (fibrillin-1). Classically causes UPWARD and OUTWARD (superotemporal) lens dislocation, aortic root dilation/dissection, mitral valve prolapse, and tall marfanoid habitus."
+                    },
+                    {
+                        id: "ddx-2",
+                        name: "Homocystinuria",
+                        correct: "include",
+                        explanation: "INCLUDED (Top Differential): Autosomal recessive deficiency in cystathionine beta-synthase. Also presents with marfanoid habitus and ectopia lentis, BUT the lens dislocates DOWNWARD and INWARD (inferomedial). Also associated with intellectual disability and severe thromboembolism risk."
+                    },
+                    {
+                        id: "ddx-3",
+                        name: "Ehlers-Danlos Syndrome",
+                        correct: "include",
+                        explanation: "INCLUDED: Defect in collagen synthesis presenting with hypermobile joints, stretchy skin, and connective tissue weakness. Can cause lens subluxation, scleral fragility, and retinal detachment."
+                    },
+                    {
+                        id: "ddx-4",
+                        name: "Pupillary Block Glaucoma Secondary to Dislocated Lens",
+                        correct: "include",
+                        explanation: "INCLUDED: Any dislocated lens can tilt or move into the anterior chamber, obstructing aqueous humor flow through the pupil and triggering secondary acute pupillary block glaucoma."
+                    },
+                    {
+                        id: "ddx-5",
+                        name: "Wilson Disease",
+                        correct: "exclude",
+                        explanation: "EXCLUDED: Wilson disease causes copper accumulation leading to Kayser-Fleischer rings (copper in Descemet membrane) and sunflower cataracts, but NOT ectopia lentis (lens dislocation)."
+                    }
+                ]
+            },
+            {
+                id: "case-5",
+                category: "Metabolic & Systemic Lens Pathology",
+                title: "Gradual Blurring, Glare, and Refractive Shift",
+                stem: "A 56-year-old man with poorly controlled type 2 diabetes mellitus (HbA1c 10.8%) reports gradual, painless reduction in visual acuity in both eyes over the past year. He notices increased glare while driving at night and states he can suddenly read close-up text without his reading glasses ('second sight'). Slit-lamp exam reveals opacification of the central nuclear portion of both lenses. Fundoscopy is partially obscured by the lens opacities, and red reflex is diminished bilaterally.",
+                options: [
+                    {
+                        id: "ddx-1",
+                        name: "Diabetic / Osmotic Cataract (Nuclear Sclerosis)",
+                        correct: "include",
+                        explanation: "INCLUDED (Primary Diagnosis): High intraocular glucose is converted by aldose reductase into SORBITOL. Sorbitol accumulates inside lens fibers causing osmotic water influx, crystallin protein denaturation, and cataract formation. 'Second sight' occurs due to a myopic shift from increased nuclear refractive index."
+                    },
+                    {
+                        id: "ddx-2",
+                        name: "Corticosteroid-Induced Cataract",
+                        correct: "include",
+                        explanation: "INCLUDED: Systemic or topical steroid therapy is a classic cause of cataracts, specifically posterior subcapsular cataracts. Must be considered in lens opacification differentials."
+                    },
+                    {
+                        id: "ddx-3",
+                        name: "Classic Galactosemia (GALT deficiency)",
+                        correct: "exclude",
+                        explanation: "EXCLUDED: Presents in NEWBORNS/INFANTS upon initiating milk feeding (galactose-1-phosphate uridyltransferase deficiency) with oil-droplet cataracts, hepatomegaly, jaundice, and failure to thrive. Not a presentation in a 56-year-old diabetic adult."
+                    },
+                    {
+                        id: "ddx-4",
+                        name: "Phacolytic Glaucoma",
+                        correct: "include",
+                        explanation: "INCLUDED: Secondary open-angle glaucoma caused when a hypermature cataract leaks high-molecular-weight lens proteins through an intact lens capsule, clogging the trabecular meshwork with proteins and macrophages."
+                    },
+                    {
+                        id: "ddx-5",
+                        name: "Age-Related Nuclear Cataract",
+                        correct: "include",
+                        explanation: "INCLUDED: Chronic oxidative damage causing denaturation and cross-linking of crystallin proteins in the lens nucleus over time; accelerated significantly by diabetes, smoking, and UV light."
+                    }
+                ]
+            },
+            {
+                id: "case-6",
+                category: "Inflammatory & Lens-Induced Pathologies",
+                title: "Post-Cataract Red Eye and Lens Protein Leakage",
+                stem: "A 74-year-old female presents with subacute onset of right eye redness, aching pain, and decreased vision over 3 days. History reveals she has had an advanced, untreated 'ripe' mature cataract in that eye for several years. Examination shows an elevated IOP of 38 mmHg in the right eye, severe corneal edema, heavy flare and cells in the anterior chamber, and floating whitish proteinaceous debris. The lens capsule appears intact, but the lens is hypermature and shrunken.",
+                options: [
+                    {
+                        id: "ddx-1",
+                        name: "Phacolytic Glaucoma",
+                        correct: "include",
+                        explanation: "INCLUDED (Primary Diagnosis): Hypermature cataract leaks soluble lens proteins through microscopic pores in an intact lens capsule. These proteins and engulfing macrophages clog the trabecular meshwork, causing high IOP and open-angle inflammatory glaucoma."
+                    },
+                    {
+                        id: "ddx-2",
+                        name: "Phacomorphic Glaucoma",
+                        correct: "exclude",
+                        explanation: "EXCLUDED: Phacomorphic glaucoma is caused by a SWOLLEN, intumescent cataract physically causing mechanical ANGLE CLOSURE (shallow anterior chamber). In phacolytic, the angle remains open and fluid is clogged by protein leakage."
+                    },
+                    {
+                        id: "ddx-3",
+                        name: "Neovascular Glaucoma",
+                        correct: "include",
+                        explanation: "INCLUDED: Secondary angle-closure caused by retinal ischemia (e.g. CRVO, diabetic retinopathy) inducing VEGF, leading to neovascular membrane growth over the iris/angle (rubeosis iridis). Important differential for elevated IOP with red eye in elderly patients."
+                    },
+                    {
+                        id: "ddx-4",
+                        name: "Uveitic Glaucoma",
+                        correct: "include",
+                        explanation: "INCLUDED: Inflammatory intraocular conditions (anterior uveitis) cause white blood cells and fibrin to obstruct trabecular outflow, presenting with pain, red eye, elevated IOP, and anterior chamber cells."
+                    },
+                    {
+                        id: "ddx-5",
+                        name: "Posterior Capsule Opacification (PCO)",
+                        correct: "exclude",
+                        explanation: "EXCLUDED: PCO is a late complication occurring MONTHS TO YEARS AFTER cataract surgery (treated with Nd:YAG laser capsulotomy). This patient still has her natural lens and has not undergone surgery."
+                    }
+                ]
+            }
+        ];
+
+        let currentCaseIndex = 0;
+        let userSelections = {}; // stores optionId -> 'include' | 'exclude'
+
+        // DOM Element references
+        const caseSelect = document.getElementById('case-select');
+        const caseCategory = document.getElementById('case-category');
+        const caseTitle = document.getElementById('case-title');
+        const caseStem = document.getElementById('case-stem');
+        const optionsContainer = document.getElementById('options-container');
+        const submitBtn = document.getElementById('submit-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const progressText = document.getElementById('progress-text');
+        const scoreCard = document.getElementById('score-card');
+        const scoreBadge = document.getElementById('score-badge');
+        const scoreDetails = document.getElementById('score-details');
+
+        function initApp() {
+            // Populate select dropdown
+            caseSelect.innerHTML = '';
+            cases.forEach((c, idx) => {
+                const opt = document.createElement('option');
+                opt.value = idx;
+                opt.textContent = `Case ${idx + 1}: ${c.title}`;
+                caseSelect.appendChild(opt);
+            });
+
+            // Event Listeners
+            caseSelect.addEventListener('change', (e) => {
+                loadCase(parseInt(e.target.value));
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentCaseIndex > 0) loadCase(currentCaseIndex - 1);
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentCaseIndex < cases.length - 1) loadCase(currentCaseIndex + 1);
+            });
+
+            submitBtn.addEventListener('click', evaluateDDx);
+
+            // Load initial case
+            loadCase(0);
+        }
+
+        function loadCase(index) {
+            currentCaseIndex = index;
+            userSelections = {};
+            const activeCase = cases[currentCaseIndex];
+
+            // Update UI elements
+            caseSelect.value = index;
+            caseCategory.textContent = activeCase.category;
+            caseTitle.textContent = activeCase.title;
+            caseStem.textContent = activeCase.stem;
+            progressText.textContent = `Case ${index + 1} of ${cases.length}`;
+
+            // Button state updates
+            prevBtn.disabled = index === 0;
+            prevBtn.classList.toggle('opacity-50', index === 0);
+            prevBtn.classList.toggle('cursor-not-allowed', index === 0);
+
+            nextBtn.disabled = index === cases.length - 1;
+            nextBtn.classList.toggle('opacity-50', index === cases.length - 1);
+            nextBtn.classList.toggle('cursor-not-allowed', index === cases.length - 1);
+
+            // Hide previous score card
+            scoreCard.classList.add('hidden');
+
+            // Render Differential Options
+            optionsContainer.innerHTML = '';
+            activeCase.options.forEach((opt) => {
+                const optEl = document.createElement('div');
+                optEl.className = "p-4 rounded-xl border border-gray-200 bg-white hover:border-gray-300 transition-all shadow-sm flex flex-col gap-3";
+                optEl.id = `card-${opt.id}`;
+
+                optEl.innerHTML = `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="font-bold text-gray-800 text-base flex items-center">
+                            <i class="fa-solid fa-notes-medical text-gray-400 mr-2.5"></i> ${opt.name}
+                        </div>
+                        
+                        <!-- Toggle Selector Buttons -->
+                        <div class="flex items-center gap-1 bg-gray-100 p-1 rounded-lg self-start sm:self-auto border border-gray-200" role="group">
+                            <button type="button" 
+                                onclick="setSelection('${opt.id}', 'include')" 
+                                id="btn-include-${opt.id}" 
+                                class="px-3 py-1.5 text-xs font-bold rounded-md transition-all duration-150 text-gray-600 hover:text-gray-900">
+                                <i class="fa-solid fa-plus-circle mr-1"></i> INCLUDE
+                            </button>
+                            <button type="button" 
+                                onclick="setSelection('${opt.id}', 'exclude')" 
+                                id="btn-exclude-${opt.id}" 
+                                class="px-3 py-1.5 text-xs font-bold rounded-md transition-all duration-150 text-gray-600 hover:text-gray-900">
+                                <i class="fa-solid fa-minus-circle mr-1"></i> EXCLUDE
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Explanation Box (Initially hidden) -->
+                    <div id="exp-${opt.id}" class="hidden mt-2 p-3.5 rounded-lg text-xs sm:text-sm leading-relaxed border"></div>
+                `;
+                optionsContainer.appendChild(optEl);
+            });
+        }
+
+        function setSelection(optionId, type) {
+            userSelections[optionId] = type;
+
+            const incBtn = document.getElementById(`btn-include-${optionId}`);
+            const excBtn = document.getElementById(`btn-exclude-${optionId}`);
+
+            if (type === 'include') {
+                incBtn.className = "px-3 py-1.5 text-xs font-bold rounded-md transition-all duration-150 bg-emerald-600 text-white shadow-sm";
+                excBtn.className = "px-3 py-1.5 text-xs font-bold rounded-md transition-all duration-150 text-gray-600 hover:text-gray-900";
+            } else {
+                excBtn.className = "px-3 py-1.5 text-xs font-bold rounded-md transition-all duration-150 bg-red-600 text-white shadow-sm";
+                incBtn.className = "px-3 py-1.5 text-xs font-bold rounded-md transition-all duration-150 text-gray-600 hover:text-gray-900";
+            }
+        }
+
+        function evaluateDDx() {
+            const activeCase = cases[currentCaseIndex];
+            let correctCount = 0;
+            let totalOptions = activeCase.options.length;
+
+            // Check if user answered all options
+            let missing = activeCase.options.filter(o => !userSelections[o.id]);
+            if (missing.length > 0) {
+                alert(`Please make an 'Include' or 'Exclude' decision for all ${totalOptions} differential diagnoses before submitting.`);
+                return;
+            }
+
+            activeCase.options.forEach(opt => {
+                const userChoice = userSelections[opt.id];
+                const isCorrect = userChoice === opt.correct;
+                if (isCorrect) correctCount++;
+
+                const card = document.getElementById(`card-${opt.id}`);
+                const expBox = document.getElementById(`exp-${opt.id}`);
+
+                expBox.classList.remove('hidden');
+                expBox.innerHTML = `<strong>Explanation:</strong> ${opt.explanation}`;
+
+                if (isCorrect) {
+                    card.className = "p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50/40 transition-all shadow-sm flex flex-col gap-3";
+                    expBox.className = "mt-2 p-3.5 rounded-lg text-xs sm:text-sm leading-relaxed border border-emerald-300 bg-emerald-100/70 text-emerald-950 font-medium";
+                } else {
+                    card.className = "p-4 rounded-xl border-2 border-red-500 bg-red-50/40 transition-all shadow-sm flex flex-col gap-3";
+                    expBox.className = "mt-2 p-3.5 rounded-lg text-xs sm:text-sm leading-relaxed border border-red-300 bg-red-100/70 text-red-950 font-medium";
+                }
+            });
+
+            // Display performance score
+            scoreCard.classList.remove('hidden');
+            const percentage = Math.round((correctCount / totalOptions) * 100);
+
+            if (percentage === 100) {
+                scoreBadge.className = "px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-emerald-500 text-white";
+                scoreBadge.textContent = `PERFECT SCORE: ${correctCount}/${totalOptions} (100%)`;
+                scoreDetails.textContent = "Outstanding clinical judgment! You correctly categorized all high-yield differentials for this Step 1 scenario.";
+            } else if (percentage >= 70) {
+                scoreBadge.className = "px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-yellow-500 text-slate-900";
+                scoreBadge.textContent = `SCORE: ${correctCount}/${totalOptions} (${percentage}%)`;
+                scoreDetails.textContent = "Good effort! Review the highlighted explanations above to reinforce high-yield USMLE Step 1 mechanisms.";
+            } else {
+                scoreBadge.className = "px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-red-600 text-white";
+                scoreBadge.textContent = `SCORE: ${correctCount}/${totalOptions} (${percentage}%)`;
+                scoreDetails.textContent = "Review required. Read through the high-yield explanations below to lock in these ophthalmology concepts.";
+            }
+
+            // Smooth scroll to results
+            scoreCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Initialize application on page load
+        window.onload = initApp;
+    </script>
+</body>
+</html>
