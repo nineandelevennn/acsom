@@ -42,7 +42,6 @@
       min-height: 100dvh;
       overflow-x: hidden;
       overflow-y: auto;
-      /* Soft eye-friendly twilight gradient with warm crimson/amber undertones */
       background: radial-gradient(circle at 50% 0%, #3A1D28 0%, #1F1B29 55%, #14121A 100%);
       color: var(--text-dark);
       display: flex;
@@ -51,7 +50,6 @@
       padding: 12px 10px 24px 10px;
     }
 
-    /* Center vertically on tall desktop screens without squishing on smaller screens */
     @media (min-height: 760px) {
       body {
         align-items: center;
@@ -63,7 +61,7 @@
       border-radius: 24px;
       width: 100%;
       max-width: 420px;
-      flex-shrink: 0; /* Never squish vertically */
+      flex-shrink: 0;
       overflow: hidden;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 24px rgba(217, 35, 42, 0.18);
       border: 1.5px solid rgba(255, 255, 255, 0.15);
@@ -72,7 +70,6 @@
       position: relative;
     }
 
-    /* ACSOM Header Banner */
     .header {
       background: linear-gradient(135deg, var(--acsom-red) 0%, var(--acsom-red-dark) 100%);
       color: var(--acsom-white);
@@ -145,7 +142,6 @@
       transform: scale(0.92);
     }
 
-    /* HUD Panel */
     .hud {
       padding: 12px 16px;
       background: var(--acsom-white);
@@ -211,7 +207,6 @@
       min-height: 1.3em;
     }
 
-    /* Game Canvas Container (Fixed comfortable dimensions, never squished) */
     .canvas-container {
       position: relative;
       width: 100%;
@@ -225,10 +220,9 @@
       display: block;
       width: 100%;
       height: 100%;
-      touch-action: manipulation; /* Prevents double-tap zoom while allowing page scroll if needed */
+      touch-action: manipulation;
     }
 
-    /* Overlays (Start & Game Over) */
     .overlay {
       position: absolute;
       inset: 0;
@@ -299,7 +293,6 @@
       box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
     }
 
-    /* Topic Selector Trigger Button on Start Screen */
     .topic-trigger-box {
       width: 100%;
       background: rgba(255, 255, 255, 0.08);
@@ -353,7 +346,6 @@
       text-transform: uppercase;
     }
 
-    /* Pop-up Modal for Choosing Topics */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -540,7 +532,6 @@
       cursor: pointer;
     }
 
-    /* Bottom Lane Controls */
     .controls-bar {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -577,7 +568,6 @@
 <body>
 
   <div class="game-wrapper">
-    <!-- ACSOM Header with subtle Halloween touch -->
     <header class="header">
       <a href="https://nineandelevennn.github.io/acsom" class="home-btn">← ACSOM</a>
       <div class="header-title">🎃 DOCTOR RUN</div>
@@ -587,7 +577,6 @@
       </div>
     </header>
 
-    <!-- HUD Panel -->
     <div class="hud">
       <div class="stats-row">
         <span>Score: <strong id="scoreVal">0</strong></span>
@@ -603,11 +592,9 @@
       </div>
     </div>
 
-    <!-- Canvas & Overlays -->
     <div class="canvas-container">
       <canvas id="gameCanvas" width="400" height="410"></canvas>
 
-      <!-- Start Screen Overlay -->
       <div id="startOverlay" class="overlay">
         <span class="overlay-badge">🎃 ACSOM NEUROLOGY EDITION 🦇</span>
         <div class="overlay-title">Neurology Buzzword Run</div>
@@ -617,7 +604,6 @@
 
         <input type="text" id="playerNameInput" class="name-input" placeholder="Enter your name (e.g., Dr. Potter)..." maxlength="20">
 
-        <!-- Pop-up Trigger Box -->
         <div class="topic-trigger-box" onclick="openTopicPopup()">
           <div class="topic-trigger-left">
             <span class="topic-trigger-lbl">Selected Subtopic:</span>
@@ -629,7 +615,6 @@
         <button class="btn-primary" onclick="startGame()">Start Night Shift ➔</button>
       </div>
 
-      <!-- Game Over Overlay -->
       <div id="gameOverOverlay" class="overlay hidden">
         <div style="font-size: 2.1rem; margin-bottom: 4px;">🚑</div>
         <div class="overlay-title">Shift Ended!</div>
@@ -648,14 +633,12 @@
       </div>
     </div>
 
-    <!-- Bottom Lane Controls -->
     <div class="controls-bar">
       <button class="lane-btn" onclick="moveDoctor(0)">⬅ Left Lane</button>
       <button class="lane-btn" onclick="moveDoctor(1)">Right Lane ➡</button>
     </div>
   </div>
 
-  <!-- POP-UP MODAL FOR SUBTOPIC SELECTION -->
   <div id="topicModal" class="modal-backdrop hidden" onclick="handleBackdropClick(event)">
     <div class="modal-card">
       <div class="modal-header">
@@ -701,9 +684,6 @@
   </div>
 
 <script>
-  // =========================================================================
-  // 1. SOUND EFFECTS (WEB AUDIO API)
-  // =========================================================================
   let isSoundEnabled = localStorage.getItem('acsomRunnerSound') !== 'off';
   document.getElementById('soundToggleBtn').textContent = isSoundEnabled ? '🔊' : '🔇';
 
@@ -763,11 +743,7 @@
     document.getElementById('soundToggleBtn').textContent = isSoundEnabled ? '🔊' : '🔇';
   }
 
-  // =========================================================================
-  // 2. NEUROLOGY DATABASE (69 CONCEPTS FROM RUN DOCTOR!.DOCX)
-  // =========================================================================
   const neuroDatabase = [
-    // Dermatomes (10)
     { category: "Dermatomes", prompt: "C6 dermatome", answer: "Thumb" },
     { category: "Dermatomes", prompt: "C7 dermatome", answer: "Middle finger" },
     { category: "Dermatomes", prompt: "C8 dermatome", answer: "Little finger" },
@@ -779,7 +755,6 @@
     { category: "Dermatomes", prompt: "S1 dermatome", answer: "Lateral foot" },
     { category: "Dermatomes", prompt: "S3–S5 dermatome", answer: "Saddle sensation" },
 
-    // Reflexes (8)
     { category: "Reflexes", prompt: "Biceps reflex", answer: "C5–C6" },
     { category: "Reflexes", prompt: "Brachioradialis reflex", answer: "C5–C6" },
     { category: "Reflexes", prompt: "Triceps reflex", answer: "C7–C8" },
@@ -789,7 +764,6 @@
     { category: "Reflexes", prompt: "Cremasteric reflex", answer: "L1–L2" },
     { category: "Reflexes", prompt: "Vestibulo-ocular reflex", answer: "CN VIII" },
 
-    // Myotomes (10)
     { category: "Myotomes", prompt: "C5 myotome", answer: "Abduct shoulder" },
     { category: "Myotomes", prompt: "C6 myotome", answer: "Extend wrist" },
     { category: "Myotomes", prompt: "C7 myotome", answer: "Extend elbow" },
@@ -801,7 +775,6 @@
     { category: "Myotomes", prompt: "L5 myotome", answer: "Extend great toe" },
     { category: "Myotomes", prompt: "S1 myotome", answer: "Plantarflex ankle" },
 
-    // Peripheral Nerve Injuries (8)
     { category: "Peripheral Nerve Injuries", prompt: "Radial lesion in spiral groove", answer: "Wrist drop, triceps spared" },
     { category: "Peripheral Nerve Injuries", prompt: "Radial lesion in axilla", answer: "Wrist drop + possible triceps weakness" },
     { category: "Peripheral Nerve Injuries", prompt: "Median lesion (motor)", answer: "Thenar weakness / atrophy" },
@@ -811,7 +784,6 @@
     { category: "Peripheral Nerve Injuries", prompt: "Common fibular lesion at fibular neck", answer: "Foot drop" },
     { category: "Peripheral Nerve Injuries", prompt: "Superior gluteal nerve injury", answer: "Pelvic drop" },
 
-    // Cortical & Limbic (13)
     { category: "Cortical & Limbic", prompt: "Primary motor cortex", answer: "Precentral gyrus" },
     { category: "Cortical & Limbic", prompt: "Broca area", answer: "Dominant inferior frontal gyrus" },
     { category: "Cortical & Limbic", prompt: "Prefrontal cortex", answer: "Executive function" },
@@ -826,7 +798,6 @@
     { category: "Cortical & Limbic", prompt: "Amygdala", answer: "Emotional processing, including fear" },
     { category: "Cortical & Limbic", prompt: "Medial temporal lesion", answer: "Impaired formation of new memories" },
 
-    // Vascular & Stroke (8)
     { category: "Vascular & Stroke", prompt: "ACA infarct", answer: "Leg more affected than arm" },
     { category: "Vascular & Stroke", prompt: "MCA infarct", answer: "Face and arm more affected than leg" },
     { category: "Vascular & Stroke", prompt: "PCA infarct", answer: "Visual field deficit" },
@@ -836,7 +807,6 @@
     { category: "Vascular & Stroke", prompt: "Subarachnoid hemorrhage", answer: "Sudden thunderclap headache; ruptured saccular aneurysm" },
     { category: "Vascular & Stroke", prompt: "Watershed infarction", answer: "Border-zone ischemia; 'man-in-the-barrel' weakness" },
 
-    // Cranial Nerves (12)
     { category: "Cranial Nerves", prompt: "CN I injury", answer: "Anosmia" },
     { category: "Cranial Nerves", prompt: "CN II injury", answer: "Visual loss & afferent pupillary defect if asymmetric" },
     { category: "Cranial Nerves", prompt: "CN III lesion", answer: "'Down and out,' ptosis; dilated pupil if compressive" },
@@ -852,9 +822,6 @@
     { category: "Cranial Nerves", prompt: "CN XII LMN lesion", answer: "Tongue deviates toward lesion on protrusion" }
   ];
 
-  // =========================================================================
-  // 3. PLAYER RANKS (HARRY POTTER HIERARCHY WITH BUCKBEAK)
-  // =========================================================================
   function getPlayerLevel(score) {
     if (score >= 25) return "Albus Dumbledore😎";
     if (score >= 22) return "Voldemort😮😮";
@@ -868,9 +835,6 @@
     return "Vincent Crabbe😂😂";
   }
 
-  // =========================================================================
-  // 4. POP-UP TOPIC SELECTION & STATE
-  // =========================================================================
   let selectedTopic = 'All';
   let selectedTopicLabel = 'All Concepts';
   let activePool = [...neuroDatabase];
@@ -907,15 +871,11 @@
 
   function confirmTopicAndPlay() {
     closeTopicPopup();
-    // If start screen is hidden (player clicked Topics mid-game or on Game Over), start immediately
     if (document.getElementById('startOverlay').classList.contains('hidden')) {
       startGame();
     }
   }
 
-  // =========================================================================
-  // 5. HTML5 CANVAS ENGINE (SLOWER PACE & GENTLE ACCELERATION)
-  // =========================================================================
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
 
@@ -926,7 +886,6 @@
   let bestScore = parseInt(localStorage.getItem('acsomRunnerBest') || '0', 10);
   document.getElementById('bestVal').textContent = bestScore;
 
-  // Slower, comfortable reading pace and gentle speed increase
   const baseSpeed = 2.0;
   const speedIncrement = 0.1;
   const maxSpeed = 4.5;
@@ -980,26 +939,23 @@
     }
   });
 
-function spawnGate() {
+  // Строгий подбор дистракторов из той же категории
+  function spawnGate() {
     gate.y = -90;
     gate.passed = false;
 
-    // 1. Берем случайный правильный вопрос из активной категории
     const correctIdx = Math.floor(Math.random() * activePool.length);
     const correctItem = activePool[correctIdx];
 
-    // 2. Ищем дистракторы СТРОГО ИЗ ТОЙ ЖЕ КАТЕГОРИИ (исключая сам правильный ответ)
     let sameCategoryPool = activePool.filter(item => 
       item.category === correctItem.category && item.answer !== correctItem.answer
     );
 
-    // Страховка: если в категории вдруг остался 1 элемент, берем из всей базы, но той же категории
     if (sameCategoryPool.length === 0) {
       sameCategoryPool = neuroDatabase.filter(item => 
         item.category === correctItem.category && item.answer !== correctItem.answer
       );
     }
-    // Абсолютная страховка на крайний случай
     if (sameCategoryPool.length === 0) {
       sameCategoryPool = neuroDatabase.filter(item => item.answer !== correctItem.answer);
     }
@@ -1015,19 +971,6 @@ function spawnGate() {
 
     document.getElementById('currentPromptWord').textContent = gate.wordObj.prompt;
     document.getElementById('hudCategoryTag').textContent = 
-      selectedTopic === 'All' ? gate.wordObj.category : selectedTopicLabel;
-  }
-    const wrongItem = distractorCandidates[Math.floor(Math.random() * distractorCandidates.length)];
-
-    gate.wordObj = correctItem;
-    gate.wrongObj = wrongItem;
-    gate.correctLane = Math.random() < 0.5 ? 0 : 1;
-
-    gate.leftText = gate.correctLane === 0 ? gate.wordObj.answer : gate.wrongObj.answer;
-    gate.rightText = gate.correctLane === 1 ? gate.wordObj.answer : gate.wrongObj.answer;
-
-    document.getElementById('currentPromptWord').textContent = gate.wordObj.prompt;
-    document.getElementById('hudCategoryTag').textContent =
       selectedTopic === 'All' ? gate.wordObj.category : selectedTopicLabel;
   }
 
@@ -1095,9 +1038,6 @@ function spawnGate() {
     document.getElementById('speedVal').textContent = `x${speedMultiplier}`;
   }
 
-  // =========================================================================
-  // 6. SHARE SCORE CARD GENERATOR (ACSOM + SUBTLE HALLOWEEN THEME)
-  // =========================================================================
   async function shareScore() {
     const levelTitle = getPlayerLevel(score);
     const shareCanvas = document.createElement('canvas');
@@ -1105,7 +1045,6 @@ function spawnGate() {
     shareCanvas.height = 900;
     const sCtx = shareCanvas.getContext('2d');
 
-    // 1. Soft Evening Crimson & Twilight Gradient
     const grad = sCtx.createLinearGradient(0, 0, 720, 900);
     grad.addColorStop(0, '#A8161C');
     grad.addColorStop(0.5, '#1F1B29');
@@ -1113,21 +1052,18 @@ function spawnGate() {
     sCtx.fillStyle = grad;
     sCtx.fillRect(0, 0, 720, 900);
 
-    // 2. Warm Pumpkin/Amber Glow
     const glow = sCtx.createRadialGradient(360, 140, 20, 360, 140, 320);
     glow.addColorStop(0, 'rgba(245, 158, 11, 0.25)');
     glow.addColorStop(1, 'rgba(245, 158, 11, 0)');
     sCtx.fillStyle = glow;
     sCtx.fillRect(0, 0, 720, 900);
 
-    // 3. Card Border
     sCtx.strokeStyle = 'rgba(217, 35, 42, 0.7)';
     sCtx.lineWidth = 4;
     sCtx.beginPath();
     sCtx.roundRect(36, 36, 648, 828, 32);
     sCtx.stroke();
 
-    // 4. Header Branding
     sCtx.fillStyle = '#FCD34D';
     sCtx.font = '800 22px Montserrat, sans-serif';
     sCtx.textAlign = 'center';
@@ -1137,7 +1073,6 @@ function spawnGate() {
     sCtx.font = '900 42px Montserrat, sans-serif';
     sCtx.fillText('🏃‍♂️ NEURO DOCTOR RUN', 360, 162);
 
-    // 5. Central Result Box
     sCtx.fillStyle = 'rgba(255, 255, 255, 0.08)';
     sCtx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
     sCtx.lineWidth = 2;
@@ -1162,7 +1097,6 @@ function spawnGate() {
     sCtx.font = '800 28px Montserrat, sans-serif';
     sCtx.fillText('CORRECT ANSWERS!', 360, 495);
 
-    // Rank Badge
     sCtx.fillStyle = 'rgba(217, 35, 42, 0.3)';
     sCtx.strokeStyle = '#FCD34D';
     sCtx.lineWidth = 3;
@@ -1179,7 +1113,6 @@ function spawnGate() {
     sCtx.font = '900 30px Montserrat, sans-serif';
     sCtx.fillText(levelTitle, 360, 630);
 
-    // 6. Footer URL
     sCtx.fillStyle = '#FFFFFF';
     sCtx.font = '700 22px Montserrat, sans-serif';
     sCtx.fillText('Practice High-Yield USMLE Drills at:', 360, 775);
@@ -1212,27 +1145,19 @@ function spawnGate() {
     }, 'image/png');
   }
 
-  // =========================================================================
-  // 7. CANVAS DRAWING (SOFTER NIGHT ROAD + SUBTLE HALLOWEEN LANTERNS)
-  // =========================================================================
   function drawRoad() {
-    // Soft Twilight Roadside (Easy on the eyes)
     ctx.fillStyle = "#1E1A2B";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // ACSOM Crimson Side Curbs
     ctx.fillStyle = "#C81E24";
     ctx.fillRect(50, 0, 10, canvas.height);
     ctx.fillRect(340, 0, 10, canvas.height);
 
-    // Soft Warm Slate Road Surface
     ctx.fillStyle = "#2D283E";
     ctx.fillRect(60, 0, 280, canvas.height);
 
-    // Subtle Halloween Pumpkin Lanterns along the roadside
     const spacing = 140;
     for (let y = (lanternOffset % spacing) - spacing; y < canvas.height + spacing; y += spacing) {
-      // Soft amber glow on the grass
       const leftGlow = ctx.createRadialGradient(25, y, 2, 25, y, 22);
       leftGlow.addColorStop(0, "rgba(245, 158, 11, 0.35)");
       leftGlow.addColorStop(1, "rgba(245, 158, 11, 0)");
@@ -1249,7 +1174,6 @@ function spawnGate() {
       ctx.arc(375, y + 70, 22, 0, Math.PI * 2);
       ctx.fill();
 
-      // Tiny Pumpkin Lanterns
       ctx.fillStyle = "#EA580C";
       ctx.beginPath();
       ctx.ellipse(25, y, 7, 5.5, 0, 0, Math.PI * 2);
@@ -1265,7 +1189,6 @@ function spawnGate() {
       ctx.fillRect(373.5, y + 69, 3, 2);
     }
 
-    // Center Lane Divider (Soft Ivory)
     ctx.strokeStyle = "rgba(255, 255, 255, 0.65)";
     ctx.lineWidth = 4;
     ctx.setLineDash([28, 24]);
@@ -1305,13 +1228,11 @@ function spawnGate() {
       const x = centerX - w / 2;
       const y = gate.y;
 
-      // Soft Shadow
       ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
       ctx.beginPath();
       ctx.roundRect(x + 2, y + 5, w, h, 12);
       ctx.fill();
 
-      // Warm Cream White Card with ACSOM Red Border
       ctx.fillStyle = "#FFFDF9";
       ctx.strokeStyle = "#D9232A";
       ctx.lineWidth = 3;
@@ -1320,13 +1241,11 @@ function spawnGate() {
       ctx.fill();
       ctx.stroke();
 
-      // Top ACSOM Red & Halloween Amber Accent Strip
       ctx.fillStyle = "#D9232A";
       ctx.beginPath();
       ctx.roundRect(x + 1.5, y + 1.5, w - 3, 8, [10, 10, 0, 0]);
       ctx.fill();
 
-      // Dynamic Font Sizing & Multi-line Wrapping
       let fontSize = 11.5;
       if (text.length > 26) fontSize = 10;
       if (text.length > 42) fontSize = 9;
@@ -1358,20 +1277,17 @@ function spawnGate() {
 
     ctx.save();
 
-    // Shadow
     ctx.fillStyle = "rgba(0, 0, 0, 0.38)";
     ctx.beginPath();
     ctx.ellipse(x, y + 32, 20, 7, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Scrubs Legs
     ctx.fillStyle = "#991B1B";
     ctx.beginPath();
     ctx.roundRect(x - 12, y + 12 + swing, 9, 18, 4);
     ctx.roundRect(x + 3, y + 12 - swing, 9, 18, 4);
     ctx.fill();
 
-    // Crisp White Lab Coat
     ctx.fillStyle = "#FFFFFF";
     ctx.strokeStyle = "#CBD5E1";
     ctx.lineWidth = 2;
@@ -1380,7 +1296,6 @@ function spawnGate() {
     ctx.fill();
     ctx.stroke();
 
-    // ACSOM Red Scrubs V-Neck
     ctx.fillStyle = "#D9232A";
     ctx.beginPath();
     ctx.moveTo(x - 6, y - 14);
@@ -1389,39 +1304,33 @@ function spawnGate() {
     ctx.closePath();
     ctx.fill();
 
-    // Stethoscope
     ctx.strokeStyle = "#1E293B";
     ctx.lineWidth = 2.5;
     ctx.beginPath();
     ctx.arc(x, y - 10, 9, 0.2, Math.PI - 0.2);
     ctx.stroke();
 
-    // Amber Halloween Pin on Coat
     ctx.fillStyle = "#F59E0B";
     ctx.beginPath();
     ctx.arc(x + 8, y - 3, 3.5, 0, Math.PI * 2);
     ctx.fill();
 
-    // Swinging Arms
     ctx.fillStyle = "#F8FAFC";
     ctx.beginPath();
     ctx.roundRect(x - 22, y - 10 - swing * 0.7, 7, 20, 4);
     ctx.roundRect(x + 15, y - 10 + swing * 0.7, 7, 20, 4);
     ctx.fill();
 
-    // Head
     ctx.fillStyle = "#FDE68A";
     ctx.beginPath();
     ctx.arc(x, y - 24, 12, 0, Math.PI * 2);
     ctx.fill();
 
-    // ACSOM Red Surgical Cap
     ctx.fillStyle = "#D9232A";
     ctx.beginPath();
     ctx.arc(x, y - 26, 12.5, Math.PI, 0);
     ctx.fill();
 
-    // White Medical Cross on Cap
     ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(x - 1.5, y - 35, 3, 7);
     ctx.fillRect(x - 3.5, y - 33, 7, 3);
