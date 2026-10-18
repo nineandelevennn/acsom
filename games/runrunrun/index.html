@@ -981,17 +981,43 @@
     }
   });
 
-  function spawnGate() {
+function spawnGate() {
     gate.y = -90;
     gate.passed = false;
 
+    // 1. Берем случайный правильный вопрос из активной категории
     const correctIdx = Math.floor(Math.random() * activePool.length);
     const correctItem = activePool[correctIdx];
 
-    let distractorCandidates = activePool.filter(item => item.answer !== correctItem.answer);
-    if (distractorCandidates.length === 0) {
-      distractorCandidates = neuroDatabase.filter(item => item.answer !== correctItem.answer);
+    // 2. Ищем дистракторы СТРОГО ИЗ ТОЙ ЖЕ КАТЕГОРИИ (исключая сам правильный ответ)
+    let sameCategoryPool = activePool.filter(item => 
+      item.category === correctItem.category && item.answer !== correctItem.answer
+    );
+
+    // Страховка: если в категории вдруг остался 1 элемент, берем из всей базы, но той же категории
+    if (sameCategoryPool.length === 0) {
+      sameCategoryPool = neuroDatabase.filter(item => 
+        item.category === correctItem.category && item.answer !== correctItem.answer
+      );
     }
+    // Абсолютная страховка на крайний случай
+    if (sameCategoryPool.length === 0) {
+      sameCategoryPool = neuroDatabase.filter(item => item.answer !== correctItem.answer);
+    }
+
+    const wrongItem = sameCategoryPool[Math.floor(Math.random() * sameCategoryPool.length)];
+
+    gate.wordObj = correctItem;
+    gate.wrongObj = wrongItem;
+    gate.correctLane = Math.random() < 0.5 ? 0 : 1;
+
+    gate.leftText = gate.correctLane === 0 ? gate.wordObj.answer : gate.wrongObj.answer;
+    gate.rightText = gate.correctLane === 1 ? gate.wordObj.answer : gate.wrongObj.answer;
+
+    document.getElementById('currentPromptWord').textContent = gate.wordObj.prompt;
+    document.getElementById('hudCategoryTag').textContent = 
+      selectedTopic === 'All' ? gate.wordObj.category : selectedTopicLabel;
+  }
     const wrongItem = distractorCandidates[Math.floor(Math.random() * distractorCandidates.length)];
 
     gate.wordObj = correctItem;
