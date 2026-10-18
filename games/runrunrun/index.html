@@ -864,7 +864,13 @@
     const correctItem = activePool[correctIdx];
 
     // Pick a distractor from the same subtopic if possible, ensuring distinct answer text
-    let distractorCandidates = activePool.filter(item => item.answer !== correctItem.answer);
+    // Prefer wrong answers from the same medical category
+let distractorCandidates = activePool.filter(item =>
+  item.category === correctItem.category &&
+  item.answer !== correctItem.answer
+);
+
+    
     if (distractorCandidates.length === 0) {
       distractorCandidates = neuroDatabase.filter(item => item.answer !== correctItem.answer);
     }
