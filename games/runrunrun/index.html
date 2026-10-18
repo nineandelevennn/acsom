@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>ACSOM Doctor Run — Neurology Drill</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --acsom-red: #E31B23;
+      --acsom-red-dark: #C4121A;
+      --acsom-red-light: #FFEBEE;
+      --acsom-gold: #FFB300;
+      --acsom-gold-light: #FFF8E1;
+      --acsom-gold-border: #FFE082;
+      --bg-main: #F4F5F7;
+      --card-bg: #FFFFFF;
+      --text-dark: #1A1A1A;
+      --text-muted: #555555;
+      --border-color: #E2E8F0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #FFEBEE 0%, var(--bg-main) 60%);
+      color: var(--text-dark);
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .game-wrapper {
+      background: var(--card-bg);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(227, 27, 35, 0.14);
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ACSOM Header Banner */
+    .header {
+      background: linear-gradient(135deg, var(--acsom-red) 0%, var(--acsom-red-dark) 100%);
+      color: #FFFFFF;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      box-shadow: 0 4px 12px rgba(227, 27, 35, 0.2);
+    }
+
+    .home-btn {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #FFFFFF;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 0.72rem;
+      letter-spacing: 0.5px;
+      padding: 6px 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .home-btn:active {
+      transform: scale(0.95);
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .header-title {
+      font-weight: 900;
+      font-size: 0.85rem;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #FFFFFF;
+      font-size: 0.8rem;
+      font-weight: 800;
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 15px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.15s;
+    }
+
+    .icon-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* HUD Panel (Styled after index-57 Fact Card) */
+    .hud {
+      padding: 12px 16px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-color);
+      z-index: 10;
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .stats-row strong {
+      color: var(--text-dark);
+    }
+
+    .target-word-box {
+      background: var(--acsom-gold-light);
+      border: 1px solid var(--acsom-gold-border);
+      border-left: 6px solid var(--acsom-gold);
+      border-radius: 14px;
+      padding: 10px 12px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(255, 179, 0, 0.12);
+    }
+
+    .target-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .target-label {
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #B78103;
+      background: rgba(255, 179, 0, 0.2);
+      padding: 2px 8px;
+      border-radius: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .target-category-tag {
+      font-size: 0.64rem;
+      font-weight: 800;
+      color: var(--acsom-red);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .target-word {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: #332A00;
+      margin-top: 2px;
+      line-height: 1.25;
+      min-height: 1.3em;
+    }
+
+    /* Game Canvas Container */
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      height: 420px;
+      background: #334155;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Overlays (Start & Game Over) */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(18, 20, 26, 0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 18px 20px;
+      text-align: center;
+      color: #FFFFFF;
+      z-index: 20;
+    }
+
+    .overlay.hidden {
+      display: none;
+    }
+
+    .overlay-badge {
+      display: inline-block;
+      background: rgba(227, 27, 35, 0.25);
+      border: 1px solid rgba(227, 27, 35, 0.6);
+      color: #FF8A80;
+      font-weight: 800;
+      font-size: 0.68rem;
+      letter-spacing: 1.2px;
+      padding: 4px 12px;
+      border-radius: 16px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .overlay-title {
+      font-size: 1.2rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+      letter-spacing: 0.4px;
+    }
+
+    .overlay-text {
+      font-size: 0.76rem;
+      line-height: 1.35;
+      color: #CBD5E1;
+      margin-bottom: 12px;
+    }
+
+    /* Input & Topic Selector */
+    .name-input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 2px solid rgba(227, 27, 35, 0.6);
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--text-dark);
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-align: center;
+      outline: none;
+      margin-bottom: 10px;
+      user-select: text;
+    }
+
+    .name-input:focus {
+      border-color: var(--acsom-gold);
+      box-shadow: 0 0 0 3px rgba(255, 179, 0, 0.25);
+    }
+
+    .topic-label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--acsom-gold);
+      margin-bottom: 6px;
+    }
+
+    .topic-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    .topic-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1.5px solid rgba(255, 255, 255, 0.18);
+      color: #E2E8F0;
+      padding: 7px 8px;
+      border-radius: 10px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .topic-btn.full-width {
+      grid-column: span 2;
+      font-size: 0.74rem;
+      font-weight: 800;
+      padding: 8px;
+    }
+
+    .topic-btn.active {
+      background: var(--acsom-red);
+      border-color: #FF8A80;
+      color: #FFFFFF;
+      box-shadow: 0 3px 10px rgba(227, 27, 35, 0.4);
+    }
+
+    .score-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-left: 5px solid var(--acsom-red);
+      border-radius: 16px;
+      padding: 12px 14px;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    .personal-result-text {
+      font-size: 0.88rem;
+      font-weight: 800;
+      line-height: 1.4;
+      color: #FFFFFF;
+      margin-bottom: 6px;
+    }
+
+    .site-address-tag {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 4px 12px;
+      border-radius: 12px;
+      background: rgba(227, 27, 35, 0.28);
+      border: 1px solid rgba(255, 179, 0, 0.45);
+      color: var(--acsom-gold);
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(135deg, var(--acsom-red) 0%, var(--acsom-red-dark) 100%);
+      color: #FFFFFF;
+      border: none;
+      padding: 12px;
+      border-radius: 14px;
+      font-weight: 900;
+      font-size: 0.86rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(227, 27, 35, 0.35);
+      margin-bottom: 8px;
+      transition: transform 0.15s;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-secondary {
+      width: 100%;
+      background: rgba(255, 179, 0, 0.18);
+      color: var(--acsom-gold);
+      border: 1.5px solid var(--acsom-gold);
+      padding: 10px;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-bottom: 6px;
+    }
+
+    .btn-tertiary {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      color: #E2E8F0;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 9px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    /* Bottom Lane Controls */
+    .controls-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 12px 16px;
+      background: #F8FAFC;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .lane-btn {
+      background: #FFFFFF;
+      border: 2px solid var(--acsom-red);
+      color: var(--acsom-red);
+      font-weight: 800;
+      font-size: 0.82rem;
+      padding: 11px;
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 3px 8px rgba(227, 27, 35, 0.08);
+      transition: all 0.15s ease;
+    }
+
+    .lane-btn:active {
+      background: var(--acsom-red);
+      color: #FFFFFF;
+      transform: scale(0.97);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-wrapper">
+    <!-- ACSOM Top Header -->
+    <header class="header">
+      <a href="https://nineandelevennn.github.io/acsom" class="home-btn">← ACSOM</a>
+      <div class="header-title">🏃‍♂️ DOCTOR RUN</div>
+      <div class="header-controls">
+        <button class="icon-btn" onclick="openTopicMenu()" title="Change Subtopic">📚 Topics</button>
+        <button id="soundToggleBtn" class="icon-btn" onclick="toggleSound()" title="Toggle Sound">🔊</button>
+      </div>
+    </header>
+
+    <!-- HUD Panel -->
+    <div class="hud">
+      <div class="stats-row">
+        <span>Score: <strong id="scoreVal">0</strong></span>
+        <span>Best: <strong id="bestVal">0</strong> 🏆</span>
+        <span>Pace: <strong id="speedVal" style="color: var(--acsom-red);">x1.0</strong> ⚡</span>
+      </div>
+      <div class="target-word-box">
+        <div class="target-header">
+          <span class="target-label">⚡ Select Matching Association</span>
+          <span class="target-category-tag" id="hudCategoryTag">All Concepts</span>
+        </div>
+        <div class="target-word" id="currentPromptWord">Ready to Run?</div>
+      </div>
+    </div>
+
+    <!-- Canvas & Overlays -->
+    <div class="canvas-container">
+      <canvas id="gameCanvas" width="400" height="420"></canvas>
+
+      <!-- Start / Topic Selection Overlay -->
+      <div id="startOverlay" class="overlay">
+        <span class="overlay-badge">AMERICAN CANADIAN SCHOOL OF MEDICINE</span>
+        <div class="overlay-title">Neurology Buzzword Run</div>
+        <p class="overlay-text">
+          The doctor is rushing to a consult! Read the neurological concept at the top and switch to the lane with the matching clinical finding or localization.
+        </p>
+
+        <input type="text" id="playerNameInput" class="name-input" placeholder="Enter your name (e.g., Dr. Smith)..." maxlength="20">
+
+        <div class="topic-label">Choose Subtopic to Run:</div>
+        <div class="topic-grid" id="topicSelectorGrid">
+          <button class="topic-btn full-width active" data-topic="All" onclick="selectTopic('All', 'All Concepts (69)')">🧠 All Neurological Concepts (69)</button>
+          <button class="topic-btn" data-topic="Dermatomes" onclick="selectTopic('Dermatomes', 'Dermatomes')">📍 Dermatomes (10)</button>
+          <button class="topic-btn" data-topic="Reflexes" onclick="selectTopic('Reflexes', 'Reflexes')">🔨 Reflexes (8)</button>
+          <button class="topic-btn" data-topic="Myotomes" onclick="selectTopic('Myotomes', 'Myotomes')">💪 Myotomes (10)</button>
+          <button class="topic-btn" data-topic="Peripheral Nerve Injuries" onclick="selectTopic('Peripheral Nerve Injuries', 'Nerve Injuries')">⚡ Nerve Injuries (8)</button>
+          <button class="topic-btn" data-topic="Cortical & Limbic" onclick="selectTopic('Cortical & Limbic', 'Cortical & Limbic')">🧩 Cortical & Limbic (13)</button>
+          <button class="topic-btn" data-topic="Vascular & Stroke" onclick="selectTopic('Vascular & Stroke', 'Vascular & Stroke')">🩸 Stroke & Vascular (8)</button>
+          <button class="topic-btn full-width" data-topic="Cranial Nerves" onclick="selectTopic('Cranial Nerves', 'Cranial Nerves')">👁️ Cranial Nerve Lesions (12)</button>
+        </div>
+
+        <button class="btn-primary" onclick="startGame()">Start Shift ➔</button>
+      </div>
+
+      <!-- Game Over Overlay -->
+      <div id="gameOverOverlay" class="overlay hidden">
+        <div style="font-size: 2.2rem; margin-bottom: 4px;">🚑</div>
+        <div class="overlay-title">Shift Ended!</div>
+        <p class="overlay-text" id="overReasonText" style="margin-bottom: 10px;"></p>
+
+        <div class="score-card">
+          <div id="personalResultSummary" class="personal-result-text"></div>
+          <div style="font-size: 0.76rem; color: #CBD5E1;">
+            Best Score: <strong id="finalBest" style="color: #FFFFFF;">0</strong> 🏆
+          </div>
+
+        <button class="btn-primary" onclick="startGame()">🔄 Run Again (Same Topic)</button>
+        <button class="btn-secondary" onclick="shareScore()">📸 Share Result Card</button>
+        <button class="btn-tertiary" onclick="openTopicMenu()">📚 Change Subtopic</button>
+      </div>
+    </div>
+
+    <!-- Mobile Lane Controls -->
+    <div class="controls-bar">
+      <button class="lane-btn" onclick="moveDoctor(0)">⬅ Left Lane</button>
+      <button class="lane-btn" onclick="moveDoctor(1)">Right Lane ➡</button>
+    </div>
+  </div>
+
+<script>
+  // =========================================================================
+  // 1. WEB AUDIO SYNTHESIZER (NO EXTERNAL MP3 DEPENDENCY REQUIRED)
+  // =========================================================================
+  let isSoundEnabled = localStorage.getItem('acsomRunnerSound') !== 'off';
+  document.getElementById('soundToggleBtn').textContent = isSoundEnabled ? '🔊' : '🔇';
+
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  let audioCtx = null;
+
+  function playTone(type) {
+    if (!isSoundEnabled) return;
+    try {
+      if (!audioCtx) audioCtx = new AudioCtx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime;
+
+      if (type === 'start') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(660, now + 0.18);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      } else if (type === 'correct') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, now); // D5
+        osc.frequency.setValueAtTime(880, now + 0.08); // A5
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.22);
+        osc.start(now);
+        osc.stop(now + 0.22);
+      } else if (type === 'wrong') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.linearRampToValueAtTime(130, now + 0.35);
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.38);
+        osc.start(now);
+        osc.stop(now + 0.38);
+      }
+    } catch (e) {}
+  }
+
+  function toggleSound() {
+    isSoundEnabled = !isSoundEnabled;
+    localStorage.setItem('acsomRunnerSound', isSoundEnabled ? 'on' : 'off');
+    document.getElementById('soundToggleBtn').textContent = isSoundEnabled ? '🔊' : '🔇';
+  }
+
+  // =========================================================================
+  // 2. NEUROLOGY DATABASE (ALL 69 CONCEPTS FROM RUN DOCTOR!.DOCX)
+  // =========================================================================
+  const neuroDatabase = [
+    // Dermatomes (10)
+    { category: "Dermatomes", prompt: "C6 dermatome", answer: "Thumb" },
+    { category: "Dermatomes", prompt: "C7 dermatome", answer: "Middle finger" },
+    { category: "Dermatomes", prompt: "C8 dermatome", answer: "Little finger" },
+    { category: "Dermatomes", prompt: "T4 dermatome", answer: "Nipple" },
+    { category: "Dermatomes", prompt: "T10 dermatome", answer: "Umbilicus" },
+    { category: "Dermatomes", prompt: "L1 dermatome", answer: "Inguinal crease" },
+    { category: "Dermatomes", prompt: "L4 dermatome", answer: "Medial malleolus" },
+    { category: "Dermatomes", prompt: "L5 dermatome", answer: "Great toe" },
+    { category: "Dermatomes", prompt: "S1 dermatome", answer: "Lateral foot" },
+    { category: "Dermatomes", prompt: "S3–S5 dermatome", answer: "Saddle sensation" },
+
+    // Reflexes (8)
+    { category: "Reflexes", prompt: "Biceps reflex", answer: "C5–C6" },
+    { category: "Reflexes", prompt: "Brachioradialis reflex", answer: "C5–C6" },
+    { category: "Reflexes", prompt: "Triceps reflex", answer: "C7–C8" },
+    { category: "Reflexes", prompt: "Finger flexor reflex", answer: "C8–T1" },
+    { category: "Reflexes", prompt: "Patellar reflex", answer: "L2–L4" },
+    { category: "Reflexes", prompt: "Achilles reflex", answer: "S1–S2" },
+    { category: "Reflexes", prompt: "Cremasteric reflex", answer: "L1–L2" },
+    { category: "Reflexes", prompt: "Vestibulo-ocular reflex", answer: "CN VIII" },
+
+    // Myotomes (10)
+    { category: "Myotomes", prompt: "C5 myotome", answer: "Abduct shoulder" },
+    { category: "Myotomes", prompt: "C6 myotome", answer: "Extend wrist" },
+    { category: "Myotomes", prompt: "C7 myotome", answer: "Extend elbow" },
+    { category: "Myotomes", prompt: "C8 myotome", answer: "Flex fingers" },
+    { category: "Myotomes", prompt: "T1 myotome", answer: "Abduct fingers" },
+    { category: "Myotomes", prompt: "L2 myotome", answer: "Flex hip" },
+    { category: "Myotomes", prompt: "L3–L4 myotome", answer: "Extend knee" },
+    { category: "Myotomes", prompt: "L4–L5 myotome", answer: "Dorsiflex ankle" },
+    { category: "Myotomes", prompt: "L5 myotome", answer: "Extend great toe" },
+    { category: "Myotomes", prompt: "S1 myotome", answer: "Plantarflex ankle" },
+
+    // Peripheral Nerve Injuries (8)
+    { category: "Peripheral Nerve Injuries", prompt: "Radial lesion in spiral groove", answer: "Wrist drop, triceps spared" },
+    { category: "Peripheral Nerve Injuries", prompt: "Radial lesion in axilla", answer: "Wrist drop + triceps weak" },
+    { category: "Peripheral Nerve Injuries", prompt: "Median lesion (motor)", answer: "Thenar weakness / atrophy" },
+    { category: "Peripheral Nerve Injuries", prompt: "Median lesion (palmar cutaneous)", answer: "Palmar sensation lateral 3.5 digits preserved" },
+    { category: "Peripheral Nerve Injuries", prompt: "Ulnar lesion (motor)", answer: "Interosseous weakness" },
+    { category: "Peripheral Nerve Injuries", prompt: "Ulnar lesion (sensory)", answer: "Sensory symptoms in medial 1.5 digits" },
+    { category: "Peripheral Nerve Injuries", prompt: "Common fibular lesion at fibular neck", answer: "Foot drop" },
+    { category: "Peripheral Nerve Injuries", prompt: "Superior gluteal nerve injury", answer: "Pelvic drop" },
+
+    // Cortical & Limbic (13)
+    { category: "Cortical & Limbic", prompt: "Primary motor cortex", answer: "Precentral gyrus" },
+    { category: "Cortical & Limbic", prompt: "Broca area", answer: "Dominant inferior frontal gyrus" },
+    { category: "Cortical & Limbic", prompt: "Prefrontal cortex", answer: "Executive function" },
+    { category: "Cortical & Limbic", prompt: "Anterior cingulate", answer: "Motivation" },
+    { category: "Cortical & Limbic", prompt: "Primary somatosensory cortex", answer: "Postcentral gyrus" },
+    { category: "Cortical & Limbic", prompt: "Nondominant parietal lesion", answer: "Hemispatial neglect" },
+    { category: "Cortical & Limbic", prompt: "Dominant parietal lesion", answer: "Agraphia, acalculia, finger agnosia" },
+    { category: "Cortical & Limbic", prompt: "Primary auditory cortex", answer: "Superior temporal region" },
+    { category: "Cortical & Limbic", prompt: "Wernicke area (location)", answer: "Dominant posterior superior temporal region" },
+    { category: "Cortical & Limbic", prompt: "Wernicke area (function)", answer: "Language comprehension" },
+    { category: "Cortical & Limbic", prompt: "Hippocampus", answer: "New declarative memories" },
+    { category: "Cortical & Limbic", prompt: "Amygdala", answer: "Emotional processing, including fear" },
+    { category: "Cortical & Limbic", prompt: "Medial temporal lesion", answer: "Impaired formation of new memories" },
+
+    // Vascular & Stroke (8)
+    { category: "Vascular & Stroke", prompt: "ACA infarct", answer: "Leg more affected than arm" },
+    { category: "Vascular & Stroke", prompt: "MCA infarct", answer: "Face and arm more affected than leg" },
+    { category: "Vascular & Stroke", prompt: "PCA infarct", answer: "Visual field deficit" },
+    { category: "Vascular & Stroke", prompt: "Dominant hemisphere stroke", answer: "Language deficits" },
+    { category: "Vascular & Stroke", prompt: "Nondominant hemisphere stroke", answer: "Spatial neglect" },
+    { category: "Vascular & Stroke", prompt: "Lacunar infarct", answer: "Pure motor/sensory syndrome without cortical signs" },
+    { category: "Vascular & Stroke", prompt: "Subarachnoid hemorrhage", answer: "Sudden thunderclap headache; ruptured saccular aneurysm" },
+    { category: "Vascular & Stroke", prompt: "Watershed infarction", answer: "Border-zone ischemia; 'man-in-the-barrel' weakness" },
+
+    // Cranial Nerves (12)
+    { category: "Cranial Nerves", prompt: "CN I injury", answer: "Anosmia" },
+    { category: "Cranial Nerves", prompt: "CN II injury", answer: "Visual loss & afferent pupillary defect if asymmetric" },
+    { category: "Cranial Nerves", prompt: "CN III lesion", answer: "'Down and out,' ptosis; dilated pupil if compressive" },
+    { category: "Cranial Nerves", prompt: "CN IV lesion", answer: "Vertical diplopia, difficulty descending stairs/reading" },
+    { category: "Cranial Nerves", prompt: "CN V mandibular division lesion", answer: "Weak mastication; jaw deviates toward weak side" },
+    { category: "Cranial Nerves", prompt: "CN VI lesion", answer: "Medial deviation at rest and impaired abduction" },
+    { category: "Cranial Nerves", prompt: "CN VII peripheral lesion", answer: "Ipsilateral upper and lower facial weakness" },
+    { category: "Cranial Nerves", prompt: "CN VII central lesion", answer: "Contralateral lower facial weakness; forehead spared" },
+    { category: "Cranial Nerves", prompt: "CN VIII lesion", answer: "Sensorineural hearing loss, tinnitus, vertigo" },
+    { category: "Cranial Nerves", prompt: "CN IX/X lesion", answer: "Dysphagia, dysphonia, impaired gag reflex" },
+    { category: "Cranial Nerves", prompt: "CN X unilateral lesion", answer: "Palate droops on affected side; uvula deviates away" },
+    { category: "Cranial Nerves", prompt: "CN XI lesion", answer: "Weak shoulder shrug and head rotation" },
+    { category: "Cranial Nerves", prompt: "CN XII LMN lesion", answer: "Tongue deviates toward lesion on protrusion" }
+  ];
+
+  // =========================================================================
+  // 3. PLAYER RANKS / LEVELS (ENGLISH MEDICAL HIERARCHY)
+  // =========================================================================
+  function getPlayerLevel(score) {
+    if (score >= 25) return "Albus Dumbledore😎";
+    if (score >= 22) return "Voldemort😮😮";
+    if (score >= 19) return "Severus Snape😮";
+    if (score >= 16) return "Minerva McGonagall🐈";
+    if (score >= 13) return "Hermione Granger💪";
+    if (score >= 10) return "Luna Lovegood👍";
+    if (score >= 7)  return "Harry Potter👌";
+    if (score >= 4)  return "Ronald Weasley😂";
+    return "Vincent Crabbe😂😂";
+  }
+
+  // =========================================================================
+  // 4. TOPIC SELECTION & STATE
+  // =========================================================================
+  let selectedTopic = 'All';
+  let selectedTopicLabel = 'All Concepts';
+  let activePool = [...neuroDatabase];
+
+  let playerName = localStorage.getItem('acsomRunnerName') || '';
+  document.getElementById('playerNameInput').value = playerName;
+
+  function selectTopic(topicKey, labelText) {
+    selectedTopic = topicKey;
+    selectedTopicLabel = labelText;
+
+    document.querySelectorAll('.topic-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-topic') === topicKey);
+    });
+
+    document.getElementById('hudCategoryTag').textContent = labelText;
+  }
+
+  function openTopicMenu() {
+    isPlaying = false;
+    document.getElementById('gameOverOverlay').classList.add('hidden');
+    document.getElementById('startOverlay').classList.remove('hidden');
+  }
+
+  // =========================================================================
+  // 5. HTML5 CANVAS ENGINE
+  // =========================================================================
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+
+  const LANE_X = [130, 270];
+
+  let isPlaying = false;
+  let score = 0;
+  let bestScore = parseInt(localStorage.getItem('acsomRunnerBest') || '0', 10);
+  document.getElementById('bestVal').textContent = bestScore;
+
+  let baseSpeed = 2.4;
+  let currentSpeed = baseSpeed;
+  let roadDashOffset = 0;
+  let animTick = 0;
+
+  const doctor = {
+    lane: 0,
+    x: LANE_X[0],
+    targetX: LANE_X[0],
+    y: 340
+  };
+
+  const gate = {
+    y: -100,
+    height: 76,
+    wordObj: null,
+    wrongObj: null,
+    leftText: "",
+    rightText: "",
+    correctLane: 0,
+    passed: false
+  };
+
+  function moveDoctor(laneIndex) {
+    if (!isPlaying) return;
+    doctor.lane = laneIndex;
+    doctor.targetX = LANE_X[laneIndex];
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (!isPlaying) return;
+    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+      moveDoctor(0);
+    } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+      moveDoctor(1);
+    }
+  });
+
+  canvas.addEventListener('pointerdown', (e) => {
+    if (!isPlaying) return;
+    const rect = canvas.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    if (clickX < rect.width / 2) {
+      moveDoctor(0);
+    } else {
+      moveDoctor(1);
+    }
+  });
+
+  function spawnGate() {
+    gate.y = -90;
+    gate.passed = false;
+
+    const correctIdx = Math.floor(Math.random() * activePool.length);
+    const correctItem = activePool[correctIdx];
+
+    // Pick a distractor from the same subtopic if possible, ensuring distinct answer text
+    let distractorCandidates = activePool.filter(item => item.answer !== correctItem.answer);
+    if (distractorCandidates.length === 0) {
+      distractorCandidates = neuroDatabase.filter(item => item.answer !== correctItem.answer);
+    }
+    const wrongItem = distractorCandidates[Math.floor(Math.random() * distractorCandidates.length)];
+
+    gate.wordObj = correctItem;
+    gate.wrongObj = wrongItem;
+    gate.correctLane = Math.random() < 0.5 ? 0 : 1;
+
+    gate.leftText = gate.correctLane === 0 ? gate.wordObj.answer : gate.wrongObj.answer;
+    gate.rightText = gate.correctLane === 1 ? gate.wordObj.answer : gate.wrongObj.answer;
+
+    document.getElementById('currentPromptWord').textContent = gate.wordObj.prompt;
+    document.getElementById('hudCategoryTag').textContent =
+      selectedTopic === 'All' ? gate.wordObj.category : selectedTopicLabel;
+  }
+
+  function startGame() {
+    playTone('start');
+
+    const inputVal = document.getElementById('playerNameInput').value.trim();
+    playerName = inputVal || "Doctor";
+    if (inputVal) {
+      localStorage.setItem('acsomRunnerName', inputVal);
+    }
+
+    activePool = selectedTopic === 'All'
+      ? [...neuroDatabase]
+      : neuroDatabase.filter(item => item.category === selectedTopic);
+
+    score = 0;
+    currentSpeed = baseSpeed;
+    doctor.lane = 0;
+    doctor.x = LANE_X[0];
+    doctor.targetX = LANE_X[0];
+
+    updateHud();
+    document.getElementById('startOverlay').classList.add('hidden');
+    document.getElementById('gameOverOverlay').classList.add('hidden');
+
+    spawnGate();
+    isPlaying = true;
+  }
+
+  function renderEndGameSummary() {
+    if (gate.wordObj) {
+      document.getElementById('overReasonText').innerHTML =
+        `<strong>${gate.wordObj.prompt}</strong> → Correct association: <span style="color: var(--acsom-gold); font-weight: 800;">“${gate.wordObj.answer}”</span>`;
+    }
+
+    const levelTitle = getPlayerLevel(score);
+    const summaryEl = document.getElementById('personalResultSummary');
+
+    summaryEl.innerHTML =
+      `<span style="color: var(--acsom-gold);">${playerName}</span>, you scored <span style="color: var(--acsom-gold); font-size: 1.1rem;">${score}</span> correct!<br>` +
+      `Topic: <span style="color: #CBD5E1;">${selectedTopicLabel}</span><br>` +
+      `Rank: <span style="color: #FF8A80; text-transform: uppercase;">${levelTitle}</span>`;
+
+    document.getElementById('finalBest').textContent = bestScore;
+  }
+
+  function endGame() {
+    playTone('wrong');
+    isPlaying = false;
+
+    if (score > bestScore) {
+      bestScore = score;
+      localStorage.setItem('acsomRunnerBest', bestScore);
+    }
+    updateHud();
+    renderEndGameSummary();
+    document.getElementById('gameOverOverlay').classList.remove('hidden');
+  }
+
+  function updateHud() {
+    document.getElementById('scoreVal').textContent = score;
+    document.getElementById('bestVal').textContent = bestScore;
+    const speedMultiplier = (currentSpeed / baseSpeed).toFixed(1);
+    document.getElementById('speedVal').textContent = `x${speedMultiplier}`;
+  }
+
+  // =========================================================================
+  // 6. SHARE SCORE CARD GENERATOR (ACSOM BRANDED)
+  // =========================================================================
+  async function shareScore() {
+    const levelTitle = getPlayerLevel(score).toUpperCase();
+    const shareCanvas = document.createElement('canvas');
+    shareCanvas.width = 720;
+    shareCanvas.height = 900;
+    const sCtx = shareCanvas.getContext('2d');
+
+    // 1. ACSOM Crimson & Dark Slate Gradient
+    const grad = sCtx.createLinearGradient(0, 0, 720, 900);
+    grad.addColorStop(0, '#C4121A');
+    grad.addColorStop(0.5, '#18181B');
+    grad.addColorStop(1, '#0F172A');
+    sCtx.fillStyle = grad;
+    sCtx.fillRect(0, 0, 720, 900);
+
+    // 2. Top Gold Glow
+    const glow = sCtx.createRadialGradient(360, 140, 20, 360, 140, 320);
+    glow.addColorStop(0, 'rgba(255, 179, 0, 0.25)');
+    glow.addColorStop(1, 'rgba(255, 179, 0, 0)');
+    sCtx.fillStyle = glow;
+    sCtx.fillRect(0, 0, 720, 900);
+
+    // 3. Card Border
+    sCtx.strokeStyle = 'rgba(227, 27, 35, 0.65)';
+    sCtx.lineWidth = 4;
+    sCtx.beginPath();
+    sCtx.roundRect(36, 36, 648, 828, 32);
+    sCtx.stroke();
+
+    // 4. Header Branding
+    sCtx.fillStyle = '#FFB300';
+    sCtx.font = '800 22px Montserrat, sans-serif';
+    sCtx.textAlign = 'center';
+    sCtx.fillText('✨ AMERICAN CANADIAN SCHOOL OF MEDICINE', 360, 105);
+
+    sCtx.fillStyle = '#FFFFFF';
+    sCtx.font = '900 42px Montserrat, sans-serif';
+    sCtx.fillText('🏃‍♂️ NEURO DOCTOR RUN', 360, 162);
+
+    // 5. Central Result Box
+    sCtx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+    sCtx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+    sCtx.lineWidth = 2;
+    sCtx.beginPath();
+    sCtx.roundRect(70, 210, 580, 500, 28);
+    sCtx.fill();
+    sCtx.stroke();
+
+    sCtx.fillStyle = '#FF8A80';
+    sCtx.font = '900 36px Montserrat, sans-serif';
+    sCtx.fillText(playerName + ',', 360, 280);
+
+    sCtx.fillStyle = '#E2E8F0';
+    sCtx.font = '700 24px Montserrat, sans-serif';
+    sCtx.fillText('Topic: ' + selectedTopicLabel, 360, 325);
+
+    sCtx.fillStyle = '#FFB300';
+    sCtx.font = '900 115px Montserrat, sans-serif';
+    sCtx.fillText(String(score), 360, 445);
+
+    sCtx.fillStyle = '#FFFFFF';
+    sCtx.font = '800 28px Montserrat, sans-serif';
+    sCtx.fillText('CORRECT ASSOCIATIONS!', 360, 495);
+
+    // Rank Badge
+    sCtx.fillStyle = 'rgba(227, 27, 35, 0.3)';
+    sCtx.strokeStyle = '#FFB300';
+    sCtx.lineWidth = 3;
+    sCtx.beginPath();
+    sCtx.roundRect(110, 545, 500, 115, 22);
+    sCtx.fill();
+    sCtx.stroke();
+
+    sCtx.fillStyle = '#CBD5E1';
+    sCtx.font = '700 20px Montserrat, sans-serif';
+    sCtx.fillText('CLINICAL RANK ACHIEVED:', 360, 583);
+
+    sCtx.fillStyle = '#FFB300';
+    sCtx.font = '900 30px Montserrat, sans-serif';
+    sCtx.fillText(levelTitle, 360, 630);
+
+    // 6. Footer URL
+    sCtx.fillStyle = '#FFFFFF';
+    sCtx.font = '700 22px Montserrat, sans-serif';
+    sCtx.fillText('Practice High-Yield USMLE Drills at:', 360, 775);
+
+    sCtx.fillStyle = '#FFB300';
+    sCtx.font = '900 30px Montserrat, sans-serif';
+    sCtx.fillText('nineandelevennn.github.io/acsom', 360, 822);
+
+    shareCanvas.toBlob(async (blob) => {
+      if (!blob) return;
+      const file = new File([blob], 'acsom-doctor-run.png', { type: 'image/png' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'ACSOM Neuro Doctor Run'
+          });
+          return;
+        } catch (err) {
+          if (err.name === 'AbortError') return;
+        }
+      }
+
+      const link = document.createElement('a');
+      link.download = 'acsom-doctor-run.png';
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }, 'image/png');
+  }
+
+  // =========================================================================
+  // 7. CANVAS DRAWING (ROAD, MULTI-LINE GATES, ACSOM DOCTOR)
+  // =========================================================================
+  function drawRoad() {
+    // Hospital Corridor / Roadside
+    ctx.fillStyle = "#1E293B";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // ACSOM Crimson & Gold Curbs
+    ctx.fillStyle = "#E31B23";
+    ctx.fillRect(50, 0, 10, canvas.height);
+    ctx.fillRect(340, 0, 10, canvas.height);
+
+    // Asphalt Road
+    ctx.fillStyle = "#334155";
+    ctx.fillRect(60, 0, 280, canvas.height);
+
+    // Center Lane Divider
+    ctx.strokeStyle = "#F8FAFC";
+    ctx.lineWidth = 4;
+    ctx.setLineDash([28, 24]);
+    ctx.lineDashOffset = -roadDashOffset;
+    ctx.beginPath();
+    ctx.moveTo(200, -40);
+    ctx.lineTo(200, canvas.height + 40);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Helper to wrap longer neurological findings cleanly inside a gate banner
+  function wrapGateText(text, maxWidth, fontSize) {
+    ctx.font = `800 ${fontSize}px Montserrat, sans-serif`;
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+      const testLine = currentLine + ' ' + words[i];
+      if (ctx.measureText(testLine).width <= maxWidth) {
+        currentLine = testLine;
+      } else {
+        lines.push(currentLine);
+        currentLine = words[i];
+      }
+    }
+    lines.push(currentLine);
+    return lines;
+  }
+
+  function drawGates() {
+    if (!gate.wordObj) return;
+
+    const drawSingleBanner = (centerX, text) => {
+      const w = 128;
+      const h = gate.height;
+      const x = centerX - w / 2;
+      const y = gate.y;
+
+      // Drop Shadow
+      ctx.fillStyle = "rgba(0, 0, 0, 0.28)";
+      ctx.beginPath();
+      ctx.roundRect(x + 2, y + 5, w, h, 12);
+      ctx.fill();
+
+      // White Card with ACSOM Red Border
+      ctx.fillStyle = "#FFFFFF";
+      ctx.strokeStyle = "#E31B23";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, 12);
+      ctx.fill();
+      ctx.stroke();
+
+      // Top Gold Accent Strip
+      ctx.fillStyle = "#FFB300";
+      ctx.beginPath();
+      ctx.roundRect(x + 1.5, y + 1.5, w - 3, 9, [10, 10, 0, 0]);
+      ctx.fill();
+
+      // Dynamic Font Sizing & Multi-line Wrapping
+      let fontSize = 11.5;
+      if (text.length > 26) fontSize = 10;
+      if (text.length > 42) fontSize = 9;
+
+      const lines = wrapGateText(text, w - 12, fontSize);
+
+      ctx.fillStyle = "#1A1A1A";
+      ctx.font = `800 ${fontSize}px Montserrat, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      const lineHeight = fontSize + 2.5;
+      const totalHeight = lines.length * lineHeight;
+      const startY = y + 5 + (h - 5) / 2 - totalHeight / 2 + lineHeight / 2;
+
+      lines.forEach((line, idx) => {
+        ctx.fillText(line, centerX, startY + idx * lineHeight, w - 8);
+      });
+    };
+
+    drawSingleBanner(LANE_X[0], gate.leftText);
+    drawSingleBanner(LANE_X[1], gate.rightText);
+  }
+
+  function drawDoctor() {
+    const x = doctor.x;
+    const y = doctor.y;
+    const swing = isPlaying ? Math.sin(animTick * 0.28) * 7 : 0;
+
+    ctx.save();
+
+    // Shadow
+    ctx.fillStyle = "rgba(0, 0, 0, 0.32)";
+    ctx.beginPath();
+    ctx.ellipse(x, y + 32, 20, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Scrubs Legs
+    ctx.fillStyle = "#991B1B";
+    ctx.beginPath();
+    ctx.roundRect(x - 12, y + 12 + swing, 9, 18, 4);
+    ctx.roundRect(x + 3, y + 12 - swing, 9, 18, 4);
+    ctx.fill();
+
+    // White Lab Coat
+    ctx.fillStyle = "#FFFFFF";
+    ctx.strokeStyle = "#CBD5E1";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(x - 16, y - 14, 32, 30, 8);
+    ctx.fill();
+    ctx.stroke();
+
+    // ACSOM Crimson Scrubs V-Neck
+    ctx.fillStyle = "#E31B23";
+    ctx.beginPath();
+    ctx.moveTo(x - 6, y - 14);
+    ctx.lineTo(x + 6, y - 14);
+    ctx.lineTo(x, y - 2);
+    ctx.closePath();
+    ctx.fill();
+
+    // Stethoscope
+    ctx.strokeStyle = "#1E293B";
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(x, y - 10, 9, 0.2, Math.PI - 0.2);
+    ctx.stroke();
+
+    // Gold Reflex Hammer / Badge Accent
+    ctx.fillStyle = "#FFB300";
+    ctx.beginPath();
+    ctx.arc(x + 8, y - 3, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Swinging Arms
+    ctx.fillStyle = "#F8FAFC";
+    ctx.beginPath();
+    ctx.roundRect(x - 22, y - 10 - swing * 0.7, 7, 20, 4);
+    ctx.roundRect(x + 15, y - 10 + swing * 0.7, 7, 20, 4);
+    ctx.fill();
+
+    // Head
+    ctx.fillStyle = "#FDE68A";
+    ctx.beginPath();
+    ctx.arc(x, y - 24, 12, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ACSOM Red Surgical Cap
+    ctx.fillStyle = "#E31B23";
+    ctx.beginPath();
+    ctx.arc(x, y - 26, 12.5, Math.PI, 0);
+    ctx.fill();
+
+    // Medical Cross on Cap
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(x - 1.5, y - 35, 3, 7);
+    ctx.fillRect(x - 3.5, y - 33, 7, 3);
+
+    ctx.restore();
+  }
+
+  function gameLoop() {
+    if (isPlaying) {
+      animTick++;
+      roadDashOffset = (roadDashOffset + currentSpeed * 1.4) % 52;
+
+      doctor.x += (doctor.targetX - doctor.x) * 0.22;
+      gate.y += currentSpeed;
+
+      if (!gate.passed && gate.y + gate.height >= doctor.y - 25 && gate.y <= doctor.y + 15) {
+        gate.passed = true;
+        if (doctor.lane === gate.correctLane) {
+          score++;
+          playTone('correct');
+          currentSpeed = Math.min(7.8, currentSpeed + 0.18);
+          updateHud();
+          spawnGate();
+        } else {
+          endGame();
+        }
+      }
+    }
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawRoad();
+    drawGates();
+    drawDoctor();
+
+    requestAnimationFrame(gameLoop);
+  }
+
+  requestAnimationFrame(gameLoop);
+</script>
+</body>
+</html>
