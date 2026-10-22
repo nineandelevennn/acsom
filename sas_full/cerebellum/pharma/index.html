@@ -1,0 +1,2063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>USMLE Step 1 Psychiatry Pharmacology - High-Yield Drug Drill</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slide: {
+                            red: '#E31B23',
+                            darkred: '#BF0000',
+                            bg: '#F4F5F7',
+                            card: '#FFFFFF',
+                            text: '#1A1A1A',
+                            subtext: '#555555',
+                            border: '#E2E8F0'
+                        }
+                    },
+                    animation: {
+                        'pop': 'pop 0.2s ease-out',
+                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    },
+                    keyframes: {
+                        pop: {
+                            '0%': { transform: 'scale(0.98)', opacity: '0.8' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Lock screen to 100dvh with zero page scrolling on mobile */
+        html, body {
+            height: 100dvh;
+            width: 100vw;
+            overflow: hidden;
+            position: fixed;
+            touch-action: manipulation;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #F4F5F7;
+            color: #1A1A1A;
+        }
+
+        /* Fluid text sizing for mobile viewports */
+        .text-clamp-title {
+            font-size: clamp(0.82rem, 3.6vw, 1.15rem);
+        }
+        .text-clamp-prompt {
+            font-size: clamp(0.82rem, 3.5vw, 1.0rem);
+            line-height: 1.28;
+        }
+        .text-clamp-option {
+            font-size: clamp(0.73rem, 2.9vw, 0.86rem);
+            line-height: 1.18;
+        }
+
+        button, a, select {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Custom subtle scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E31B23;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slide-bg text-slide-text flex flex-col justify-between select-none antialiased h-[100dvh] max-h-[100dvh] w-full p-0 m-0 border-box">
+
+    <!-- SLIDE-STYLE HEADER BANNER -->
+    <header class="shrink-0 bg-slide-red text-white w-full shadow-md py-2 px-3 sm:px-4 z-20">
+        <div class="max-w-md mx-auto flex items-center justify-between gap-2">
+            <!-- GO BACK BUTTON -->
+            <a href="https://nineandelevennn.github.io/acsom/" target="_self" class="inline-flex items-center gap-1 px-2.5 py-1 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded-lg border border-white/30 transition-all active:scale-95 shrink-0">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Go Back
+            </a>
+
+            <!-- CENTER LECTURE TITLE -->
+            <div class="text-center flex-1 min-w-0">
+                <h1 class="font-black text-white text-clamp-title tracking-wider uppercase truncate">USMLE PSYCHIATRY DRUG DRILL</h1>
+                <p class="text-[9px] text-white/90 font-medium tracking-widest uppercase truncate">American Canadian School of Medicine</p>
+            </div>
+
+            <!-- SETUP / MODELAUNCHER BUTTON -->
+            <button id="openSetupBtn" class="px-2.5 py-1 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded-lg border border-white/30 transition-all active:scale-95 shrink-0 flex items-center gap-1" title="Change Mode or Category">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                <span>Mode</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN WRAPPER CONTAINER -->
+    <div class="flex-1 min-h-0 w-full max-w-md mx-auto flex flex-col justify-between px-2.5 py-1.5 sm:px-4 box-border relative">
+
+        <!-- TOP CONTROLS: CATEGORY + DRILL TYPE + STATS BAR -->
+        <section class="shrink-0 flex flex-col gap-1.5 w-full my-0.5">
+            <!-- COMPACT DUAL SELECTOR BAR (CATEGORY & DRILL DIRECTION) -->
+            <div class="grid grid-cols-12 gap-1.5 w-full">
+                <!-- Category Dropdown -->
+                <div class="relative col-span-7">
+                    <select id="categorySelect" class="w-full bg-white text-slide-text font-bold text-[11px] sm:text-xs py-1.5 pl-2.5 pr-6 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slide-red appearance-none shadow-sm cursor-pointer truncate">
+                        <!-- Populated dynamically -->
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slide-red">
+                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                    </div>
+                </div>
+
+                <!-- Question Type Dropdown -->
+                <div class="relative col-span-5">
+                    <select id="drillTypeSelect" class="w-full bg-white text-slide-text font-bold text-[11px] sm:text-xs py-1.5 pl-2.5 pr-6 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slide-red appearance-none shadow-sm cursor-pointer truncate">
+                        <option value="mixed">All Drill Types</option>
+                        <option value="drug_to_mech">Drug &rarr; Mechanism</option>
+                        <option value="drug_to_ind">Drug &rarr; Indication</option>
+                        <option value="drug_to_adv">Drug &rarr; Adverse</option>
+                        <option value="ind_to_drug">Indication &rarr; Drug</option>
+                        <option value="mech_to_drug">Mechanism &rarr; Drug</option>
+                        <option value="adv_to_drug">Adverse &rarr; Drug</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slide-red">
+                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATS DASHBOARD BAR (4 COLUMNS when Rush is active or 4 unified metrics) -->
+            <div class="grid grid-cols-4 gap-1.5 w-full">
+                <!-- DONE STAT -->
+                <div class="bg-white border border-slate-200 rounded-xl py-1 px-1.5 flex flex-col items-center justify-center shadow-sm">
+                    <span class="text-[8px] uppercase font-bold text-slide-subtext tracking-wider">Total</span>
+                    <span id="statDone" class="text-sm sm:text-base font-black text-slate-800 leading-tight">0</span>
+                </div>
+
+                <!-- CORRECT & ACCURACY STAT -->
+                <div class="bg-white border border-slate-200 rounded-xl py-1 px-1.5 flex flex-col items-center justify-center shadow-sm">
+                    <span class="text-[8px] uppercase font-bold text-slide-subtext tracking-wider">Correct</span>
+                    <div class="flex items-baseline gap-0.5 leading-tight">
+                        <span id="statCorrect" class="text-sm sm:text-base font-black text-emerald-600">0</span>
+                        <span id="statAccuracy" class="text-[9px] text-slate-500 font-semibold">(0%)</span>
+                    </div>
+                </div>
+
+                <!-- STREAK & LONGEST STREAK STAT -->
+                <div class="bg-white border border-slate-200 rounded-xl py-1 px-1.5 flex flex-col items-center justify-center shadow-sm">
+                    <span class="text-[8px] uppercase font-bold text-slide-subtext tracking-wider flex items-center gap-0.5">
+                        Streak
+                        <svg class="w-2.5 h-2.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-1.048c-2.5 1.249-4.2 3.824-4.2 6.551 0 2.228 1.135 4.103 2.8 5.15C8.3 13.9 7 15.65 7 17.5c0 .28.02.55.06.81a1 1 0 001.6.66c1.8-1.35 3.34-3.23 3.34-5.47 0-1.34-.5-2.55-1.35-3.48 1.8 1.34 3.35 3.23 3.35 5.47 0 1.25-.4 2.4-1.08 3.33a1 1 0 001.44 1.28c1.6-1.5 2.64-3.6 2.64-5.95 0-3.3-1.85-6.1-4.59-7.62z" clip-rule="evenodd"/></svg>
+                    </span>
+                    <div class="flex items-baseline gap-1 leading-tight">
+                        <span id="statStreak" class="text-sm sm:text-base font-black text-amber-500">0</span>
+                        <span id="statBestStreak" class="text-[9px] text-slate-500 font-bold" title="Longest Streak">Best:0</span>
+                    </div>
+                </div>
+
+                <!-- MODE / TIMER BOX -->
+                <button id="modeTimerBtn" type="button" class="bg-white hover:bg-red-50/50 border border-slate-200 rounded-xl py-1 px-1.5 flex flex-col items-center justify-center shadow-sm transition-all active:scale-95 cursor-pointer">
+                    <span id="modeLabelTop" class="text-[8px] uppercase font-bold text-slide-subtext tracking-wider">Regime</span>
+                    <span id="timerDisplay" class="text-xs sm:text-sm font-black text-slide-red leading-tight flex items-center gap-0.5">
+                        Normal
+                    </span>
+                </button>
+            </div>
+
+            <!-- RUSH PROGRESS BAR (VISIBLE IN 60s DRILL RUSH MODE) -->
+            <div id="rushTimerBarWrap" class="hidden w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                <div id="rushTimerBar" class="bg-slide-red h-full transition-all duration-200" style="width: 100%;"></div>
+            </div>
+        </section>
+
+        <!-- MAIN QUESTION CARD CONTAINER WITH STRICT FIXED FLEX HEIGHTS -->
+        <main class="flex-1 min-h-0 w-full flex flex-col justify-between bg-white border border-slate-300 rounded-2xl p-2.5 sm:p-3 shadow-md relative overflow-hidden my-0.5">
+            
+            <!-- CARD HEADER INFO -->
+            <div class="shrink-0 flex items-center justify-between pb-1 border-b border-slate-200 h-6">
+                <span id="cardCategoryBadge" class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-red-50 text-slide-red border border-red-200 rounded-full truncate max-w-[68%]">
+                    1. Antidepressants
+                </span>
+                <span id="cardDrillBadge" class="text-[10px] font-bold text-slate-500 shrink-0">
+                    Drug &rarr; Mechanism
+                </span>
+            </div>
+
+            <!-- QUESTION PROMPT BOX -->
+            <div class="flex-1 min-h-[58px] max-h-[108px] flex flex-col items-center justify-center p-2 my-1 bg-slate-50 border border-slate-200 rounded-xl text-center shadow-inner overflow-y-auto">
+                <span id="questionTaskLabel" class="text-[9px] font-extrabold uppercase tracking-widest text-slide-red mb-0.5">
+                    IDENTIFY THE MECHANISM OF ACTION
+                </span>
+                <p id="questionPrompt" class="font-bold text-slate-900 text-clamp-prompt text-balance">
+                    Loading pharmacology prompt...
+                </p>
+            </div>
+
+            <!-- OPTIONS GRID CONTAINER -->
+            <div id="optionsContainer" class="shrink-0 grid grid-cols-1 gap-1.5 my-0.5">
+                <!-- Dynamic Option Buttons render here -->
+            </div>
+
+            <!-- EXPLANATION / FULL DRUG BREAKDOWN PANEL -->
+            <div id="explanationBox" class="shrink-0 h-[92px] max-h-[92px] p-2 bg-slate-50 border border-slate-300 rounded-xl my-0.5 text-xs overflow-y-auto transition-all duration-200">
+                <div class="flex items-center justify-between gap-1.5 font-bold mb-0.5 text-slate-400" id="feedbackTitle">
+                    <div class="flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>High-Yield Drug Profile</span>
+                    </div>
+                    <span id="rushAutoHint" class="hidden text-[9px] font-semibold text-amber-600">Press Space / Next</span>
+                </div>
+                <div id="explanationText" class="leading-snug text-[10.5px] text-slate-400 italic">
+                    Select an answer above to view the complete Drug &bull; Indication &bull; Mechanism &bull; Adverse Effects breakdown...
+                </div>
+            </div>
+
+            <!-- NEXT QUESTION BUTTON CONTAINER -->
+            <div id="nextBtnContainer" class="shrink-0 h-[35px] mt-0.5 flex gap-1.5">
+                <button id="nextBtn" class="flex-1 h-full bg-slate-200 text-slate-400 font-bold text-xs sm:text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-not-allowed opacity-60" disabled>
+                    <span>Next Question</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+            </div>
+
+            <!-- ==================== OVERLAY 1: INITIAL CATEGORY & REGIME LAUNCHER ==================== -->
+            <div id="setupModal" class="absolute inset-0 bg-white/95 backdrop-blur-sm z-30 flex flex-col justify-between p-3.5 sm:p-4 overflow-y-auto animate-pop">
+                <div>
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-2 mb-2.5">
+                        <div>
+                            <span class="text-[9px] font-black uppercase tracking-widest text-slide-red">USMLE STEP 1 PHARMACOLOGY</span>
+                            <h2 class="text-base font-black text-slate-900 leading-tight">Configure Your Drug Drill</h2>
+                        </div>
+                        <button id="closeSetupBtn" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold">
+                            &#10005;
+                        </button>
+                    </div>
+
+                    <!-- 1. CHOOSE REGIME (NORMAL VS DRILL RUSH 60s) -->
+                    <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">1. Select Drill Regime</label>
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                        <button type="button" data-regime="normal" class="regime-card p-2.5 rounded-xl border-2 border-slide-red bg-red-50/60 text-left transition-all cursor-pointer">
+                            <div class="flex items-center justify-between mb-0.5">
+                                <span class="font-black text-xs text-slate-900">Normal Drill</span>
+                                <span class="w-2 h-2 rounded-full bg-slide-red"></span>
+                            </div>
+                            <p class="text-[10px] text-slate-600 leading-tight">Untimed study with full high-yield drug breakdowns &amp; streak tracking.</p>
+                        </button>
+
+                        <button type="button" data-regime="rush" class="regime-card p-2.5 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-left transition-all cursor-pointer">
+                            <div class="flex items-center justify-between mb-0.5">
+                                <span class="font-black text-xs text-slate-900 flex items-center gap-1">
+                                    &#9889; Drill Rush (60s)
+                                </span>
+                                <span class="text-[9px] font-bold px-1.5 py-0.2 bg-amber-100 text-amber-800 rounded">1 MIN</span>
+                            </div>
+                            <p class="text-[10px] text-slate-600 leading-tight">60-second rapid-fire blitz! Test recall speed, accuracy &amp; longest streak.</p>
+                        </button>
+                    </div>
+
+                    <!-- 2. CHOOSE DRUG CATEGORY -->
+                    <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">2. Drug Category to Drill</label>
+                    <select id="modalCategorySelect" class="w-full bg-slate-50 text-slate-900 font-bold text-xs py-2 px-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slide-red mb-3">
+                        <!-- Populated dynamically -->
+                    </select>
+
+                    <!-- 3. CHOOSE QUESTION DIRECTION -->
+                    <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">3. Question Focus</label>
+                    <select id="modalDrillTypeSelect" class="w-full bg-slate-50 text-slate-900 font-bold text-xs py-2 px-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slide-red mb-3">
+                        <option value="mixed">Mixed Drill (All Directions Randomly)</option>
+                        <option value="drug_to_mech">Show Drug &rarr; Ask Mechanism of Action</option>
+                        <option value="drug_to_ind">Show Drug &rarr; Ask Clinical Indication</option>
+                        <option value="drug_to_adv">Show Drug &rarr; Ask Adverse Effects</option>
+                        <option value="ind_to_drug">Show Indication &rarr; Ask Which Drug</option>
+                        <option value="mech_to_drug">Show Mechanism &rarr; Ask Which Drug</option>
+                        <option value="adv_to_drug">Show Adverse Effects &rarr; Ask Which Drug</option>
+                    </select>
+
+                    <!-- RUSH AUTO-ADVANCE OPTION -->
+                    <label class="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-slate-100 p-2 rounded-xl border border-slate-200 cursor-pointer">
+                        <input type="checkbox" id="rushAutoNextToggle" checked class="rounded text-slide-red focus:ring-slide-red">
+                        <span>In <b>Drill Rush (60s)</b>, auto-advance after 0.65s</span>
+                    </label>
+                </div>
+
+                <div class="pt-2 flex gap-2">
+                    <button id="startDrillBtn" type="button" class="w-full py-2.5 bg-slide-red hover:bg-slide-darkred text-white font-black text-xs sm:text-sm uppercase tracking-wider rounded-xl shadow-md transition-all active:scale-98 cursor-pointer">
+                        Start Drug Drill &rarr;
+                    </button>
+                </div>
+            </div>
+
+            <!-- ==================== OVERLAY 2: DRILL RUSH 60s SUMMARY MODAL ==================== -->
+            <div id="rushSummaryModal" class="hidden absolute inset-0 bg-white/95 backdrop-blur-sm z-30 flex flex-col justify-between p-4 text-center animate-pop">
+                <div class="my-auto">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-red-50 text-slide-red border border-red-200 mb-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <h2 class="text-lg font-black text-slate-900 uppercase tracking-wide">Time's Up! Drill Rush Complete</h2>
+                    <p id="rushSummarySub" class="text-xs text-slate-500 font-medium mb-4">60-Second Psychiatry Pharmacology Blitz</p>
+
+                    <div class="grid grid-cols-3 gap-2 mb-4">
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                            <span class="block text-[9px] font-bold uppercase text-slate-500">Total Done</span>
+                            <span id="summaryTotal" class="text-xl font-black text-slate-800">0</span>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200">
+                            <span class="block text-[9px] font-bold uppercase text-emerald-700">Correct</span>
+                            <span id="summaryCorrect" class="text-xl font-black text-emerald-600">0</span>
+                            <span id="summaryAccuracy" class="block text-[10px] font-bold text-emerald-700">0%</span>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-200">
+                            <span class="block text-[9px] font-bold uppercase text-amber-700">Longest Streak</span>
+                            <span id="summaryBestStreak" class="text-xl font-black text-amber-500">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button id="playAgainRushBtn" type="button" class="flex-1 py-2.5 bg-slide-red hover:bg-slide-darkred text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition-all active:scale-95">
+                        &#9889; Play 60s Rush Again
+                    </button>
+                    <button id="switchNormalFromSummaryBtn" type="button" class="px-3 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded-xl transition-all active:scale-95">
+                        Setup / Normal
+                    </button>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- FOOTER INFO -->
+        <footer class="shrink-0 text-center text-[10px] text-slate-500 py-0.5 flex items-center justify-between px-1">
+            <span>USMLE Step 1 High-Yield Psych Pharm</span>
+            <button id="resetStatsFooterBtn" class="text-[10px] font-bold text-slide-red hover:underline">Reset Score</button>
+        </footer>
+    </div>
+
+    <script>
+        // =========================================================================
+        // COMPLETE PSYCHIATRY PHARMACOLOGY DATABASE (ALL 13 CATEGORIES FROM DOCX)
+        // =========================================================================
+        const DRUGS_DB = [
+            // 1. ANTIDEPRESSANTS - A. SSRIs
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "SSRI",
+                drug: "Fluoxetine",
+                indication: "Major depressive disorder (MDD), OCD, panic disorder, bulimia nervosa",
+                mechanism: "Inhibits SERT (serotonin transporter), reducing serotonin reuptake and increasing synaptic 5-HT",
+                adverse: "Sexual dysfunction, nausea, insomnia/anxiety, serotonin syndrome, hyponatremia, bleeding risk; very long half-life (lowest discontinuation risk)"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "SSRI",
+                drug: "Sertraline",
+                indication: "MDD, PTSD, OCD, panic disorder, social anxiety disorder",
+                mechanism: "Inhibits SERT (serotonin transporter), increasing synaptic serotonin availability",
+                adverse: "GI upset, prominent diarrhea, sexual dysfunction, serotonin syndrome, hyponatremia"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "SSRI",
+                drug: "Citalopram",
+                indication: "Major depressive disorder (MDD)",
+                mechanism: "Inhibits SERT (serotonin transporter), selectively blocking presynaptic serotonin reuptake",
+                adverse: "Sexual dysfunction, GI upset, dose-dependent QT prolongation (especially at higher doses)"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "SSRI",
+                drug: "Escitalopram",
+                indication: "Major depressive disorder (MDD), generalized anxiety disorder (GAD)",
+                mechanism: "Inhibits SERT (S-enantiomer of citalopram), blocking serotonin reuptake",
+                adverse: "Sexual dysfunction, nausea, serotonin syndrome, hyponatremia"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "SSRI",
+                drug: "Paroxetine",
+                indication: "MDD, panic disorder, GAD, OCD, PTSD",
+                mechanism: "Inhibits SERT (serotonin transporter) with mild antimuscarinic activity",
+                adverse: "Sexual dysfunction, weight gain, sedation, anticholinergic effects, severe discontinuation syndrome; avoid in pregnancy (teratogenic risk)"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "SSRI",
+                drug: "Fluvoxamine",
+                indication: "Obsessive-compulsive disorder (OCD), social anxiety disorder",
+                mechanism: "Inhibits SERT (serotonin transporter) to increase synaptic serotonin",
+                adverse: "GI upset, sexual dysfunction, sedation, significant drug-drug interactions due to potent CYP inhibition"
+            },
+
+            // 1. ANTIDEPRESSANTS - B. SNRIs
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "SNRI",
+                drug: "Venlafaxine",
+                indication: "MDD, GAD, panic disorder, social anxiety disorder, PTSD",
+                mechanism: "Inhibits serotonin and norepinephrine reuptake (noradrenergic effects more prominent at higher doses)",
+                adverse: "Nausea, sexual dysfunction, diaphoresis (sweating), dose-dependent hypertension, prominent discontinuation syndrome"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "SNRI",
+                drug: "Desvenlafaxine",
+                indication: "Major depressive disorder (MDD)",
+                mechanism: "Inhibits presynaptic serotonin and norepinephrine reuptake (active metabolite of venlafaxine)",
+                adverse: "Nausea, sweating, sexual dysfunction, increased blood pressure"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "SNRI",
+                drug: "Duloxetine",
+                indication: "MDD, GAD, diabetic neuropathic pain, fibromyalgia, chronic musculoskeletal pain",
+                mechanism: "Inhibits serotonin and norepinephrine reuptake transporters (SERT and NET)",
+                adverse: "Nausea, sweating, increased blood pressure, hepatotoxicity / liver injury (avoid in heavy alcohol use or liver disease)"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "SNRI",
+                drug: "Levomilnacipran",
+                indication: "Major depressive disorder (MDD)",
+                mechanism: "Inhibits serotonin and norepinephrine reuptake (greater relative selectivity for NE vs other SNRIs)",
+                adverse: "Increased heart rate/tachycardia, hypertension, sweating, urinary hesitancy, sexual dysfunction"
+            },
+
+            // 1. ANTIDEPRESSANTS - C. TCAs
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "TCA",
+                drug: "Amitriptyline",
+                indication: "Depression, chronic neuropathic pain, migraine prophylaxis",
+                mechanism: "Tricyclic that inhibits serotonin and norepinephrine reuptake; also blocks H1, alpha-1, and muscarinic receptors",
+                adverse: "Strong anticholinergic effects, sedation, weight gain, orthostatic hypotension, cardiac conduction arrhythmias (Na+ channel blockade in overdose)"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "TCA",
+                drug: "Imipramine",
+                indication: "Depression, nocturnal enuresis (bedwetting)",
+                mechanism: "Tricyclic that inhibits serotonin and norepinephrine reuptake",
+                adverse: "Anticholinergic effects, sedation, orthostatic hypotension, lethal cardiac arrhythmias in overdose"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "TCA",
+                drug: "Clomipramine",
+                indication: "Obsessive-compulsive disorder (OCD) (classic gold-standard TCA for OCD)",
+                mechanism: "Tricyclic with potent serotonin reuptake inhibition plus norepinephrine reuptake inhibition",
+                adverse: "Anticholinergic effects, sexual dysfunction, sedation, lowered seizure threshold (seizures), cardiac toxicity"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "TCA",
+                drug: "Nortriptyline",
+                indication: "Depression, neuropathic pain (secondary amine TCA better tolerated in older adults)",
+                mechanism: "Secondary amine TCA that predominantly inhibits norepinephrine reuptake",
+                adverse: "Less anticholinergic/sedating than tertiary TCAs, orthostatic hypotension, cardiac arrhythmias in overdose"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "TCA",
+                drug: "Desipramine",
+                indication: "Depression",
+                mechanism: "Secondary amine TCA that predominantly inhibits norepinephrine reuptake",
+                adverse: "Anticholinergic effects, insomnia/activation, orthostatic hypotension, high cardiac toxicity in overdose"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "TCA",
+                drug: "Doxepin",
+                indication: "Depression; low-dose formulations specifically used for sleep-maintenance insomnia",
+                mechanism: "Inhibits 5-HT/NE reuptake and very potently blocks histamine H1 receptors",
+                adverse: "Marked sedation, weight gain, anticholinergic effects, cardiac conduction toxicity in overdose"
+            },
+
+            // 1. ANTIDEPRESSANTS - D. MAOIs
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "MAOI",
+                drug: "Phenelzine",
+                indication: "Treatment-resistant depression, atypical depression (mood reactivity, leaden paralysis)",
+                mechanism: "Irreversibly inhibits monoamine oxidase A and B (MAO-A and MAO-B)",
+                adverse: "Hypertensive crisis with tyramine-rich foods, serotonin syndrome with serotonergic drugs, orthostatic hypotension, weight gain, sexual dysfunction"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "MAOI",
+                drug: "Tranylcypromine",
+                indication: "Treatment-resistant depression",
+                mechanism: "Nonselective irreversible MAO-A and MAO-B inhibitor",
+                adverse: "Insomnia (amphetamine-like stimulating properties), orthostasis, tyramine hypertensive crisis, serotonin syndrome"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "MAOI",
+                drug: "Isocarboxazid",
+                indication: "Treatment-resistant depression",
+                mechanism: "Irreversible inhibitor of MAO-A and MAO-B",
+                adverse: "Orthostatic hypotension, tyramine-induced hypertensive crisis, serotonin syndrome"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "MAOI",
+                drug: "Selegiline",
+                indication: "Parkinson disease (oral low dose); Major depressive disorder (transdermal patch)",
+                mechanism: "Selective MAO-B inhibitor at low doses; loses selectivity (inhibits MAO-A & B) at higher doses",
+                adverse: "Insomnia, orthostasis, tyramine hypertensive crisis or serotonin syndrome at higher doses or with interacting drugs"
+            },
+
+            // 1. ANTIDEPRESSANTS - E. Atypical & Other Antidepressants
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "Atypical Antidepressant",
+                drug: "Bupropion",
+                indication: "MDD, seasonal affective disorder, smoking cessation",
+                mechanism: "Norepinephrine-dopamine reuptake inhibitor (NDRI); no direct serotonergic action",
+                adverse: "Insomnia, agitation, dry mouth, seizures at high doses (contraindicated in bulimia/anorexia or seizure disorders); minimal sexual side effects or weight gain"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "Atypical Antidepressant",
+                drug: "Mirtazapine",
+                indication: "MDD, especially in patients with prominent insomnia, weight loss, or poor appetite",
+                mechanism: "Alpha-2 adrenergic antagonist (increases presynaptic NE & 5-HT release) and potent 5-HT2, 5-HT3, and H1 antagonist",
+                adverse: "Marked sedation (via H1 blockade), increased appetite, weight gain; minimal sexual dysfunction"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "SARI",
+                drug: "Trazodone",
+                indication: "Insomnia (most common use at low doses); major depressive disorder at higher doses",
+                mechanism: "Serotonin antagonist and reuptake inhibitor (SARI): blocks 5-HT2A, alpha-1, and H1 receptors with weak SERT inhibition",
+                adverse: "Sedation, orthostatic hypotension, priapism ('trazobone')"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "SARI",
+                drug: "Nefazodone",
+                indication: "Depression (rarely used due to liver safety concerns)",
+                mechanism: "Serotonin antagonist and reuptake inhibitor (blocks 5-HT2 receptors and inhibits SERT)",
+                adverse: "Severe life-threatening hepatotoxicity (black box warning), sedation, dizziness"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "Serotonin Modulator",
+                drug: "Vilazodone",
+                indication: "Major depressive disorder (MDD)",
+                mechanism: "Inhibits SERT (SSRI activity) plus partial agonist at 5-HT1A receptors",
+                adverse: "Diarrhea, nausea, insomnia, sexual dysfunction, risk of serotonin syndrome"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "Serotonin Modulator",
+                drug: "Vortioxetine",
+                indication: "Major depressive disorder (MDD)",
+                mechanism: "Inhibits SERT plus multimodal modulation of serotonin receptors (5-HT1A agonist, 5-HT3/5-HT7 antagonist)",
+                adverse: "Nausea, vomiting, constipation, sexual dysfunction"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "Rapid-Acting Antidepressant",
+                drug: "Esketamine (Intranasal)",
+                indication: "Treatment-resistant depression and MDD with acute suicidal ideation or behavior",
+                mechanism: "Noncompetitive NMDA glutamate receptor antagonist (S-enantiomer of ketamine)",
+                adverse: "Dissociation, sedation, dizziness, transient hypertension, potential for misuse"
+            },
+            {
+                catId: 1,
+                category: "1. Antidepressants",
+                subcategory: "Rapid-Acting / Anesthetic",
+                drug: "Ketamine",
+                indication: "Dissociative anesthesia; off-label rapid treatment for treatment-resistant depression",
+                mechanism: "Noncompetitive NMDA receptor antagonist",
+                adverse: "Dissociation, hallucinations/vivid dreams, hypertension, tachycardia, ulcerative cystitis/urinary toxicity with chronic misuse"
+            },
+
+            // 2. ANTIPSYCHOTICS - A. First-Generation (Typical)
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "First-Generation (High-Potency)",
+                drug: "Haloperidol",
+                indication: "Schizophrenia, acute psychotic agitation, Tourette syndrome, delirium agitation",
+                mechanism: "High-potency dopamine D2 receptor antagonist",
+                adverse: "High risk of extrapyramidal symptoms (acute dystonia, akathisia, parkinsonism), tardive dyskinesia, hyperprolactinemia, QT prolongation, neuroleptic malignant syndrome (NMS)"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "First-Generation (High-Potency)",
+                drug: "Fluphenazine",
+                indication: "Schizophrenia (available as oral and long-acting decanoate depot injection)",
+                mechanism: "High-potency dopamine D2 receptor antagonist",
+                adverse: "High extrapyramidal symptoms (EPS), hyperprolactinemia, tardive dyskinesia, neuroleptic malignant syndrome (NMS)"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "First-Generation (High-Potency)",
+                drug: "Trifluoperazine",
+                indication: "Schizophrenia",
+                mechanism: "High-potency typical D2 receptor antagonist",
+                adverse: "Extrapyramidal symptoms (EPS), hyperprolactinemia, tardive dyskinesia, NMS"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "First-Generation (Low-Potency)",
+                drug: "Chlorpromazine",
+                indication: "Schizophrenia, severe agitation, intractable hiccups",
+                mechanism: "Low-potency D2 antagonist with prominent blockade of H1, muscarinic (M1), and alpha-1 receptors",
+                adverse: "Marked sedation, orthostatic hypotension, anticholinergic effects, corneal/lens deposits, blue-gray skin discoloration & photosensitivity"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "First-Generation (Low-Potency)",
+                drug: "Thioridazine",
+                indication: "Schizophrenia (rarely used due to severe cardiotoxicity and retinal toxicity)",
+                mechanism: "Low-potency dopamine D2 receptor antagonist with strong muscarinic/alpha-1 blockade",
+                adverse: "Pigmentary retinopathy (retinal deposits causing browning of vision), severe QT prolongation / torsades de pointes, anticholinergic effects"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "First-Generation (Mid-Potency)",
+                drug: "Perphenazine",
+                indication: "Schizophrenia and psychotic disorders",
+                mechanism: "Postsynaptic dopamine D2 receptor antagonist",
+                adverse: "Extrapyramidal symptoms, hyperprolactinemia, neuroleptic malignant syndrome"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "First-Generation",
+                drug: "Thiothixene",
+                indication: "Schizophrenia",
+                mechanism: "Thioxanthene typical dopamine D2 receptor antagonist",
+                adverse: "Extrapyramidal symptoms, hyperprolactinemia, tardive dyskinesia, NMS"
+            },
+
+            // 2. ANTIPSYCHOTICS - B. Second-Generation (Atypical)
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Second-Generation Antipsychotic",
+                drug: "Risperidone",
+                indication: "Schizophrenia, bipolar mania, irritability associated with autism",
+                mechanism: "Serotonin 5-HT2A and dopamine D2 receptor antagonist",
+                adverse: "Highest risk of hyperprolactinemia (amenorrhea, galactorrhea, gynecomastia) among atypicals, dose-related EPS, weight gain"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Second-Generation Antipsychotic",
+                drug: "Paliperidone",
+                indication: "Schizophrenia, schizoaffective disorder (available in long-acting injectable forms)",
+                mechanism: "D2 and 5-HT2A receptor antagonist (active 9-hydroxy metabolite of risperidone)",
+                adverse: "Hyperprolactinemia, dose-dependent extrapyramidal symptoms, metabolic effects"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Second-Generation Antipsychotic",
+                drug: "Olanzapine",
+                indication: "Schizophrenia, bipolar mania, bipolar depression (with fluoxetine), anorexia nervosa adjunct",
+                mechanism: "D2 and 5-HT2A antagonist with potent H1 and muscarinic M1 blockade",
+                adverse: "Severe weight gain, dyslipidemia, hyperglycemia/new-onset diabetes (metabolic syndrome), sedation, anticholinergic effects"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Second-Generation Antipsychotic",
+                drug: "Quetiapine",
+                indication: "Schizophrenia, bipolar mania & depression, adjunctive MDD, Parkinson psychosis, insomnia (off-label)",
+                mechanism: "Low-affinity D2 and 5-HT2A antagonist with strong H1 and alpha-1 receptor blockade",
+                adverse: "Marked sedation, orthostatic hypotension, weight gain, metabolic syndrome, cataracts (slit-lamp exam concept); very low EPS risk"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Second-Generation Antipsychotic",
+                drug: "Clozapine",
+                indication: "Treatment-resistant schizophrenia; reduces suicidal behavior in schizophrenia; Parkinson psychosis",
+                mechanism: "5-HT2A, D4 > D2 antagonist with strong muscarinic, H1, and alpha-1 blockade",
+                adverse: "Agranulocytosis/severe neutropenia (requires ANC monitoring), myocarditis/cardiomyopathy, seizures (dose-related), sialorrhea (wet pillow), severe GI hypomotility/constipation, massive weight gain"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Second-Generation Antipsychotic",
+                drug: "Ziprasidone",
+                indication: "Schizophrenia, acute bipolar mania (must be taken with food for absorption)",
+                mechanism: "D2 and 5-HT2A antagonist",
+                adverse: "Marked QT prolongation, akathisia, sedation; notably weight-neutral / low metabolic risk"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Second-Generation Antipsychotic",
+                drug: "Lurasidone",
+                indication: "Schizophrenia, bipolar depression (safe in pregnancy; take with >=350 kcal meal)",
+                mechanism: "D2 and 5-HT2A antagonist plus 5-HT7 antagonism and 5-HT1A partial agonism",
+                adverse: "Akathisia, nausea, extrapyramidal symptoms; minimal weight gain or metabolic disturbance"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Second-Generation Antipsychotic",
+                drug: "Asenapine",
+                indication: "Schizophrenia, acute bipolar mania (administered sublingually due to high first-pass metabolism)",
+                mechanism: "D2 and 5-HT2A receptor antagonist",
+                adverse: "Oral hypoesthesia (numbness/tingling of mouth with sublingual use), somnolence, weight gain"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Second-Generation Antipsychotic",
+                drug: "Iloperidone",
+                indication: "Schizophrenia",
+                mechanism: "D2 and 5-HT2A antagonist with potent alpha-1 adrenergic blockade",
+                adverse: "Prominent orthostatic hypotension, dizziness, tachycardia, QT prolongation"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Second-Generation (D2 Partial Agonist)",
+                drug: "Aripiprazole",
+                indication: "Schizophrenia, bipolar mania, adjunctive MDD, Tourette syndrome, autism irritability",
+                mechanism: "Partial agonist at dopamine D2 and serotonin 5-HT1A receptors; antagonist at 5-HT2A",
+                adverse: "High rate of akathisia/restlessness, insomnia, nausea; low risk of hyperprolactinemia or metabolic syndrome"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Second-Generation (D2 Partial Agonist)",
+                drug: "Brexpiprazole",
+                indication: "Schizophrenia, adjunctive treatment of major depressive disorder (MDD)",
+                mechanism: "Partial agonist at D2 and 5-HT1A receptors; antagonist at 5-HT2A receptors",
+                adverse: "Weight gain, akathisia (less than aripiprazole), sedation"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Second-Generation (D3/D2 Partial Agonist)",
+                drug: "Cariprazine",
+                indication: "Schizophrenia, bipolar mania, bipolar depression, adjunctive MDD",
+                mechanism: "Partial agonist at dopamine D3 and D2 receptors (with high D3 selectivity) and 5-HT1A",
+                adverse: "Akathisia, extrapyramidal symptoms, restlessness, GI upset"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Second-Generation Antipsychotic",
+                drug: "Lumateperone",
+                indication: "Schizophrenia and bipolar depression",
+                mechanism: "Simultaneously modulates serotonin (5-HT2A antagonist), dopamine (D2 presynaptic partial agonist/postsynaptic antagonist), and glutamate",
+                adverse: "Somnolence/sedation, dry mouth, dizziness, nausea; favorable metabolic and motor profile"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Selective 5-HT2A Inverse Agonist",
+                drug: "Pimavanserin",
+                indication: "Hallucinations and delusions associated with Parkinson disease psychosis",
+                mechanism: "Selective serotonin 5-HT2A inverse agonist and antagonist (no significant dopamine D2 blockade, sparing motor function)",
+                adverse: "QT prolongation, peripheral edema, confusion, hallucinations"
+            },
+
+            // 2. ANTIPSYCHOTICS - C. Drugs Used for Antipsychotic Adverse Effects
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "EPS / Dystonia Treatment",
+                drug: "Benztropine",
+                indication: "Acute dystonia (oculogyric crisis, torticollis) and drug-induced parkinsonism caused by antipsychotics",
+                mechanism: "Centrally acting muscarinic acetylcholine receptor (M1) antagonist (restores dopamine-ACh balance in striatum)",
+                adverse: "Anticholinergic toxicity: dry mouth, urinary retention, constipation, blurred vision, tachycardia, delirium/confusion in elderly"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "EPS / Dystonia Treatment",
+                drug: "Diphenhydramine",
+                indication: "Acute dystonic reactions from antipsychotics; allergic reactions; short-term insomnia",
+                mechanism: "First-generation histamine H1 receptor antagonist with strong central antimuscarinic activity",
+                adverse: "Marked sedation, dry mouth, urinary retention, mydriasis, delirium/confusion in older adults"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Akathisia / Anxiety Treatment",
+                drug: "Propranolol",
+                indication: "Antipsychotic-induced akathisia; performance anxiety (stage fright); essential tremor",
+                mechanism: "Nonselective beta-1 and beta-2 adrenergic receptor antagonist",
+                adverse: "Bradycardia, hypotension, fatigue, bronchospasm (avoid in asthma)"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Tardive Dyskinesia Treatment",
+                drug: "Valbenazine",
+                indication: "Tardive dyskinesia (involuntary choreoathetoid orofacial movements from chronic D2 blockade)",
+                mechanism: "Reversible vesicular monoamine transporter 2 (VMAT2) inhibitor, depleting presynaptic dopamine stores",
+                adverse: "Somnolence, QT prolongation, drug-induced parkinsonism"
+            },
+            {
+                catId: 2,
+                category: "2. Antipsychotics",
+                subcategory: "Tardive Dyskinesia / Chorea Treatment",
+                drug: "Deutetrabenazine",
+                indication: "Tardive dyskinesia and chorea associated with Huntington disease",
+                mechanism: "Deuterated vesicular monoamine transporter 2 (VMAT2) inhibitor that reduces monoamine packaging into synaptic vesicles",
+                adverse: "Somnolence, akathisia, parkinsonism, depression/suicidality risk (black box warning in Huntington disease)"
+            },
+
+            // 3. MOOD STABILIZERS & BIPOLAR DISORDER MEDICATIONS
+            {
+                catId: 3,
+                category: "3. Mood Stabilizers & Bipolar",
+                subcategory: "Classic Mood Stabilizer",
+                drug: "Lithium",
+                indication: "Acute mania and maintenance of bipolar disorder; reduces suicide risk in bipolar patients",
+                mechanism: "Inhibits inositol monophosphatase (depleting IP3/DAG second messengers) and inhibits glycogen synthase kinase-3 (GSK-3)",
+                adverse: "Fine tremor, hypothyroidism/goiter, nephrogenic diabetes insipidus (polyuria), Ebstein anomaly in fetus, narrow therapeutic index (ataxia, coarse tremor, seizures in toxicity)"
+            },
+            {
+                catId: 3,
+                category: "3. Mood Stabilizers & Bipolar",
+                subcategory: "Mood Stabilizer / Anticonvulsant",
+                drug: "Valproate (Valproic acid)",
+                indication: "Acute bipolar mania and maintenance; generalized and focal seizure disorders; migraine prophylaxis",
+                mechanism: "Inhibits voltage-gated Na+ channels and increases CNS GABA concentrations (inhibits GABA transaminase)",
+                adverse: "Fatal hepatotoxicity, pancreatitis, neural tube defects (spina bifida), weight gain, tremor, alopecia, thrombocytopenia"
+            },
+            {
+                catId: 3,
+                category: "3. Mood Stabilizers & Bipolar",
+                subcategory: "Mood Stabilizer / Anticonvulsant",
+                drug: "Carbamazepine",
+                indication: "Bipolar mania; first-line for trigeminal neuralgia; focal seizures",
+                mechanism: "Use-dependent blockade of voltage-gated sodium (Na+) channels",
+                adverse: "SIADH (hyponatremia), agranulocytosis/aplastic anemia, Stevens-Johnson syndrome (HLA-B*1502 screening), potent CYP450 auto-inducer, neural tube defects"
+            },
+            {
+                catId: 3,
+                category: "3. Mood Stabilizers & Bipolar",
+                subcategory: "Mood Stabilizer / Anticonvulsant",
+                drug: "Lamotrigine",
+                indication: "Bipolar maintenance (especially preventing bipolar depressive episodes); focal and generalized epilepsy",
+                mechanism: "Blocks voltage-gated sodium channels and inhibits presynaptic glutamate release",
+                adverse: "Stevens-Johnson syndrome / toxic epidermal necrolysis (requires very slow dose titration; valproate doubles its levels)"
+            },
+            {
+                catId: 3,
+                category: "3. Mood Stabilizers & Bipolar",
+                subcategory: "Anticonvulsant / Off-Label Bipolar",
+                drug: "Oxcarbazepine",
+                indication: "Focal seizures, trigeminal neuralgia, off-label bipolar mood stabilization",
+                mechanism: "Blocks voltage-gated sodium (Na+) channels",
+                adverse: "Hyponatremia (SIADH, even more common than carbamazepine), dizziness, ataxia, rash"
+            },
+            {
+                catId: 3,
+                category: "3. Mood Stabilizers & Bipolar",
+                subcategory: "Anticonvulsant / Migraine / Off-Label",
+                drug: "Topiramate",
+                indication: "Epilepsy, migraine prophylaxis; off-label for binge-eating disorder and alcohol use disorder",
+                mechanism: "Blocks voltage-gated Na+ channels, potentiates GABA-A, antagonizes AMPA/kainate glutamate receptors, weak carbonic anhydrase inhibitor",
+                adverse: "Cognitive slowing ('dopamax' / word-finding difficulty), paresthesias, nephrolithiasis (kidney stones), normal anion gap metabolic acidosis, weight loss, acute angle-closure glaucoma, fetal oral clefts"
+            },
+            {
+                catId: 3,
+                category: "3. Mood Stabilizers & Bipolar",
+                subcategory: "Gabapentinoid",
+                drug: "Gabapentin",
+                indication: "Neuropathic pain, postherpetic neuralgia; off-label for anxiety and alcohol use disorder (not an established bipolar stabilizer)",
+                mechanism: "Binds the alpha-2-delta subunit of presynaptic voltage-gated calcium channels (inhibits excitatory neurotransmitter release)",
+                adverse: "Sedation, dizziness, ataxia, peripheral edema"
+            },
+
+            // 4. ANXIOLYTICS & BENZODIAZEPINES
+            {
+                catId: 4,
+                category: "4. Anxiolytics & Benzodiazepines",
+                subcategory: "Benzodiazepine (LOT - Safe in Liver Disease)",
+                drug: "Lorazepam",
+                indication: "Acute anxiety/agitation, catatonia (first-line), status epilepticus (first-line), alcohol withdrawal (preferred in liver disease)",
+                mechanism: "Positive allosteric modulator of GABA-A receptors (increases frequency of chloride channel opening)",
+                adverse: "Sedation, respiratory depression (especially with opioids/alcohol), anterograde amnesia, dependence; metabolized via glucuronidation (no active metabolites)"
+            },
+            {
+                catId: 4,
+                category: "4. Anxiolytics & Benzodiazepines",
+                subcategory: "Long-Acting Benzodiazepine",
+                drug: "Diazepam",
+                indication: "Alcohol withdrawal, status epilepticus, severe muscle spasms, anxiety",
+                mechanism: "Enhances GABA-A receptor chloride channel opening frequency",
+                adverse: "Sedation, respiratory depression, dependence; very long half-life with active metabolites (avoid in elderly/cirrhosis)"
+            },
+            {
+                catId: 4,
+                category: "4. Anxiolytics & Benzodiazepines",
+                subcategory: "Short/Intermediate Benzodiazepine",
+                drug: "Alprazolam",
+                indication: "Short-term management of panic disorder and acute generalized anxiety",
+                mechanism: "Positive allosteric modulator at GABA-A receptors",
+                adverse: "High misuse/dependence liability, severe rebound anxiety and withdrawal seizures upon abrupt cessation, sedation"
+            },
+            {
+                catId: 4,
+                category: "4. Anxiolytics & Benzodiazepines",
+                subcategory: "Long-Acting Benzodiazepine",
+                drug: "Clonazepam",
+                indication: "Panic disorder, REM sleep behavior disorder, seizure disorders",
+                mechanism: "Enhances GABA-A receptor signaling (increases Cl- channel opening frequency)",
+                adverse: "Sedation, ataxia/impaired coordination, tolerance, dependence"
+            },
+            {
+                catId: 4,
+                category: "4. Anxiolytics & Benzodiazepines",
+                subcategory: "Long-Acting Benzodiazepine",
+                drug: "Chlordiazepoxide",
+                indication: "Alcohol withdrawal syndrome prophylaxis and treatment",
+                mechanism: "Long-acting GABA-A positive allosteric modulator",
+                adverse: "Sedation, respiratory depression, prolonged accumulation in hepatic impairment"
+            },
+            {
+                catId: 4,
+                category: "4. Anxiolytics & Benzodiazepines",
+                subcategory: "Benzodiazepine (LOT - Safe in Liver Disease)",
+                drug: "Oxazepam",
+                indication: "Alcohol withdrawal and anxiety in patients with liver cirrhosis/impairment",
+                mechanism: "Enhances GABA-A signaling; undergoes direct glucuronidation without active hepatic metabolites",
+                adverse: "Sedation, impaired coordination, physical dependence"
+            },
+            {
+                catId: 4,
+                category: "4. Anxiolytics & Benzodiazepines",
+                subcategory: "Benzodiazepine (LOT - Safe in Liver Disease)",
+                drug: "Temazepam",
+                indication: "Insomnia (short-term hypnotic)",
+                mechanism: "Enhances GABA-A signaling; metabolized via phase II glucuronidation (LOT group)",
+                adverse: "Daytime sedation, falls in elderly, dependence, respiratory depression"
+            },
+            {
+                catId: 4,
+                category: "4. Anxiolytics & Benzodiazepines",
+                subcategory: "Ultra-Short Benzodiazepine",
+                drug: "Midazolam",
+                indication: "Procedural/endoscopic sedation, anesthesia induction, acute status epilepticus (intranasal/IM)",
+                mechanism: "Short-acting GABA-A positive allosteric modulator",
+                adverse: "Rapid respiratory depression, profound anterograde amnesia, hypotension"
+            },
+            {
+                catId: 4,
+                category: "4. Anxiolytics & Benzodiazepines",
+                subcategory: "Non-Benzodiazepine Anxiolytic",
+                drug: "Buspirone",
+                indication: "Generalized anxiety disorder (GAD) (chronic maintenance; takes 1-2 weeks for onset)",
+                mechanism: "Partial agonist at serotonin 5-HT1A receptors (does not act on GABA receptors)",
+                adverse: "Dizziness, nausea, headache; no sedation, no addiction/tolerance, no interaction with alcohol"
+            },
+            {
+                catId: 4,
+                category: "4. Anxiolytics & Benzodiazepines",
+                subcategory: "Antihistamine Anxiolytic",
+                drug: "Hydroxyzine",
+                indication: "Short-term symptomatic anxiety relief; pruritus/urticaria",
+                mechanism: "First-generation histamine H1 receptor inverse agonist/antagonist",
+                adverse: "Sedation, dry mouth, anticholinergic effects, rare QT prolongation"
+            },
+            {
+                catId: 4,
+                category: "4. Anxiolytics & Benzodiazepines",
+                subcategory: "Gabapentinoid",
+                drug: "Pregabalin",
+                indication: "Diabetic neuropathic pain, fibromyalgia, postherpetic neuralgia, generalized anxiety disorder (GAD)",
+                mechanism: "Binds the alpha-2-delta subunit of voltage-gated calcium channels in the CNS",
+                adverse: "Dizziness, somnolence, peripheral edema, weight gain, euphoria/misuse potential"
+            },
+            {
+                catId: 4,
+                category: "4. Anxiolytics & Benzodiazepines",
+                subcategory: "Benzodiazepine Antidote",
+                drug: "Flumazenil",
+                indication: "Reversal of benzodiazepine-induced sedation or overdose (use with extreme caution)",
+                mechanism: "Competitive antagonist at the benzodiazepine binding site on the GABA-A receptor",
+                adverse: "Precipitates acute withdrawal seizures and arrhythmias (especially in chronic benzo users or co-ingestion of TCAs)"
+            },
+
+            // 5. INSOMNIA & SLEEP-RELATED MEDICATIONS
+            {
+                catId: 5,
+                category: "5. Insomnia & Sleep Medications",
+                subcategory: "Non-Benzodiazepine 'Z-Drug'",
+                drug: "Zolpidem",
+                indication: "Short-term treatment of sleep-onset insomnia",
+                mechanism: "Selective positive allosteric modulator at GABA-A receptors containing the alpha-1 (BZ1) subunit",
+                adverse: "Complex sleep behaviors (sleepwalking, sleep-driving), anterograde amnesia, daytime ataxia/falls; reversed by flumazenil"
+            },
+            {
+                catId: 5,
+                category: "5. Insomnia & Sleep Medications",
+                subcategory: "Non-Benzodiazepine 'Z-Drug'",
+                drug: "Zaleplon",
+                indication: "Sleep-onset insomnia (ultra-short half-life ~1 hour allows middle-of-night dosing)",
+                mechanism: "Selective GABA-A alpha-1 subunit positive allosteric modulator",
+                adverse: "Dizziness, sedation, complex sleep behaviors, headache"
+            },
+            {
+                catId: 5,
+                category: "5. Insomnia & Sleep Medications",
+                subcategory: "Non-Benzodiazepine 'Z-Drug'",
+                drug: "Eszopiclone",
+                indication: "Sleep-onset and sleep-maintenance insomnia (longest half-life among Z-drugs)",
+                mechanism: "Positive allosteric modulator at GABA-A alpha-1 subunits",
+                adverse: "Unpleasant metallic taste (dysgeusia), daytime somnolence, complex sleep behaviors"
+            },
+            {
+                catId: 5,
+                category: "5. Insomnia & Sleep Medications",
+                subcategory: "Melatonin Agonist",
+                drug: "Ramelteon",
+                indication: "Sleep-onset insomnia (especially in older adults or patients with substance use history)",
+                mechanism: "Selective agonist at melatonin MT1 and MT2 receptors in the suprachiasmatic nucleus (SCN)",
+                adverse: "Dizziness, fatigue, mild hyperprolactinemia; zero abuse potential and not a controlled substance"
+            },
+            {
+                catId: 5,
+                category: "5. Insomnia & Sleep Medications",
+                subcategory: "Dual Orexin Receptor Antagonist (DORA)",
+                drug: "Suvorexant",
+                indication: "Sleep-onset and sleep-maintenance insomnia",
+                mechanism: "Dual orexin receptor antagonist (blocks OX1R and OX2R, suppressing wakefulness drive)",
+                adverse: "Daytime somnolence, sleep paralysis, hypnagogic/hypnopompic hallucinations; contraindicated in narcolepsy"
+            },
+            {
+                catId: 5,
+                category: "5. Insomnia & Sleep Medications",
+                subcategory: "Dual Orexin Receptor Antagonist (DORA)",
+                drug: "Lemborexant",
+                indication: "Insomnia (sleep onset and maintenance)",
+                mechanism: "Competitive dual orexin OX1 and OX2 receptor antagonist",
+                adverse: "Somnolence, sleep paralysis, cataplexy-like symptoms; contraindicated in narcolepsy"
+            },
+            {
+                catId: 5,
+                category: "5. Insomnia & Sleep Medications",
+                subcategory: "Dual Orexin Receptor Antagonist (DORA)",
+                drug: "Daridorexant",
+                indication: "Insomnia (sleep onset and maintenance)",
+                mechanism: "Dual orexin OX1 and OX2 receptor antagonist",
+                adverse: "Somnolence, fatigue, headache, abnormal dreams/sleep paralysis"
+            },
+            {
+                catId: 5,
+                category: "5. Insomnia & Sleep Medications",
+                subcategory: "Chronobiotic / Supplement",
+                drug: "Melatonin",
+                indication: "Circadian rhythm sleep disorders, jet lag, shift-work sleep disorder, delayed sleep phase",
+                mechanism: "Endogenous hormone agonist at MT1 and MT2 receptors in the hypothalamic suprachiasmatic nucleus",
+                adverse: "Mild drowsiness, vivid dreams, headache, dizziness"
+            },
+
+            // 6. ADHD MEDICATIONS
+            {
+                catId: 6,
+                category: "6. ADHD Medications",
+                subcategory: "CNS Stimulant",
+                drug: "Methylphenidate",
+                indication: "Attention-deficit/hyperactivity disorder (ADHD), narcolepsy",
+                mechanism: "Blocks norepinephrine (NET) and dopamine (DAT) reuptake transporters in prefrontal cortex",
+                adverse: "Appetite suppression, weight loss/growth suppression, insomnia, tachycardia, hypertension, tic exacerbation, misuse potential"
+            },
+            {
+                catId: 6,
+                category: "6. ADHD Medications",
+                subcategory: "CNS Stimulant",
+                drug: "Dexmethylphenidate",
+                indication: "Attention-deficit/hyperactivity disorder (ADHD)",
+                mechanism: "D-threo-enantiomer of methylphenidate; blocks dopamine and norepinephrine reuptake transporters",
+                adverse: "Decreased appetite, insomnia, anxiety, tachycardia, elevated blood pressure"
+            },
+            {
+                catId: 6,
+                category: "6. ADHD Medications",
+                subcategory: "CNS Stimulant (Amphetamine)",
+                drug: "Dextroamphetamine",
+                indication: "ADHD, narcolepsy",
+                mechanism: "Blocks catecholamine reuptake AND displaces vesicular NE/DA via VMAT2 reversal into the synaptic cleft",
+                adverse: "Appetite suppression, insomnia, hypertension, tachycardia, high abuse/addiction potential, stimulant-induced psychosis"
+            },
+            {
+                catId: 6,
+                category: "6. ADHD Medications",
+                subcategory: "CNS Stimulant (Prodrug)",
+                drug: "Lisdexamfetamine",
+                indication: "ADHD; moderate-to-severe binge-eating disorder in adults",
+                mechanism: "Inactive L-lysine prodrug cleaved by RBCs in GI/blood into active dextroamphetamine (increases synaptic DA & NE)",
+                adverse: "Insomnia, decreased appetite, weight loss, cardiovascular stimulation (lower parenteral abuse potential due to prodrug activation)"
+            },
+            {
+                catId: 6,
+                category: "6. ADHD Medications",
+                subcategory: "Wakefulness-Promoting Agent",
+                drug: "Modafinil",
+                indication: "First-line for narcolepsy, shift-work sleep disorder, residual obstructive sleep apnea sleepiness",
+                mechanism: "Weak dopamine reuptake inhibitor and indirect enhancer of hypothalamic orexin/histamine/glutamate wake pathways",
+                adverse: "Headache, insomnia, anxiety, nausea, rare Stevens-Johnson syndrome"
+            },
+            {
+                catId: 6,
+                category: "6. ADHD Medications",
+                subcategory: "Non-Stimulant ADHD Agent",
+                drug: "Atomoxetine",
+                indication: "ADHD (preferred when substance abuse history or tics are present)",
+                mechanism: "Selective norepinephrine reuptake inhibitor (NET blocker) in the prefrontal cortex",
+                adverse: "GI upset, decreased appetite, insomnia, increased HR/BP, rare severe hepatotoxicity, black box warning for suicidal ideation in children/adolescents"
+            },
+            {
+                catId: 6,
+                category: "6. ADHD Medications",
+                subcategory: "Non-Stimulant Alpha-2A Agonist",
+                drug: "Guanfacine",
+                indication: "ADHD (monotherapy or stimulant adjunct), comorbid tic disorder / Tourette syndrome",
+                mechanism: "Selective central alpha-2A adrenergic receptor agonist (strengthens prefrontal cortical network regulation)",
+                adverse: "Sedation/somnolence, hypotension, bradycardia, dry mouth (less sedating than clonidine)"
+            },
+            {
+                catId: 6,
+                category: "6. ADHD Medications",
+                subcategory: "Non-Stimulant Alpha-2 Agonist",
+                drug: "Clonidine",
+                indication: "ADHD, Tourette syndrome, autonomic symptom relief in opioid withdrawal, hypertensive urgency",
+                mechanism: "Central alpha-2 adrenergic receptor agonist (decreases central sympathetic outflow from locus coeruleus)",
+                adverse: "Marked sedation, bradycardia, hypotension, severe rebound hypertension if discontinued abruptly"
+            },
+            {
+                catId: 6,
+                category: "6. ADHD Medications",
+                subcategory: "Non-Stimulant ADHD Agent",
+                drug: "Viloxazine",
+                indication: "Attention-deficit/hyperactivity disorder (ADHD)",
+                mechanism: "Selective norepinephrine reuptake inhibitor (NRI) with 5-HT2C agonist / 5-HT2B antagonist activity",
+                adverse: "Somnolence, decreased appetite, fatigue, tachycardia/hypertension, suicidal ideation warning"
+            },
+
+            // 7. MEDICATIONS FOR ALCOHOL & OPIOID USE DISORDERS
+            {
+                catId: 7,
+                category: "7. Alcohol & Opioid Use Disorders",
+                subcategory: "Alcohol & Opioid Relapse Prevention",
+                drug: "Naltrexone",
+                indication: "Alcohol use disorder (reduces cravings & heavy drinking); relapse prevention in detoxified opioid use disorder",
+                mechanism: "Long-acting competitive opioid receptor antagonist (primarily mu-opioid receptors)",
+                adverse: "Precipitates acute severe opioid withdrawal if patient is not opioid-free for 7-10 days; hepatotoxicity at high doses, nausea"
+            },
+            {
+                catId: 7,
+                category: "7. Alcohol & Opioid Use Disorders",
+                subcategory: "Alcohol Abstinence Maintenance",
+                drug: "Acamprosate",
+                indication: "Maintenance of abstinence in alcohol use disorder (safe in liver disease)",
+                mechanism: "Modulates NMDA glutamate receptor hyperactivity and enhances GABA-A transmission",
+                adverse: "Diarrhea, abdominal cramping; cleared renally (contraindicated in severe renal impairment, CrCl < 30)"
+            },
+            {
+                catId: 7,
+                category: "7. Alcohol & Opioid Use Disorders",
+                subcategory: "Alcohol Aversion Therapy",
+                drug: "Disulfiram",
+                indication: "Alcohol use disorder aversion therapy in highly motivated, abstinent patients",
+                mechanism: "Irreversibly inhibits aldehyde dehydrogenase, causing toxic accumulation of acetaldehyde upon ethanol intake",
+                adverse: "Disulfiram-ethanol reaction (severe flushing, throbbing headache, nausea/vomiting, tachycardia, hypotension), hepatotoxicity, peripheral neuropathy"
+            },
+            {
+                catId: 7,
+                category: "7. Alcohol & Opioid Use Disorders",
+                subcategory: "Opioid Maintenance Therapy",
+                drug: "Methadone",
+                indication: "Opioid use disorder maintenance & detoxification; severe chronic pain",
+                mechanism: "Long-acting full agonist at mu-opioid receptors (also weak NMDA antagonist)",
+                adverse: "Respiratory depression, QT prolongation (torsades de pointes), constipation, miosis, physical dependence"
+            },
+            {
+                catId: 7,
+                category: "7. Alcohol & Opioid Use Disorders",
+                subcategory: "Opioid Maintenance Therapy",
+                drug: "Buprenorphine",
+                indication: "Opioid use disorder maintenance (often combined with naloxone as Suboxone)",
+                mechanism: "High-affinity partial agonist at mu-opioid receptors and antagonist at kappa-opioid receptors",
+                adverse: "Precipitates acute withdrawal if administered while full opioids are still bound to mu receptors; ceiling effect on respiratory depression"
+            },
+            {
+                catId: 7,
+                category: "7. Alcohol & Opioid Use Disorders",
+                subcategory: "Emergency Opioid Overdose Antidote",
+                drug: "Naloxone",
+                indication: "Emergency reversal of acute opioid overdose (respiratory depression + pinpoint pupils + coma)",
+                mechanism: "Short-acting competitive antagonist at mu, kappa, and delta opioid receptors",
+                adverse: "Precipitates immediate acute opioid withdrawal (agitation, emesis, tachycardia, pulmonary edema); short half-life requires repeat dosing for methadone/fentanyl"
+            },
+            {
+                catId: 7,
+                category: "7. Alcohol & Opioid Use Disorders",
+                subcategory: "Wernicke-Korsakoff Prophylaxis",
+                drug: "Thiamine (Vitamin B1)",
+                indication: "Prevention and treatment of Wernicke encephalopathy in chronic alcohol use or malnutrition (administer BEFORE glucose)",
+                mechanism: "Essential cofactor (thiamine pyrophosphate) for pyruvate dehydrogenase, alpha-ketoglutarate dehydrogenase, transketolase, and BCKDH",
+                adverse: "Well tolerated; administering IV dextrose before thiamine precipitates acute Wernicke encephalopathy (confusion, ophthalmoplegia, ataxia)"
+            },
+
+            // 8. OCD, PTSD & ANXIETY-RELATED DISORDERS
+            {
+                catId: 8,
+                category: "8. OCD, PTSD & Anxiety-Related",
+                subcategory: "PTSD Nightmare Therapy",
+                drug: "Prazosin",
+                indication: "PTSD-associated nightmares and sleep disruption; benign prostatic hyperplasia (BPH)",
+                mechanism: "Selective alpha-1 adrenergic receptor antagonist",
+                adverse: "First-dose orthostatic hypotension, dizziness, syncope, headache"
+            },
+
+            // 9. EATING DISORDERS & RELATED MEDICATIONS
+            {
+                catId: 9,
+                category: "9. Eating Disorders",
+                subcategory: "Bulimia Pharmacotherapy",
+                drug: "Fluoxetine (in Bulimia Nervosa)",
+                indication: "First-line pharmacotherapy for bulimia nervosa (reduces binge-purge frequency even without comorbid depression)",
+                mechanism: "Selective serotonin reuptake inhibitor (SSRI)",
+                adverse: "Sexual dysfunction, GI upset, insomnia (Note: Bupropion is strictly contraindicated in bulimia due to seizure risk)"
+            },
+
+            // 10. COGNITIVE DISORDERS & DEMENTIA MEDICATIONS
+            {
+                catId: 10,
+                category: "10. Cognitive Disorders & Dementia",
+                subcategory: "Cholinesterase Inhibitor",
+                drug: "Donepezil",
+                indication: "Mild-to-severe Alzheimer disease dementia",
+                mechanism: "Reversibly inhibits central acetylcholinesterase (AChE), increasing synaptic acetylcholine in the cortex/hippocampus",
+                adverse: "Cholinergic effects: nausea, diarrhea, bradycardia, syncope, anorexia, vivid dreams/insomnia"
+            },
+            {
+                catId: 10,
+                category: "10. Cognitive Disorders & Dementia",
+                subcategory: "Cholinesterase Inhibitor",
+                drug: "Rivastigmine",
+                indication: "Alzheimer disease dementia and Parkinson disease dementia (available as transdermal patch)",
+                mechanism: "Reversibly inhibits both acetylcholinesterase (AChE) and butyrylcholinesterase",
+                adverse: "Nausea, vomiting, diarrhea, weight loss, bradycardia, syncope"
+            },
+            {
+                catId: 10,
+                category: "10. Cognitive Disorders & Dementia",
+                subcategory: "Cholinesterase Inhibitor",
+                drug: "Galantamine",
+                indication: "Mild-to-moderate Alzheimer disease",
+                mechanism: "Reversible acetylcholinesterase inhibitor and allosteric modulator of nicotinic acetylcholine receptors",
+                adverse: "GI upset (nausea, diarrhea), bradycardia, weight loss, anorexia"
+            },
+            {
+                catId: 10,
+                category: "10. Cognitive Disorders & Dementia",
+                subcategory: "NMDA Receptor Antagonist",
+                drug: "Memantine",
+                indication: "Moderate-to-severe Alzheimer disease (monotherapy or combined with donepezil)",
+                mechanism: "Uncompetitive, low-to-moderate affinity NMDA glutamate receptor antagonist (prevents Ca2+-mediated excitotoxicity)",
+                adverse: "Dizziness, confusion, headache, constipation, hallucinations"
+            },
+
+            // 12. EMERGENCY MEDICATIONS & PSYCHIATRIC ANTIDOTES
+            {
+                catId: 12,
+                category: "12. Emergency & Psychiatry Antidotes",
+                subcategory: "Serotonin Syndrome Antidote",
+                drug: "Cyproheptadine",
+                indication: "Moderate-to-severe serotonin syndrome (hyperthermia, clonus, hyperreflexia, autonomic instability)",
+                mechanism: "First-generation H1 antihistamine with potent nonselective serotonin 5-HT1 and 5-HT2A receptor antagonism",
+                adverse: "Sedation, anticholinergic effects, increased appetite/weight gain"
+            },
+            {
+                catId: 12,
+                category: "12. Emergency & Psychiatry Antidotes",
+                subcategory: "NMS & Malignant Hyperthermia Antidote",
+                drug: "Dantrolene",
+                indication: "Neuroleptic malignant syndrome (NMS: 'lead-pipe' rigidity, fever, high CK) and malignant hyperthermia",
+                mechanism: "Ryanodine receptor (RyR1) antagonist; blocks Ca2+ release from skeletal muscle sarcoplasmic reticulum",
+                adverse: "Skeletal muscle weakness, drowsiness, hepatotoxicity"
+            },
+            {
+                catId: 12,
+                category: "12. Emergency & Psychiatry Antidotes",
+                subcategory: "Dopamine Agonist for NMS",
+                drug: "Bromocriptine",
+                indication: "Neuroleptic malignant syndrome (restores central dopamine tone), prolactinoma, Parkinson disease",
+                mechanism: "Ergot-derived central dopamine D2 receptor agonist",
+                adverse: "Nausea, orthostatic hypotension, psychosis/hallucinations, headache"
+            },
+            {
+                catId: 12,
+                category: "12. Emergency & Psychiatry Antidotes",
+                subcategory: "Somatic Neuromodulation",
+                drug: "Electroconvulsive Therapy (ECT)",
+                indication: "Treatment-resistant depression, depression with acute suicidality or psychosis, severe catatonia, severe mania in pregnancy",
+                mechanism: "Induces a brief generalized seizure under anesthesia, increasing BDNF and monoamine receptor sensitivity",
+                adverse: "Retrograde and anterograde amnesia (usually transient), post-ictal confusion, headache, myalgias; no absolute contraindications (caution in raised ICP)"
+            },
+
+            // 13. OTHER HIGH-YIELD DRUGS & SUBSTANCES OF MISUSE
+            {
+                catId: 13,
+                category: "13. High-Yield Substances & Others",
+                subcategory: "Smoking Cessation Aid",
+                drug: "Varenicline",
+                indication: "Smoking cessation (nicotine dependence)",
+                mechanism: "Partial agonist at alpha-4-beta-2 nicotinic acetylcholine receptors (reduces cravings while blocking nicotine reward)",
+                adverse: "Vivid/abnormal dreams, insomnia, nausea, sleep disturbance"
+            },
+            {
+                catId: 13,
+                category: "13. High-Yield Substances & Others",
+                subcategory: "Smoking Cessation Aid",
+                drug: "Nicotine Replacement Therapy",
+                indication: "Smoking cessation (patch, gum, lozenge, inhaler)",
+                mechanism: "Agonist at central and peripheral nicotinic acetylcholine receptors (nAChRs)",
+                adverse: "Tachycardia, palpitations, GI upset, insomnia/vivid dreams (if patch worn overnight), jaw soreness (gum)"
+            },
+            {
+                catId: 13,
+                category: "13. High-Yield Substances & Others",
+                subcategory: "Methylxanthine Stimulant",
+                drug: "Caffeine",
+                indication: "Fatigue/drowsiness, apnea of prematurity, post-dural puncture headache adjunct",
+                mechanism: "Competitive antagonist at adenosine A1 and A2A receptors (and inhibits phosphodiesterase at high doses)",
+                adverse: "Insomnia, anxiety, tremor, tachycardia, diuresis; withdrawal causes throbbing headache and fatigue"
+            },
+            {
+                catId: 13,
+                category: "13. High-Yield Substances & Others",
+                subcategory: "Stimulant / Local Anesthetic",
+                drug: "Cocaine",
+                indication: "Local vasoconstrictor/anesthetic for nasal surgery; classic USMLE toxicology stimulant",
+                mechanism: "Blocks reuptake of dopamine (DAT), norepinephrine (NET), and serotonin (SERT) + blocks voltage-gated Na+ channels",
+                adverse: "Severe hypertension, tachycardia, mydriasis, agitation/paranoia, coronary vasospasm/angina, nasal septum perforation, tactile hallucinations (formication)"
+            },
+            {
+                catId: 13,
+                category: "13. High-Yield Substances & Others",
+                subcategory: "Cannabinoid",
+                drug: "Cannabis (THC)",
+                indication: "Chemotherapy-induced nausea/vomiting and appetite stimulation (dronabinol); recreational substance",
+                mechanism: "Partial agonist at central cannabinoid CB1 and peripheral CB2 G-protein coupled receptors",
+                adverse: "Conjunctival injection (red eyes), increased appetite ('munchies'), dry mouth, slowed time perception, impaired short-term memory, paranoia/psychosis, cannabinoid hyperemesis syndrome"
+            },
+            {
+                catId: 13,
+                category: "13. High-Yield Substances & Others",
+                subcategory: "Classic Serotonergic Hallucinogen",
+                drug: "LSD & Psilocybin",
+                indication: "Hallucinogens tested in USMLE toxicology",
+                mechanism: "Agonist / partial agonist at cortical serotonin 5-HT2A receptors",
+                adverse: "Visual hallucinations, synesthesia, depersonalization, mydriasis, anxiety/panic, perceptual flashbacks"
+            },
+            {
+                catId: 13,
+                category: "13. High-Yield Substances & Others",
+                subcategory: "Dissociative Hallucinogen",
+                drug: "Phencyclidine (PCP / Angel Dust)",
+                indication: "Illicit dissociative intoxicant tested in emergency psychiatry",
+                mechanism: "Noncompetitive antagonist at NMDA glutamate receptors",
+                adverse: "Rotatory/multidirectional (horizontal + vertical) nystagmus, violent belligerence, profound analgesia, superhuman-like agitation, hypertension, tachycardia, seizures, rhabdomyolysis"
+            }
+        ];
+
+        // Also map cross-listed clinical categories (Categories 8, 9, 11) so selecting them drills all relevant drugs from the document
+        const CATEGORY_FILTERS = [
+            { id: 'all', title: 'All Random (Master Review - All 13 Categories)' },
+            { id: '1', title: '1. Antidepressants (SSRIs, SNRIs, TCAs, MAOIs, Atypicals)' },
+            { id: '2', title: '2. Antipsychotics (1st Gen, 2nd Gen, EPS & TD Drugs)' },
+            { id: '3', title: '3. Mood Stabilizers & Bipolar Disorder' },
+            { id: '4', title: '4. Anxiolytics, Benzodiazepines & Reversal' },
+            { id: '5', title: '5. Insomnia & Sleep Medications (Z-drugs, DORAs)' },
+            { id: '6', title: '6. ADHD Medications (Stimulants & Nonstimulants)' },
+            { id: '7', title: '7. Alcohol & Opioid Use Disorders' },
+            { id: '8', title: '8. OCD, PTSD & Anxiety-Related Disorders' },
+            { id: '9', title: '9. Eating Disorders Pharmacology' },
+            { id: '10', title: '10. Cognitive Disorders & Alzheimer Dementia' },
+            { id: '11', title: '11. Parkinson Psychosis & Movement Disorders' },
+            { id: '12', title: '12. Emergency Psychiatry & Antidotes (NMS, Serotonin)' },
+            { id: '13', title: '13. High-Yield Substances & Toxicology' }
+        ];
+
+        // Cross-category membership helper so Categories 8, 9, 11 include all cross-referenced drugs from the docx
+        function getDrugsForCategory(catId) {
+            if (catId === 'all') return [...DRUGS_DB];
+            const num = parseInt(catId, 10);
+
+            if (num === 8) {
+                const names = ['Fluoxetine', 'Sertraline', 'Fluvoxamine', 'Clomipramine', 'Venlafaxine', 'Duloxetine', 'Prazosin', 'Propranolol', 'Buspirone'];
+                return DRUGS_DB.filter(d => d.catId === 8 || names.includes(d.drug));
+            }
+            if (num === 9) {
+                const names = ['Fluoxetine (in Bulimia Nervosa)', 'Fluoxetine', 'Lisdexamfetamine', 'Olanzapine', 'Topiramate', 'Bupropion'];
+                return DRUGS_DB.filter(d => d.catId === 9 || names.includes(d.drug));
+            }
+            if (num === 11) {
+                const names = ['Pimavanserin', 'Quetiapine', 'Clozapine', 'Valbenazine', 'Deutetrabenazine', 'Benztropine', 'Diphenhydramine', 'Selegiline'];
+                return DRUGS_DB.filter(d => d.catId === 11 || names.includes(d.drug));
+            }
+
+            return DRUGS_DB.filter(d => d.catId === num);
+        }
+
+        // =========================================================================
+        // APPLICATION STATE
+        // =========================================================================
+        let state = {
+            regime: 'normal',           // 'normal' or 'rush'
+            category: 'all',            // 'all' or '1'..'13'
+            drillType: 'mixed',         // 'mixed', 'drug_to_mech', 'drug_to_ind', 'drug_to_adv', 'ind_to_drug', 'mech_to_drug', 'adv_to_drug'
+            rushAutoNext: true,
+            rushTimeLeft: 60,
+            rushInterval: null,
+            rushAutoTimeout: null,
+            isRushRunning: false,
+
+            doneCount: 0,
+            correctCount: 0,
+            streakCount: 0,
+            bestStreak: 0,
+
+            currentQuestion: null,
+            isAnswered: false,
+            recentDrugQueue: []
+        };
+
+        // DOM Elements
+        const categorySelect = document.getElementById('categorySelect');
+        const drillTypeSelect = document.getElementById('drillTypeSelect');
+        const modalCategorySelect = document.getElementById('modalCategorySelect');
+        const modalDrillTypeSelect = document.getElementById('modalDrillTypeSelect');
+        const rushAutoNextToggle = document.getElementById('rushAutoNextToggle');
+
+        const statDone = document.getElementById('statDone');
+        const statCorrect = document.getElementById('statCorrect');
+        const statAccuracy = document.getElementById('statAccuracy');
+        const statStreak = document.getElementById('statStreak');
+        const statBestStreak = document.getElementById('statBestStreak');
+        const modeTimerBtn = document.getElementById('modeTimerBtn');
+        const modeLabelTop = document.getElementById('modeLabelTop');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const rushTimerBarWrap = document.getElementById('rushTimerBarWrap');
+        const rushTimerBar = document.getElementById('rushTimerBar');
+
+        const cardCategoryBadge = document.getElementById('cardCategoryBadge');
+        const cardDrillBadge = document.getElementById('cardDrillBadge');
+        const questionTaskLabel = document.getElementById('questionTaskLabel');
+        const questionPrompt = document.getElementById('questionPrompt');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackTitle = document.getElementById('feedbackTitle');
+        const explanationText = document.getElementById('explanationText');
+        const nextBtn = document.getElementById('nextBtn');
+
+        const setupModal = document.getElementById('setupModal');
+        const openSetupBtn = document.getElementById('openSetupBtn');
+        const closeSetupBtn = document.getElementById('closeSetupBtn');
+        const startDrillBtn = document.getElementById('startDrillBtn');
+
+        const rushSummaryModal = document.getElementById('rushSummaryModal');
+        const summaryTotal = document.getElementById('summaryTotal');
+        const summaryCorrect = document.getElementById('summaryCorrect');
+        const summaryAccuracy = document.getElementById('summaryAccuracy');
+        const summaryBestStreak = document.getElementById('summaryBestStreak');
+        const playAgainRushBtn = document.getElementById('playAgainRushBtn');
+        const switchNormalFromSummaryBtn = document.getElementById('switchNormalFromSummaryBtn');
+        const resetStatsFooterBtn = document.getElementById('resetStatsFooterBtn');
+
+        // =========================================================================
+        // UTILITY & SIMILARITY CHECKS (PREVENTS DUPLICATE/AMBIGUOUS OPTIONS)
+        // =========================================================================
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function normalizeKey(str) {
+            return String(str || '')
+                .toLowerCase()
+                .replace(/[^a-z0-9\s]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        // Checks if two mechanisms/indications/adverse profiles are too similar to appear as competing options
+        function areTextsTooSimilar(a, b, subcatA, subcatB, compareSubcat) {
+            if (compareSubcat && subcatA && subcatB && subcatA === subcatB) {
+                return true;
+            }
+            const na = normalizeKey(a);
+            const nb = normalizeKey(b);
+            if (!na || !nb) return true;
+            if (na === nb) return true;
+            if (na.includes(nb) || nb.includes(na)) return true;
+
+            // Token overlap check (Jaccard > 0.55 means too similar)
+            const stopWords = new Set(['and', 'the', 'for', 'with', 'in', 'of', 'to', 'or', 'at', 'by', 'is', 'selected', 'cases', 'disorder', 'disorders', 'treatment', 'receptor', 'receptors']);
+            const wordsA = na.split(' ').filter(w => w.length > 2 && !stopWords.has(w));
+            const wordsB = nb.split(' ').filter(w => w.length > 2 && !stopWords.has(w));
+            if (wordsA.length === 0 || wordsB.length === 0) return false;
+
+            const setB = new Set(wordsB);
+            let shared = 0;
+            wordsA.forEach(w => { if (setB.has(w)) shared++; });
+            const overlapRatio = shared / Math.min(wordsA.length, wordsB.length);
+            return overlapRatio >= 0.58;
+        }
+
+        // =========================================================================
+        // DYNAMIC QUESTION GENERATOR WITH NON-REPEATING OPTIONS
+        // =========================================================================
+        const DRILL_TYPES = [
+            'drug_to_mech',
+            'drug_to_ind',
+            'drug_to_adv',
+            'ind_to_drug',
+            'mech_to_drug',
+            'adv_to_drug'
+        ];
+
+        function generateNextQuestion() {
+            const categoryPool = getDrugsForCategory(state.category);
+            const activePool = categoryPool.length > 0 ? categoryPool : DRUGS_DB;
+
+            // Avoid repeating the exact same drug back-to-back
+            let candidates = activePool.filter(d => !state.recentDrugQueue.includes(d.drug));
+            if (candidates.length === 0) {
+                state.recentDrugQueue = [];
+                candidates = activePool;
+            }
+
+            const targetDrug = candidates[Math.floor(Math.random() * candidates.length)];
+            state.recentDrugQueue.push(targetDrug.drug);
+            if (state.recentDrugQueue.length > Math.min(6, Math.floor(activePool.length / 2))) {
+                state.recentDrugQueue.shift();
+            }
+
+            // Pick drill direction
+            const qType = state.drillType === 'mixed'
+                ? DRILL_TYPES[Math.floor(Math.random() * DRILL_TYPES.length)]
+                : state.drillType;
+
+            let taskLabel = '';
+            let badgeLabel = '';
+            let promptText = '';
+            let correctAnswer = '';
+            let options = [];
+
+            // Prefer distractors from the selected category first, then fallback to entire DB if needed to ensure 3 strictly distinct options
+            const distractorPool = [
+                ...shuffleArray(activePool.filter(d => d.drug !== targetDrug.drug)),
+                ...shuffleArray(DRUGS_DB.filter(d => d.drug !== targetDrug.drug))
+            ];
+
+            if (qType === 'drug_to_mech' || qType === 'drug_to_ind' || qType === 'drug_to_adv') {
+                const field = qType === 'drug_to_mech' ? 'mechanism' : (qType === 'drug_to_ind' ? 'indication' : 'adverse');
+                // For mechanism questions, enforce different subcategory so we never show two SSRI mechanisms or two Benzo mechanisms
+                const enforceSubcatDiff = (qType === 'drug_to_mech');
+
+                if (qType === 'drug_to_mech') {
+                    taskLabel = 'WHAT IS THE MECHANISM OF ACTION OF:';
+                    badgeLabel = 'Drug \u2192 Mechanism';
+                } else if (qType === 'drug_to_ind') {
+                    taskLabel = 'WHAT IS THE PRIMARY CLINICAL INDICATION FOR:';
+                    badgeLabel = 'Drug \u2192 Indication';
+                } else {
+                    taskLabel = 'WHICH ADVERSE EFFECT PROFILE IS ASSOCIATED WITH:';
+                    badgeLabel = 'Drug \u2192 Adverse Effects';
+                }
+
+                promptText = `${targetDrug.drug}`;
+                correctAnswer = targetDrug[field];
+
+                const chosenEntries = [targetDrug];
+                for (const cand of distractorPool) {
+                    if (chosenEntries.length >= 4) break;
+                    const clashes = chosenEntries.some(existing =>
+                        areTextsTooSimilar(existing[field], cand[field], existing.subcategory, cand.subcategory, enforceSubcatDiff)
+                    );
+                    if (!clashes) {
+                        chosenEntries.push(cand);
+                    }
+                }
+                // Fallback if strict subcategory check left fewer than 4 options
+                if (chosenEntries.length < 4) {
+                    for (const cand of distractorPool) {
+                        if (chosenEntries.length >= 4) break;
+                        const clashes = chosenEntries.some(existing =>
+                            normalizeKey(existing[field]) === normalizeKey(cand[field])
+                        );
+                        if (!clashes) chosenEntries.push(cand);
+                    }
+                }
+
+                options = shuffleArray(chosenEntries.map(e => e[field]));
+            } else {
+                // Asking for the DRUG given Indication, Mechanism, or Adverse Effects
+                const field = qType === 'mech_to_drug' ? 'mechanism' : (qType === 'ind_to_drug' ? 'indication' : 'adverse');
+
+                if (qType === 'mech_to_drug') {
+                    taskLabel = 'WHICH DRUG HAS THIS MECHANISM OF ACTION?';
+                    badgeLabel = 'Mechanism \u2192 Drug';
+                    // Add clinical indication cue if mechanism is shared by a class so the student has context, AND strictly exclude class-mates from wrong options
+                    promptText = `${targetDrug.mechanism} (Used in: ${targetDrug.indication})`;
+                } else if (qType === 'ind_to_drug') {
+                    taskLabel = 'WHICH DRUG IS INDICATED FOR:';
+                    badgeLabel = 'Indication \u2192 Drug';
+                    promptText = `${targetDrug.indication} (${targetDrug.subcategory})`;
+                } else {
+                    taskLabel = 'WHICH DRUG CAUSES THIS ADVERSE EFFECT PROFILE?';
+                    badgeLabel = 'Adverse \u2192 Drug';
+                    promptText = `${targetDrug.adverse}`;
+                }
+
+                correctAnswer = targetDrug.drug;
+
+                const chosenEntries = [targetDrug];
+                for (const cand of distractorPool) {
+                    if (chosenEntries.length >= 4) break;
+                    if (chosenEntries.some(e => e.drug === cand.drug)) continue;
+
+                    // Crucial check: A distractor drug CANNOT share the same mechanism/indication/adverse profile or same subcategory when asking for a shared class feature
+                    const sharesTargetProperty = areTextsTooSimilar(
+                        targetDrug[field],
+                        cand[field],
+                        targetDrug.subcategory,
+                        cand.subcategory,
+                        true
+                    );
+
+                    if (!sharesTargetProperty) {
+                        chosenEntries.push(cand);
+                    }
+                }
+
+                // Fallback if category is very small (e.g., all drugs in category share a subcategory)
+                if (chosenEntries.length < 4) {
+                    for (const cand of shuffleArray(DRUGS_DB)) {
+                        if (chosenEntries.length >= 4) break;
+                        if (chosenEntries.some(e => e.drug === cand.drug)) continue;
+                        const sharesTargetProperty = areTextsTooSimilar(
+                            targetDrug[field],
+                            cand[field],
+                            targetDrug.subcategory,
+                            cand.subcategory,
+                            true
+                        );
+                        if (!sharesTargetProperty) {
+                            chosenEntries.push(cand);
+                        }
+                    }
+                }
+
+                options = shuffleArray(chosenEntries.map(e => e.drug));
+            }
+
+            return {
+                drugObj: targetDrug,
+                taskLabel,
+                badgeLabel,
+                promptText,
+                correctAnswer,
+                options
+            };
+        }
+
+        // =========================================================================
+        // UI RENDERING & INTERACTION
+        // =========================================================================
+        function initCategoryDropdowns() {
+            [categorySelect, modalCategorySelect].forEach(sel => {
+                sel.innerHTML = '';
+                CATEGORY_FILTERS.forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat.id;
+                    opt.textContent = cat.title;
+                    sel.appendChild(opt);
+                });
+                sel.value = state.category;
+            });
+        }
+
+        function resetExplanationBox() {
+            feedbackTitle.className = 'flex items-center justify-between gap-1.5 font-bold mb-0.5 text-slate-400';
+            feedbackTitle.innerHTML = `
+                <div class="flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>High-Yield Drug Profile</span>
+                </div>
+            `;
+            explanationText.className = 'leading-snug text-[10.5px] text-slate-400 italic';
+            explanationText.textContent = 'Select an answer above to view the complete Drug \u2022 Indication \u2022 Mechanism \u2022 Adverse Effects breakdown...';
+
+            nextBtn.disabled = true;
+            nextBtn.className = 'flex-1 h-full bg-slate-200 text-slate-400 font-bold text-xs sm:text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-not-allowed opacity-60';
+        }
+
+        function renderQuestion() {
+            clearTimeout(state.rushAutoTimeout);
+            state.isAnswered = false;
+            state.currentQuestion = generateNextQuestion();
+
+            resetExplanationBox();
+
+            const q = state.currentQuestion;
+            cardCategoryBadge.textContent = `${q.drugObj.category} \u2022 ${q.drugObj.subcategory}`;
+            cardDrillBadge.textContent = q.badgeLabel;
+            questionTaskLabel.textContent = q.taskLabel;
+            questionPrompt.textContent = q.promptText;
+
+            optionsContainer.innerHTML = '';
+            q.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'w-full text-left p-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 active:scale-[0.98] transition-all flex items-center gap-2 text-clamp-option text-slate-900 font-medium cursor-pointer shadow-sm min-h-[39px] overflow-hidden';
+
+                const letter = String.fromCharCode(65 + idx);
+                btn.innerHTML = `
+                    <span class="shrink-0 w-5 h-5 rounded-md bg-red-50 border border-red-200 text-[10px] font-bold text-slide-red flex items-center justify-center">
+                        ${letter}
+                    </span>
+                    <span class="flex-1 text-balance line-clamp-2 leading-tight">${optText}</span>
+                `;
+
+                btn.onclick = () => handleOptionSelect(optText, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleOptionSelect(selectedOption, clickedBtn) {
+            if (state.isAnswered) return;
+            if (state.regime === 'rush' && !state.isRushRunning) return;
+
+            state.isAnswered = true;
+            const q = state.currentQuestion;
+            const isCorrect = selectedOption === q.correctAnswer;
+
+            state.doneCount++;
+
+            const optionButtons = optionsContainer.querySelectorAll('button');
+            optionButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.remove('hover:bg-slate-50', 'active:scale-[0.98]', 'cursor-pointer');
+                btn.classList.add('cursor-default');
+
+                const textSpan = btn.querySelector('span:last-child');
+                const optText = textSpan ? textSpan.textContent.trim() : '';
+
+                if (optText === q.correctAnswer) {
+                    btn.classList.remove('bg-white', 'border-slate-300');
+                    btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-950', 'ring-1', 'ring-emerald-500');
+                    const badge = btn.querySelector('span:first-child');
+                    if (badge) {
+                        badge.classList.remove('bg-red-50', 'border-red-200', 'text-slide-red');
+                        badge.classList.add('bg-emerald-600', 'border-emerald-600', 'text-white');
+                    }
+                }
+            });
+
+            if (isCorrect) {
+                state.correctCount++;
+                state.streakCount++;
+                if (state.streakCount > state.bestStreak) {
+                    state.bestStreak = state.streakCount;
+                }
+
+                feedbackTitle.className = 'flex items-center justify-between gap-1.5 font-bold mb-0.5 text-emerald-700';
+                feedbackTitle.innerHTML = `
+                    <div class="flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        <span>Correct! \u2022 ${q.drugObj.drug} (${q.drugObj.subcategory})</span>
+                    </div>
+                `;
+            } else {
+                state.streakCount = 0;
+
+                clickedBtn.classList.remove('bg-white', 'border-slate-300');
+                clickedBtn.classList.add('bg-rose-50', 'border-rose-500', 'text-rose-950');
+                const badge = clickedBtn.querySelector('span:first-child');
+                if (badge) {
+                    badge.classList.remove('bg-red-50', 'border-red-200', 'text-slide-red');
+                    badge.classList.add('bg-rose-600', 'border-rose-600', 'text-white');
+                }
+
+                feedbackTitle.className = 'flex items-center justify-between gap-1.5 font-bold mb-0.5 text-rose-700';
+                feedbackTitle.innerHTML = `
+                    <div class="flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                        <span>Incorrect \u2022 ${q.drugObj.drug} (${q.drugObj.subcategory})</span>
+                    </div>
+                `;
+            }
+
+            updateStatsDisplay();
+
+            // Render complete 4-part high-yield drug summary in explanation panel
+            explanationText.className = 'leading-tight text-[10.5px] text-slate-800 not-italic space-y-0.5';
+            explanationText.innerHTML = `
+                <div><span class="font-bold text-slate-900">Indication:</span> ${q.drugObj.indication}</div>
+                <div><span class="font-bold text-slate-900">Mechanism:</span> ${q.drugObj.mechanism}</div>
+                <div><span class="font-bold text-rose-700">Adverse:</span> ${q.drugObj.adverse}</div>
+            `;
+
+            nextBtn.disabled = false;
+            nextBtn.className = 'flex-1 h-full bg-slide-red hover:bg-slide-darkred text-white font-bold text-xs sm:text-sm rounded-xl shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer';
+
+            // If in Drill Rush with auto-advance enabled, automatically advance
+            if (state.regime === 'rush' && state.isRushRunning && state.rushAutoNext) {
+                state.rushAutoTimeout = setTimeout(() => {
+                    if (state.isRushRunning && state.isAnswered) {
+                        renderQuestion();
+                    }
+                }, isCorrect ? 550 : 950);
+            }
+        }
+
+        function updateStatsDisplay() {
+            statDone.textContent = state.doneCount;
+            statCorrect.textContent = state.correctCount;
+
+            const accuracy = state.doneCount > 0
+                ? Math.round((state.correctCount / state.doneCount) * 100)
+                : 0;
+            statAccuracy.textContent = `(${accuracy}%)`;
+
+            statStreak.textContent = state.streakCount;
+            statBestStreak.textContent = `Best:${state.bestStreak}`;
+        }
+
+        // =========================================================================
+        // REGIME & 60-SECOND DRILL RUSH ENGINE
+        // =========================================================================
+        function stopRushTimer() {
+            clearInterval(state.rushInterval);
+            clearTimeout(state.rushAutoTimeout);
+            state.rushInterval = null;
+            state.isRushRunning = false;
+        }
+
+        function startDrillSession() {
+            stopRushTimer();
+            rushSummaryModal.classList.add('hidden');
+            setupModal.classList.add('hidden');
+
+            // Reset session counters
+            state.doneCount = 0;
+            state.correctCount = 0;
+            state.streakCount = 0;
+            state.bestStreak = 0;
+            updateStatsDisplay();
+
+            if (state.regime === 'rush') {
+                state.rushTimeLeft = 60;
+                state.isRushRunning = true;
+                modeLabelTop.textContent = 'Rush Timer';
+                timerDisplay.textContent = '60s';
+                timerDisplay.className = 'text-xs sm:text-sm font-black text-slide-red leading-tight flex items-center gap-0.5';
+                rushTimerBarWrap.classList.remove('hidden');
+                rushTimerBar.style.width = '100%';
+
+                state.rushInterval = setInterval(() => {
+                    state.rushTimeLeft--;
+                    timerDisplay.textContent = `${state.rushTimeLeft}s`;
+                    const pct = Math.max(0, (state.rushTimeLeft / 60) * 100);
+                    rushTimerBar.style.width = `${pct}%`;
+
+                    if (state.rushTimeLeft <= 10) {
+                        timerDisplay.className = 'text-xs sm:text-sm font-black text-rose-600 animate-pulse-fast leading-tight';
+                    }
+
+                    if (state.rushTimeLeft <= 0) {
+                        finishDrillRush();
+                    }
+                }, 1000);
+            } else {
+                modeLabelTop.textContent = 'Regime';
+                timerDisplay.textContent = 'Normal';
+                timerDisplay.className = 'text-xs sm:text-sm font-black text-slate-800 leading-tight';
+                rushTimerBarWrap.classList.add('hidden');
+            }
+
+            renderQuestion();
+        }
+
+        function finishDrillRush() {
+            stopRushTimer();
+            timerDisplay.textContent = '0s';
+
+            summaryTotal.textContent = state.doneCount;
+            summaryCorrect.textContent = state.correctCount;
+            const acc = state.doneCount > 0 ? Math.round((state.correctCount / state.doneCount) * 100) : 0;
+            summaryAccuracy.textContent = `${acc}% Accuracy`;
+            summaryBestStreak.textContent = state.bestStreak;
+
+            const catObj = CATEGORY_FILTERS.find(c => c.id === state.category);
+            document.getElementById('rushSummarySub').textContent = catObj ? catObj.title : 'All Categories';
+
+            rushSummaryModal.classList.remove('hidden');
+        }
+
+        // =========================================================================
+        // EVENT LISTENERS
+        // =========================================================================
+        // Regime selector cards in setup modal
+        document.querySelectorAll('.regime-card').forEach(btn => {
+            btn.addEventListener('click', () => {
+                state.regime = btn.dataset.regime;
+                document.querySelectorAll('.regime-card').forEach(b => {
+                    if (b.dataset.regime === state.regime) {
+                        b.className = 'regime-card p-2.5 rounded-xl border-2 border-slide-red bg-red-50/60 text-left transition-all cursor-pointer';
+                    } else {
+                        b.className = 'regime-card p-2.5 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-left transition-all cursor-pointer';
+                    }
+                });
+            });
+        });
+
+        openSetupBtn.addEventListener('click', () => {
+            stopRushTimer();
+            modalCategorySelect.value = state.category;
+            modalDrillTypeSelect.value = state.drillType;
+            setupModal.classList.remove('hidden');
+        });
+
+        modeTimerBtn.addEventListener('click', () => {
+            stopRushTimer();
+            modalCategorySelect.value = state.category;
+            modalDrillTypeSelect.value = state.drillType;
+            setupModal.classList.remove('hidden');
+        });
+
+        closeSetupBtn.addEventListener('click', () => {
+            setupModal.classList.add('hidden');
+            if (state.regime === 'rush' && !state.isRushRunning) {
+                startDrillSession();
+            }
+        });
+
+        startDrillBtn.addEventListener('click', () => {
+            state.category = modalCategorySelect.value;
+            state.drillType = modalDrillTypeSelect.value;
+            state.rushAutoNext = rushAutoNextToggle.checked;
+
+            categorySelect.value = state.category;
+            drillTypeSelect.value = state.drillType;
+
+            startDrillSession();
+        });
+
+        categorySelect.addEventListener('change', (e) => {
+            state.category = e.target.value;
+            modalCategorySelect.value = state.category;
+            if (state.regime === 'rush') {
+                startDrillSession();
+            } else {
+                renderQuestion();
+            }
+        });
+
+        drillTypeSelect.addEventListener('change', (e) => {
+            state.drillType = e.target.value;
+            modalDrillTypeSelect.value = state.drillType;
+            renderQuestion();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (!state.isAnswered) return;
+            renderQuestion();
+        });
+
+        playAgainRushBtn.addEventListener('click', () => {
+            state.regime = 'rush';
+            startDrillSession();
+        });
+
+        switchNormalFromSummaryBtn.addEventListener('click', () => {
+            rushSummaryModal.classList.add('hidden');
+            setupModal.classList.remove('hidden');
+        });
+
+        resetStatsFooterBtn.addEventListener('click', () => {
+            startDrillSession();
+        });
+
+        // Keyboard shortcuts: 1-4 or A-D to select option, Space/Enter for Next Question
+        document.addEventListener('keydown', (e) => {
+            if (!setupModal.classList.contains('hidden') || !rushSummaryModal.classList.contains('hidden')) return;
+
+            if (!state.isAnswered) {
+                const keyMap = { '1': 0, '2': 1, '3': 2, '4': 3, 'a': 0, 'b': 1, 'c': 2, 'd': 3 };
+                const idx = keyMap[e.key.toLowerCase()];
+                if (idx !== undefined) {
+                    const buttons = optionsContainer.querySelectorAll('button');
+                    if (buttons[idx]) buttons[idx].click();
+                }
+            } else {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    renderQuestion();
+                }
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initCategoryDropdowns();
+            renderQuestion();
+            updateStatsDisplay();
+        });
+    </script>
+</body>
+</html>
