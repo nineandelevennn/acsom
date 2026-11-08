@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Embryology - The Basics</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slide: {
+                            red: '#e31b23',
+                            darkred: '#BF0000',
+                            bg: '#F4F5F7',
+                            card: '#FFFFFF',
+                            text: '#1A1A1A',
+                            subtext: '#555555',
+                            border: '#E2E8F0'
+                        }
+                    },
+                    animation: {
+                        'pop': 'pop 0.2s ease-out'
+                    },
+                    keyframes: {
+                        pop: {
+                            '0%': { transform: 'scale(0.98)', opacity: '0.8' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Lock screen to 100dvh with zero page scrolling on mobile */
+        html, body {
+            height: 100dvh;
+            width: 100vw;
+            overflow: hidden;
+            position: fixed;
+            touch-action: manipulation;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #F4F5F7;
+            color: #1A1A1A;
+        }
+
+        /* Fluid text sizing for mobile viewports */
+        .text-clamp-title {
+            font-size: clamp(0.85rem, 3.8vw, 1.2rem);
+        }
+        .text-clamp-prompt {
+            font-size: clamp(0.85rem, 3.8vw, 1.05rem);
+            line-height: 1.3;
+        }
+        .text-clamp-option {
+            font-size: clamp(0.75rem, 3vw, 0.88rem);
+            line-height: 1.2;
+        }
+
+        button, a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Custom subtle scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e31b23;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slide-bg text-slide-text flex flex-col justify-between select-none antialiased h-[100dvh] max-h-[100dvh] w-full p-0 m-0 border-box">
+
+    <!-- SLIDE-STYLE HEADER BANNER -->
+    <header class="shrink-0 bg-slide-red text-white w-full shadow-md py-2 px-3 sm:px-4">
+        <div class="max-w-md mx-auto flex items-center justify-between gap-2">
+            <!-- GO BACK BUTTON -->
+            <a href="https://nineandelevennn.github.io/acsom/" target="_self" class="inline-flex items-center gap-1 px-2.5 py-1 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded-lg border border-white/30 transition-all active:scale-95 shrink-0">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Go Back
+            </a>
+
+            <!-- CENTER LECTURE TITLE -->
+            <div class="text-center flex-1 min-w-0">
+                <h1 class="font-black text-white text-clamp-title tracking-wider uppercase truncate">Embryology</h1>
+                <p class="text-[9px] text-white/90 font-medium tracking-widest uppercase truncate">ACSOM</p>
+            </div>
+
+            <!-- RESET STATS BUTTON -->
+            <button id="resetStatsBtn" class="px-2 py-1 bg-white/15 hover:bg-white/25 text-white text-xs font-medium rounded-lg border border-white/30 transition-all active:scale-95 shrink-0 flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <span class="hidden sm:inline">Reset</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN WRAPPER CONTAINER -->
+    <div class="flex-1 min-h-0 w-full max-w-md mx-auto flex flex-col justify-between px-2.5 py-2 sm:px-4 box-border">
+
+        <!-- DAY SELECTOR DROPDOWN & STATS BAR -->
+        <section class="shrink-0 flex flex-col gap-2 w-full my-0.5">
+            <!-- DAY SELECTOR -->
+            <div class="relative w-full">
+                <select id="daySelect" class="w-full bg-white text-slide-text font-bold text-xs sm:text-sm py-2 px-3 pr-8 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slide-red appearance-none shadow-sm cursor-pointer transition-all">
+                    <!-- Dynamic day options will be built from QUIZ_DATA -->
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slide-red">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                </div>
+            </div>
+
+            <!-- STATS DASHBOARD BAR -->
+            <div class="grid grid-cols-3 gap-2 w-full">
+                <!-- DONE STAT -->
+                <div class="bg-white border border-slate-200 rounded-xl p-1 flex flex-col items-center justify-center shadow-sm">
+                    <span class="text-[9px] uppercase font-bold text-slide-subtext tracking-wider">Done</span>
+                    <span id="statDone" class="text-base font-black text-slate-800">0</span>
+                </div>
+
+                <!-- ACCURACY STAT -->
+                <div class="bg-white border border-slate-200 rounded-xl p-1 flex flex-col items-center justify-center shadow-sm">
+                    <span class="text-[9px] uppercase font-bold text-slide-subtext tracking-wider">Correct</span>
+                    <div class="flex items-baseline gap-1">
+                        <span id="statCorrect" class="text-base font-black text-emerald-600">0</span>
+                        <span id="statAccuracy" class="text-[9px] text-slate-500 font-medium">(0%)</span>
+                    </div>
+                </div>
+
+                <!-- STREAK STAT -->
+                <div class="bg-white border border-slate-200 rounded-xl p-1 flex flex-col items-center justify-center shadow-sm">
+                    <span class="text-[9px] uppercase font-bold text-slide-subtext tracking-wider flex items-center gap-0.5">
+                        Streak
+                        <svg class="w-3 h-3 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-1.048c-2.5 1.249-4.2 3.824-4.2 6.551 0 2.228 1.135 4.103 2.8 5.15C8.3 13.9 7 15.65 7 17.5c0 .28.02.55.06.81a1 1 0 001.6.66c1.8-1.35 3.34-3.23 3.34-5.47 0-1.34-.5-2.55-1.35-3.48 1.8 1.34 3.35 3.23 3.35 5.47 0 1.25-.4 2.4-1.08 3.33a1 1 0 001.44 1.28c1.6-1.5 2.64-3.6 2.64-5.95 0-3.3-1.85-6.1-4.59-7.62z" clip-rule="evenodd"/></svg>
+                    </span>
+                    <span id="statStreak" class="text-base font-black text-amber-500">0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- MAIN QUESTION CARD CONTAINER WITH STRICT FIXED FLEX HEIGHTS -->
+        <main class="flex-1 min-h-0 w-full flex flex-col justify-between bg-white border border-slate-300 rounded-2xl p-3 shadow-md relative overflow-hidden my-1">
+            
+            <!-- CARD HEADER INFO -->
+            <div class="shrink-0 flex items-center justify-between pb-1.5 border-b border-slate-200 h-7">
+                <span id="cardCategoryBadge" class="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-red-50 text-slide-red border border-red-200 rounded-full truncate max-w-[70%]">
+                    Day 1
+                </span>
+                <span id="cardProgressText" class="text-[11px] font-semibold text-slate-500 shrink-0">
+                    Card 1 of 1
+                </span>
+            </div>
+
+            <!-- QUESTION PROMPT BOX -->
+            <div class="flex-1 min-h-[60px] max-h-[110px] flex items-center justify-center p-2 my-1 bg-slate-50 border border-slate-200 rounded-xl text-center shadow-inner overflow-y-auto">
+                <p id="questionPrompt" class="font-bold text-slate-900 text-clamp-prompt text-balance">
+                    Prompt loading...
+                </p>
+            </div>
+
+            <!-- OPTIONS GRID CONTAINER -->
+            <div id="optionsContainer" class="shrink-0 grid grid-cols-1 gap-1.5 my-1">
+                <!-- Dynamic Option Buttons render here -->
+            </div>
+
+            <!-- EXPLANATION / KEY POINT FEEDBACK PANEL -->
+            <div id="explanationBox" class="shrink-0 h-[90px] max-h-[90px] p-2 bg-slate-50 border border-slate-300 rounded-xl my-1 text-xs overflow-y-auto transition-all duration-200">
+                <div class="flex items-center gap-1.5 font-bold mb-0.5 text-slate-400" id="feedbackTitle">
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Explanation</span>
+                </div>
+                <p id="explanationText" class="leading-snug text-[11px] text-slate-400 italic">
+                    Select an answer above to view the high-yield explanation...
+                </p>
+            </div>
+
+            <!-- NEXT QUESTION BUTTON CONTAINER -->
+            <div id="nextBtnContainer" class="shrink-0 h-[36px] mt-0.5">
+                <button id="nextBtn" class="w-full h-full bg-slate-200 text-slate-400 font-bold text-xs sm:text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-not-allowed opacity-60" disabled>
+                    <span>Next Question</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+            </div>
+
+        </main>
+
+        <!-- FOOTER INFO -->
+        <footer class="shrink-0 text-center text-[10px] text-slate-500 py-0.5">
+            Embryology Review
+        </footer>
+    </div>
+
+    <script>
+        const QUIZ_DATA = [
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "7. Why is the cortical reaction important?",
+                    "answer": "It prevents polyspermy",
+                    "options": [
+                              "It helps sperm penetrate the oocyte",
+                              "It prevents polyspermy",
+                              "It produces the placenta",
+                              "It creates the primitive streak"
+                    ],
+                    "explanation": "Correct answer: It prevents polyspermy"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "8. What happens during cleavage?",
+                    "answer": "The zygote divides into smaller cells without increasing overall size",
+                    "options": [
+                              "The embryo increases in overall size",
+                              "The zygote divides into smaller cells without increasing overall size",
+                              "The three germ layers form",
+                              "The neural tube closes"
+                    ],
+                    "explanation": "Correct answer: The zygote divides into smaller cells without increasing overall size"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "9. Why does the embryo not become much bigger during cleavage?",
+                    "answer": "The original cytoplasm is divided into progressively smaller cells",
+                    "options": [
+                              "Cells stop dividing",
+                              "The original cytoplasm is divided into progressively smaller cells",
+                              "The embryo loses chromosomes",
+                              "The zona pellucida expands"
+                    ],
+                    "explanation": "Correct answer: The original cytoplasm is divided into progressively smaller cells"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "10. What is a morula?",
+                    "answer": "A solid ball of approximately 16–32 cells",
+                    "options": [
+                              "A two-layered embryonic disc",
+                              "A solid ball of approximately 16–32 cells",
+                              "A fluid-filled cavity containing an embryo",
+                              "A structure that produces hCG"
+                    ],
+                    "explanation": "Correct answer: A solid ball of approximately 16–32 cells"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "11. What is the main difference between a morula and a blastocyst?",
+                    "answer": "The blastocyst has a fluid-filled cavity and differentiated cell populations",
+                    "options": [
+                              "The morula has three germ layers",
+                              "The blastocyst has a fluid-filled cavity and differentiated cell populations",
+                              "The morula has a placenta",
+                              "The blastocyst has a neural tube"
+                    ],
+                    "explanation": "Correct answer: The blastocyst has a fluid-filled cavity and differentiated cell populations"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "12. Which part of the blastocyst develops into the embryo proper?",
+                    "answer": "Embryoblast",
+                    "options": [
+                              "Embryoblast",
+                              "Trophoblast",
+                              "Blastocoel",
+                              "Zona pellucida"
+                    ],
+                    "explanation": "Correct answer: Embryoblast"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "13. Which part of the blastocyst contributes primarily to the fetal portion of the placenta?",
+                    "answer": "Trophoblast",
+                    "options": [
+                              "Embryoblast",
+                              "Trophoblast",
+                              "Hypoblast",
+                              "Epiblast"
+                    ],
+                    "explanation": "Correct answer: Trophoblast"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "14. Why must the blastocyst hatch from the zona pellucida before implantation?",
+                    "answer": "To allow the trophoblast to interact with the endometrium",
+                    "options": [
+                              "To complete meiosis",
+                              "To allow the trophoblast to interact with the endometrium",
+                              "To form the neural tube",
+                              "To create the yolk sac"
+                    ],
+                    "explanation": "Correct answer: To allow the trophoblast to interact with the endometrium"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "15. Around which day does implantation normally begin?",
+                    "answer": "Day 6–7",
+                    "options": [
+                              "Day 1",
+                              "Day 3",
+                              "Day 6–7",
+                              "Day 14"
+                    ],
+                    "explanation": "Correct answer: Day 6–7"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "16. Which trophoblast layer is responsible for invading the endometrium?",
+                    "answer": "Syncytiotrophoblast",
+                    "options": [
+                              "Cytotrophoblast",
+                              "Syncytiotrophoblast",
+                              "Epiblast",
+                              "Hypoblast"
+                    ],
+                    "explanation": "Correct answer: Syncytiotrophoblast"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "17. What is the main difference between cytotrophoblast and syncytiotrophoblast?",
+                    "answer": "Cytotrophoblast is cellular and mitotically active; syncytiotrophoblast is multinucleated and invasive",
+                    "options": [
+                              "Cytotrophoblast is cellular and mitotically active; syncytiotrophoblast is multinucleated and invasive",
+                              "Cytotrophoblast produces hCG; syncytiotrophoblast produces the embryo",
+                              "Both form the neural tube",
+                              "Syncytiotrophoblast becomes the hypoblast"
+                    ],
+                    "explanation": "Correct answer: Cytotrophoblast is cellular and mitotically active; syncytiotrophoblast is multinucleated and invasive"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "18. Which structure produces hCG during early pregnancy?",
+                    "answer": "Syncytiotrophoblast",
+                    "options": [
+                              "Cytotrophoblast",
+                              "Syncytiotrophoblast",
+                              "Epiblast",
+                              "Corpus albicans"
+                    ],
+                    "explanation": "Correct answer: Syncytiotrophoblast"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "19. Why does hCG need to maintain the corpus luteum?",
+                    "answer": "To maintain progesterone production and support the endometrium",
+                    "options": [
+                              "To produce sperm",
+                              "To maintain progesterone production and support the endometrium",
+                              "To form the neural tube",
+                              "To cause ovulation"
+                    ],
+                    "explanation": "Correct answer: To maintain progesterone production and support the endometrium"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "20. What would happen if hCG production failed very early in pregnancy?",
+                    "answer": "Progesterone support could decline, threatening pregnancy maintenance",
+                    "options": [
+                              "The corpus luteum would remain active indefinitely",
+                              "Progesterone support could decline, threatening pregnancy maintenance",
+                              "The neural tube would close too early",
+                              "The embryo would develop an extra chromosome"
+                    ],
+                    "explanation": "Correct answer: Progesterone support could decline, threatening pregnancy maintenance"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "21. What are the two layers of the bilaminar embryonic disc?",
+                    "answer": "Epiblast and hypoblast",
+                    "options": [
+                              "Ectoderm and mesoderm",
+                              "Epiblast and hypoblast",
+                              "Endoderm and mesoderm",
+                              "Cytotrophoblast and syncytiotrophoblast"
+                    ],
+                    "explanation": "Correct answer: Epiblast and hypoblast"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "22. Which layer gives rise to all three definitive germ layers?",
+                    "answer": "Epiblast",
+                    "options": [
+                              "Epiblast",
+                              "Hypoblast",
+                              "Trophoblast",
+                              "Syncytiotrophoblast"
+                    ],
+                    "explanation": "Correct answer: Epiblast"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "23. What is the main role of the hypoblast?",
+                    "answer": "Contributing to the lining of the primitive yolk sac",
+                    "options": [
+                              "Forming the neural tube",
+                              "Contributing to the lining of the primitive yolk sac",
+                              "Forming all three germ layers",
+                              "Producing hCG"
+                    ],
+                    "explanation": "Correct answer: Contributing to the lining of the primitive yolk sac"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "24. Why is the hypoblast not considered the source of the embryo proper?",
+                    "answer": "The definitive embryonic germ layers arise from the epiblast",
+                    "options": [
+                              "It disappears before implantation",
+                              "The definitive embryonic germ layers arise from the epiblast",
+                              "It becomes the placenta",
+                              "It forms the sperm and oocyte"
+                    ],
+                    "explanation": "Correct answer: The definitive embryonic germ layers arise from the epiblast"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "25. What is gastrulation?",
+                    "answer": "Formation of the three definitive germ layers",
+                    "options": [
+                              "Formation of the blastocyst",
+                              "Formation of the three definitive germ layers",
+                              "Implantation into the endometrium",
+                              "Closure of the neural tube"
+                    ],
+                    "explanation": "Correct answer: Formation of the three definitive germ layers"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "26. Through which structure do epiblast cells migrate during gastrulation?",
+                    "answer": "Primitive streak",
+                    "options": [
+                              "Neural groove",
+                              "Primitive streak",
+                              "Zona pellucida",
+                              "Chorionic villi"
+                    ],
+                    "explanation": "Correct answer: Primitive streak"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "27. Which germ layer forms first when epiblast cells migrate through the primitive streak and replace the hypoblast?",
+                    "answer": "Definitive endoderm",
+                    "options": [
+                              "Ectoderm",
+                              "Mesoderm",
+                              "Definitive endoderm",
+                              "Neural crest"
+                    ],
+                    "explanation": "Correct answer: Definitive endoderm"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "28. Which germ layer forms the epidermis and the central nervous system?",
+                    "answer": "Ectoderm",
+                    "options": [
+                              "Ectoderm",
+                              "Mesoderm",
+                              "Endoderm",
+                              "Hypoblast"
+                    ],
+                    "explanation": "Correct answer: Ectoderm"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "29. Which germ layer forms the muscles, bones, and heart?",
+                    "answer": "Mesoderm",
+                    "options": [
+                              "Ectoderm",
+                              "Mesoderm",
+                              "Endoderm",
+                              "Neural crest"
+                    ],
+                    "explanation": "Correct answer: Mesoderm"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "30. Which germ layer forms the epithelial lining of most of the respiratory and gastrointestinal tracts?",
+                    "answer": "Endoderm",
+                    "options": [
+                              "Ectoderm",
+                              "Mesoderm",
+                              "Endoderm",
+                              "Trophoblast"
+                    ],
+                    "explanation": "Correct answer: Endoderm"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "31. A patient has a congenital defect affecting the intestinal smooth muscle. Which germ layer was most likely involved?",
+                    "answer": "Mesoderm",
+                    "options": [
+                              "Ectoderm",
+                              "Mesoderm",
+                              "Endoderm",
+                              "Neural crest"
+                    ],
+                    "explanation": "Correct answer: Mesoderm"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "32. The respiratory epithelium is damaged, but the surrounding smooth muscle is intact. Which germ layer is primarily responsible for the damaged tissue?",
+                    "answer": "Endoderm",
+                    "options": [
+                              "Mesoderm",
+                              "Ectoderm",
+                              "Endoderm",
+                              "Neural crest"
+                    ],
+                    "explanation": "Correct answer: Endoderm"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "33. Which structure is derived from ectoderm rather than mesoderm?",
+                    "answer": "Epidermis",
+                    "options": [
+                              "Skeletal muscle",
+                              "Kidney",
+                              "Epidermis",
+                              "Heart"
+                    ],
+                    "explanation": "Correct answer: Epidermis"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "34. What is the easiest way to distinguish the germ layers?",
+                    "answer": "Ectoderm = covering and nervous system; mesoderm = support and movement; endoderm = internal epithelial linings",
+                    "options": [
+                              "Ectoderm = covering and nervous system; mesoderm = support and movement; endoderm = internal epithelial linings",
+                              "Ectoderm = muscles; mesoderm = skin; endoderm = brain",
+                              "Ectoderm = organs; mesoderm = placenta; endoderm = bones",
+                              "All three form the same tissues"
+                    ],
+                    "explanation": "Correct answer: Ectoderm = covering and nervous system; mesoderm = support and movement; endoderm = internal epithelial linings"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "35. Neural crest cells originate from which embryonic tissue?",
+                    "answer": "Ectoderm",
+                    "options": [
+                              "Mesoderm",
+                              "Endoderm",
+                              "Ectoderm",
+                              "Hypoblast"
+                    ],
+                    "explanation": "Correct answer: Ectoderm"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "36. Which of the following is derived from neural crest cells?",
+                    "answer": "Adrenal medulla",
+                    "options": [
+                              "Liver hepatocytes",
+                              "Adrenal medulla",
+                              "Kidney tubules",
+                              "Intestinal epithelium"
+                    ],
+                    "explanation": "Correct answer: Adrenal medulla"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "37. Which structure is NOT a neural crest derivative?",
+                    "answer": "Adrenal cortex",
+                    "options": [
+                              "Melanocytes",
+                              "Schwann cells",
+                              "Dorsal root ganglia",
+                              "Adrenal cortex"
+                    ],
+                    "explanation": "Correct answer: Adrenal cortex"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "38. What happens during neurulation?",
+                    "answer": "The neural plate folds and forms the neural tube",
+                    "options": [
+                              "Three germ layers form",
+                              "The neural plate folds and forms the neural tube",
+                              "The placenta develops",
+                              "The primitive gut forms"
+                    ],
+                    "explanation": "Correct answer: The neural plate folds and forms the neural tube"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "39. What does the neural tube eventually become?",
+                    "answer": "Brain and spinal cord",
+                    "options": [
+                              "Peripheral nervous system only",
+                              "Brain and spinal cord",
+                              "Epidermis",
+                              "Adrenal medulla"
+                    ],
+                    "explanation": "Correct answer: Brain and spinal cord"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "40. What does the surface ectoderm become after the neural tube separates from it?",
+                    "answer": "Epidermis",
+                    "options": [
+                              "Brain",
+                              "Epidermis",
+                              "Spinal cord",
+                              "Heart"
+                    ],
+                    "explanation": "Correct answer: Epidermis"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "41. Failure of the cranial neuropore to close causes which condition?",
+                    "answer": "Anencephaly",
+                    "options": [
+                              "Anencephaly",
+                              "Spina bifida",
+                              "Hirschsprung disease",
+                              "Meckel diverticulum"
+                    ],
+                    "explanation": "Correct answer: Anencephaly"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "42. Failure of the caudal neuropore to close is associated with which condition?",
+                    "answer": "Spina bifida",
+                    "options": [
+                              "Anencephaly",
+                              "Spina bifida",
+                              "DiGeorge syndrome",
+                              "Omphalocele"
+                    ],
+                    "explanation": "Correct answer: Spina bifida"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "43. Why is folic acid important during early pregnancy?",
+                    "answer": "It reduces the risk of neural tube defects",
+                    "options": [
+                              "It prevents all chromosomal abnormalities",
+                              "It reduces the risk of neural tube defects",
+                              "It directly produces hCG",
+                              "It causes implantation"
+                    ],
+                    "explanation": "Correct answer: It reduces the risk of neural tube defects"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "44. A newborn has absent ganglion cells in the distal colon. Which developmental process most likely failed?",
+                    "answer": "Neural crest cell migration",
+                    "options": [
+                              "Neural tube closure",
+                              "Neural crest cell migration",
+                              "Gastrulation",
+                              "Placental implantation"
+                    ],
+                    "explanation": "Correct answer: Neural crest cell migration"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "45. Why does Hirschsprung disease cause constipation and intestinal obstruction?",
+                    "answer": "The affected segment lacks enteric ganglion cells and cannot relax normally",
+                    "options": [
+                              "The intestine has too much smooth muscle",
+                              "The affected segment lacks enteric ganglion cells and cannot relax normally",
+                              "The intestinal epithelium is derived from ectoderm",
+                              "The colon is connected to the yolk sac"
+                    ],
+                    "explanation": "Correct answer: The affected segment lacks enteric ganglion cells and cannot relax normally"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "46. What is the main purpose of embryonic folding?",
+                    "answer": "To transform the flat embryonic disc into a more cylindrical body form",
+                    "options": [
+                              "To form the three germ layers",
+                              "To transform the flat embryonic disc into a more cylindrical body form",
+                              "To produce hCG",
+                              "To create the zona pellucida"
+                    ],
+                    "explanation": "Correct answer: To transform the flat embryonic disc into a more cylindrical body form"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "47. What happens to part of the yolk sac during embryonic folding?",
+                    "answer": "It is incorporated into the embryo to form the primitive gut",
+                    "options": [
+                              "It becomes the placenta",
+                              "It is incorporated into the embryo to form the primitive gut",
+                              "It becomes the neural tube",
+                              "It becomes the amniotic cavity"
+                    ],
+                    "explanation": "Correct answer: It is incorporated into the embryo to form the primitive gut"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "48. Which structure connects the developing midgut to the yolk sac?",
+                    "answer": "Vitelline duct",
+                    "options": [
+                              "Urachus",
+                              "Vitelline duct",
+                              "Neural tube",
+                              "Umbilical vein"
+                    ],
+                    "explanation": "Correct answer: Vitelline duct"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "49. Persistence of the vitelline duct can result in which congenital abnormality?",
+                    "answer": "Meckel diverticulum",
+                    "options": [
+                              "Spina bifida",
+                              "Meckel diverticulum",
+                              "Anencephaly",
+                              "Hirschsprung disease"
+                    ],
+                    "explanation": "Correct answer: Meckel diverticulum"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "50. What is the main difference between omphalocele and gastroschisis?",
+                    "answer": "Omphalocele is covered by a membrane and occurs at the umbilical ring; gastroschisis is usually a paraumbilical wall defect without a covering membrane",
+                    "options": [
+                              "Omphalocele is caused by neural crest migration failure",
+                              "Omphalocele is covered by a membrane and occurs at the umbilical ring; gastroschisis is usually a paraumbilical wall defect without a covering membrane",
+                              "Gastroschisis always contains the liver",
+                              "Both are caused by failure of neural tube closure"
+                    ],
+                    "explanation": "Correct answer: Omphalocele is covered by a membrane and occurs at the umbilical ring; gastroschisis is usually a paraumbilical wall defect without a covering membrane"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "51. Which two structures form the placenta?",
+                    "answer": "Chorion frondosum and decidua basalis",
+                    "options": [
+                              "Epiblast and hypoblast",
+                              "Chorion frondosum and decidua basalis",
+                              "Amnion and yolk sac",
+                              "Neural tube and primitive streak"
+                    ],
+                    "explanation": "Correct answer: Chorion frondosum and decidua basalis"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "52. Which part of the placenta is fetal in origin?",
+                    "answer": "Chorion frondosum",
+                    "options": [
+                              "Chorion frondosum",
+                              "Decidua basalis",
+                              "Endometrium",
+                              "Myometrium"
+                    ],
+                    "explanation": "Correct answer: Chorion frondosum"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "53. Which part of the placenta is maternal in origin?",
+                    "answer": "Decidua basalis",
+                    "options": [
+                              "Chorion frondosum",
+                              "Decidua basalis",
+                              "Cytotrophoblast",
+                              "Amnion"
+                    ],
+                    "explanation": "Correct answer: Decidua basalis"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "54. What is the main function of chorionic villi?",
+                    "answer": "Increase surface area for exchange between maternal and fetal blood",
+                    "options": [
+                              "Produce the neural tube",
+                              "Increase surface area for exchange between maternal and fetal blood",
+                              "Prevent all movement of substances",
+                              "Form the fetal kidneys"
+                    ],
+                    "explanation": "Correct answer: Increase surface area for exchange between maternal and fetal blood"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "55. Do maternal and fetal blood normally mix directly in the placenta?",
+                    "answer": "No, they remain in separate circulations, with exchange across the placental barrier",
+                    "options": [
+                              "Yes, they completely mix",
+                              "No, they remain in separate circulations, with exchange across the placental barrier",
+                              "Yes, but only during the first trimester",
+                              "No, because there is no blood in the placenta"
+                    ],
+                    "explanation": "Correct answer: No, they remain in separate circulations, with exchange across the placental barrier"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "56. Which immunoglobulin can cross the placenta to provide passive immunity to the fetus?",
+                    "answer": "IgG",
+                    "options": [
+                              "IgA",
+                              "IgM",
+                              "IgG",
+                              "IgE"
+                    ],
+                    "explanation": "Correct answer: IgG"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "57. What is the main effect of human placental lactogen (hPL) on the mother?",
+                    "answer": "Promotes maternal insulin resistance, making more glucose available to the fetus",
+                    "options": [
+                              "Decreases maternal blood glucose to zero",
+                              "Promotes maternal insulin resistance, making more glucose available to the fetus",
+                              "Causes fetal neural tube closure",
+                              "Maintains the corpus luteum throughout pregnancy"
+                    ],
+                    "explanation": "Correct answer: Promotes maternal insulin resistance, making more glucose available to the fetus"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "58. Which hormone is primarily responsible for maintaining the endometrium during pregnancy?",
+                    "answer": "Progesterone",
+                    "options": [
+                              "FSH",
+                              "LH",
+                              "Progesterone",
+                              "Oxytocin"
+                    ],
+                    "explanation": "Correct answer: Progesterone"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "59. Which fetal membrane directly surrounds the amniotic fluid?",
+                    "answer": "Amnion",
+                    "options": [
+                              "Amnion",
+                              "Chorion",
+                              "Decidua",
+                              "Trophoblast"
+                    ],
+                    "explanation": "Correct answer: Amnion"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "60. Why is amniotic fluid important for fetal development?",
+                    "answer": "It cushions the fetus, allows movement, and supports lung development",
+                    "options": [
+                              "It produces fetal blood cells",
+                              "It cushions the fetus, allows movement, and supports lung development",
+                              "It forms the placenta",
+                              "It prevents all fetal movement"
+                    ],
+                    "explanation": "Correct answer: It cushions the fetus, allows movement, and supports lung development"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "61. What is a common cause of oligohydramnios?",
+                    "answer": "Bilateral renal agenesis",
+                    "options": [
+                              "Excessive fetal swallowing",
+                              "Bilateral renal agenesis",
+                              "Esophageal atresia",
+                              "Maternal diabetes"
+                    ],
+                    "explanation": "Correct answer: Bilateral renal agenesis"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "62. Why can bilateral renal agenesis cause pulmonary hypoplasia?",
+                    "answer": "Reduced fetal urine leads to reduced amniotic fluid, impairing lung development",
+                    "options": [
+                              "The fetus cannot swallow",
+                              "Reduced fetal urine leads to reduced amniotic fluid, impairing lung development",
+                              "The placenta stops producing hCG",
+                              "The neural tube does not close"
+                    ],
+                    "explanation": "Correct answer: Reduced fetal urine leads to reduced amniotic fluid, impairing lung development"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "63. What is a common cause of polyhydramnios?",
+                    "answer": "Esophageal atresia",
+                    "options": [
+                              "Bilateral renal agenesis",
+                              "Esophageal atresia",
+                              "Urinary tract obstruction",
+                              "Placental insufficiency"
+                    ],
+                    "explanation": "Correct answer: Esophageal atresia"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "64. Why can esophageal atresia cause polyhydramnios?",
+                    "answer": "The fetus cannot swallow amniotic fluid normally",
+                    "options": [
+                              "The fetus produces too much urine",
+                              "The fetus cannot swallow amniotic fluid normally",
+                              "The placenta produces excess progesterone",
+                              "The fetal kidneys stop developing"
+                    ],
+                    "explanation": "Correct answer: The fetus cannot swallow amniotic fluid normally"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "65. How many arteries and veins are normally present in the umbilical cord?",
+                    "answer": "Two arteries and one vein",
+                    "options": [
+                              "One artery and one vein",
+                              "Two arteries and one vein",
+                              "Two arteries and two veins",
+                              "One artery and two veins"
+                    ],
+                    "explanation": "Correct answer: Two arteries and one vein"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "66. Which umbilical vessel carries oxygen-rich blood from the placenta to the fetus?",
+                    "answer": "Umbilical vein",
+                    "options": [
+                              "Umbilical artery",
+                              "Umbilical vein",
+                              "Aorta",
+                              "Ductus arteriosus"
+                    ],
+                    "explanation": "Correct answer: Umbilical vein"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "67. Why is a single umbilical artery clinically important?",
+                    "answer": "It is associated with increased risk of renal and cardiac abnormalities",
+                    "options": [
+                              "It always causes fetal death",
+                              "It is associated with increased risk of renal and cardiac abnormalities",
+                              "It means the fetus has no placenta",
+                              "It confirms a neural tube defect"
+                    ],
+                    "explanation": "Correct answer: It is associated with increased risk of renal and cardiac abnormalities"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "68. What is the main difference between dizygotic and monozygotic twins?",
+                    "answer": "Dizygotic twins arise from two ova fertilized by two sperm; monozygotic twins arise from one fertilized ovum that splits",
+                    "options": [
+                              "Dizygotic twins arise from two ova fertilized by two sperm; monozygotic twins arise from one fertilized ovum that splits",
+                              "Dizygotic twins always share one placenta",
+                              "Monozygotic twins always have separate placentas",
+                              "There is no developmental difference"
+                    ],
+                    "explanation": "Correct answer: Dizygotic twins arise from two ova fertilized by two sperm; monozygotic twins arise from one fertilized ovum that splits"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "69. If a monozygotic embryo splits very early, around days 1–3, what arrangement is expected?",
+                    "answer": "Dichorionic diamniotic",
+                    "options": [
+                              "Dichorionic diamniotic",
+                              "Monochorionic diamniotic",
+                              "Monochorionic monoamniotic",
+                              "Conjoined twins"
+                    ],
+                    "explanation": "Correct answer: Dichorionic diamniotic"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "70. If a monozygotic embryo splits around days 4–8, what arrangement is expected?",
+                    "answer": "Monochorionic diamniotic",
+                    "options": [
+                              "Dichorionic diamniotic",
+                              "Monochorionic diamniotic",
+                              "Monochorionic monoamniotic",
+                              "Conjoined twins"
+                    ],
+                    "explanation": "Correct answer: Monochorionic diamniotic"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "71. If a monozygotic embryo splits around days 8–13, what arrangement is expected?",
+                    "answer": "Monochorionic monoamniotic",
+                    "options": [
+                              "Dichorionic diamniotic",
+                              "Monochorionic diamniotic",
+                              "Monochorionic monoamniotic",
+                              "Dizygotic twins"
+                    ],
+                    "explanation": "Correct answer: Monochorionic monoamniotic"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "72. What happens if a monozygotic embryo splits very late, after approximately day 13?",
+                    "answer": "Conjoined twins may develop",
+                    "options": [
+                              "Dichorionic twins",
+                              "Monochorionic diamniotic twins",
+                              "Conjoined twins may develop",
+                              "Dizygotic twins"
+                    ],
+                    "explanation": "Correct answer: Conjoined twins may develop"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "73. Why can twin-to-twin transfusion syndrome occur in monochorionic twins?",
+                    "answer": "Shared placental blood vessels allow unbalanced blood transfer between twins",
+                    "options": [
+                              "They have separate placentas",
+                              "Shared placental blood vessels allow unbalanced blood transfer between twins",
+                              "One twin has a separate amniotic cavity",
+                              "Both twins have different genetic origins"
+                    ],
+                    "explanation": "Correct answer: Shared placental blood vessels allow unbalanced blood transfer between twins"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "74. In twin-to-twin transfusion syndrome, which twin typically develops oligohydramnios?",
+                    "answer": "Donor twin",
+                    "options": [
+                              "Donor twin",
+                              "Recipient twin",
+                              "Both twins always have polyhydramnios",
+                              "Neither twin"
+                    ],
+                    "explanation": "Correct answer: Donor twin"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "75. What is the typical effect of a teratogen during the first two weeks after fertilization?",
+                    "answer": "Often causes an all-or-none effect: embryo loss or survival without major defects",
+                    "options": [
+                              "Always causes major structural abnormalities",
+                              "Often causes an all-or-none effect: embryo loss or survival without major defects",
+                              "Always causes neural tube defects",
+                              "Only affects the placenta"
+                    ],
+                    "explanation": "Correct answer: Often causes an all-or-none effect: embryo loss or survival without major defects"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "76. Why are weeks 3–8 particularly sensitive to teratogens?",
+                    "answer": "Organogenesis is occurring, so major structural abnormalities can result",
+                    "options": [
+                              "The fetus is fully developed",
+                              "Organogenesis is occurring, so major structural abnormalities can result",
+                              "Fertilization is taking place",
+                              "The placenta has disappeared"
+                    ],
+                    "explanation": "Correct answer: Organogenesis is occurring, so major structural abnormalities can result"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "77. What is the most typical effect of teratogens after week 9?",
+                    "answer": "Growth restriction and functional or maturation abnormalities",
+                    "options": [
+                              "Failure of fertilization",
+                              "Failure of implantation",
+                              "Growth restriction and functional or maturation abnormalities",
+                              "Formation of the primitive streak"
+                    ],
+                    "explanation": "Correct answer: Growth restriction and functional or maturation abnormalities"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "78. A pregnant woman is exposed to a teratogen during week 5 of gestational age. Approximately how old is the embryo?",
+                    "answer": "3 weeks",
+                    "options": [
+                              "1 week",
+                              "3 weeks",
+                              "5 weeks",
+                              "7 weeks"
+                    ],
+                    "explanation": "Correct answer: 3 weeks"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "79. Why is the answer to question 78 important?",
+                    "answer": "Because embryonic week 3 is a critical period for gastrulation and early development",
+                    "options": [
+                              "Because organogenesis has not started",
+                              "Because embryonic week 3 is a critical period for gastrulation and early development",
+                              "Because implantation has not happened",
+                              "Because the fetus is already fully developed"
+                    ],
+                    "explanation": "Correct answer: Because embryonic week 3 is a critical period for gastrulation and early development"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "80. Which finding is classically associated with fetal alcohol spectrum disorder?",
+                    "answer": "Smooth philtrum and thin upper lip",
+                    "options": [
+                              "Increased head circumference",
+                              "Smooth philtrum and thin upper lip",
+                              "Enlarged kidneys",
+                              "Extra fingers in every case"
+                    ],
+                    "explanation": "Correct answer: Smooth philtrum and thin upper lip"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "What is the result of combining the male and female genetic material?",
+                    "answer": "Diploid zygote with 46 chromosomes",
+                    "options": [
+                              "Haploid cell with 23 chromosomes",
+                              "Diploid zygote with 46 chromosomes",
+                              "Morula with 32 cells",
+                              "Bilaminar disc"
+                    ],
+                    "explanation": "Correct answer: Diploid zygote with 46 chromosomes"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "What is capacitation?",
+                    "answer": "Making sperm capable of fertilizing the oocyte",
+                    "options": [
+                              "Making sperm capable of fertilizing the oocyte",
+                              "Passing through the zona pellucida",
+                              "Development into a 32-cell structure",
+                              "Folding of the embryo"
+                    ],
+                    "explanation": "Correct answer: Making sperm capable of fertilizing the oocyte"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "Where does fertilization normally occur?",
+                    "answer": "Ampulla of the uterine tube",
+                    "options": [
+                              "Uterine cavity",
+                              "Ampulla of the uterine tube",
+                              "Cervix",
+                              "Ovary"
+                    ],
+                    "explanation": "Correct answer: Ampulla of the uterine tube"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "What is the main purpose of the acrosome reaction?",
+                    "answer": "Releasing enzymes that help sperm penetrate the zona pellucida",
+                    "options": [
+                              "Preventing polyspermy",
+                              "Releasing enzymes that help sperm penetrate the zona pellucida",
+                              "Completing meiosis II",
+                              "Implanting the embryo"
+                    ],
+                    "explanation": "Correct answer: Releasing enzymes that help sperm penetrate the zona pellucida"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "What prevents additional sperm from entering after one sperm has fertilized the oocyte?",
+                    "answer": "Cortical reaction",
+                    "options": [
+                              "Capacitation",
+                              "Acrosome reaction",
+                              "Cortical reaction",
+                              "Gastrulation"
+                    ],
+                    "explanation": "Correct answer: Cortical reaction"
+          },
+          {
+                    "day": 1,
+                    "dayTitle": "Embryology",
+                    "prompt": "Why does the secondary oocyte complete meiosis II only after fertilization?",
+                    "answer": "Sperm entry triggers completion of meiosis II",
+                    "options": [
+                              "It needs to implant first",
+                              "Sperm entry triggers completion of meiosis II",
+                              "It must first become a blastocyst",
+                              "The zona pellucida must disappear"
+                    ],
+                    "explanation": "Correct answer: Sperm entry triggers completion of meiosis II"
+          }
+];
+
+        let state = {
+            currentDay: 'all',
+            activeCards: [],
+            currentIndex: 0,
+            doneCount: 0,
+            correctCount: 0,
+            streakCount: 0,
+            isAnswered: false,
+            userSelectedOption: null
+        };
+
+        // DOM Cache
+        const daySelect = document.getElementById('daySelect');
+        const statDone = document.getElementById('statDone');
+        const statCorrect = document.getElementById('statCorrect');
+        const statAccuracy = document.getElementById('statAccuracy');
+        const statStreak = document.getElementById('statStreak');
+        const resetStatsBtn = document.getElementById('resetStatsBtn');
+
+        const cardCategoryBadge = document.getElementById('cardCategoryBadge');
+        const cardProgressText = document.getElementById('cardProgressText');
+        const questionPrompt = document.getElementById('questionPrompt');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const explanationBox = document.getElementById('explanationBox');
+        const feedbackTitle = document.getElementById('feedbackTitle');
+        const explanationText = document.getElementById('explanationText');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function initDayDropdown() {
+            const dayMap = new Map();
+            QUIZ_DATA.forEach(item => {
+                if (!dayMap.has(item.day)) {
+                    dayMap.set(item.day, item.dayTitle);
+                }
+            });
+
+            daySelect.innerHTML = '';
+            const sortedDays = Array.from(dayMap.keys()).sort((a, b) => a - b);
+            
+            sortedDays.forEach(day => {
+                const option = document.createElement('option');
+                option.value = day;
+                option.textContent = `Day ${day}: ${dayMap.get(day)}`;
+                daySelect.appendChild(option);
+            });
+
+            const allOption = document.createElement('option');
+            allOption.value = 'all';
+            allOption.textContent = 'All Days (Master Review)';
+            allOption.selected = true;
+            daySelect.appendChild(allOption);
+        }
+
+        function filterCards() {
+            if (state.currentDay === 'all') {
+                state.activeCards = shuffleArray(QUIZ_DATA);
+            } else {
+                const dayNum = parseInt(state.currentDay, 10);
+                const filtered = QUIZ_DATA.filter(card => card.day === dayNum);
+                state.activeCards = shuffleArray(filtered);
+            }
+            state.currentIndex = 0;
+        }
+
+        function generateOptions(currentCard) {
+            if (currentCard.options && Array.isArray(currentCard.options) && currentCard.options.length >= 2) {
+                return shuffleArray(currentCard.options);
+            }
+
+            const correctAnswer = currentCard.answer;
+            const otherAnswers = Array.from(new Set(
+                QUIZ_DATA.map(c => c.answer).filter(ans => ans !== correctAnswer)
+            ));
+
+            const wrongChoices = shuffleArray(otherAnswers).slice(0, 3);
+            return shuffleArray([correctAnswer, ...wrongChoices]);
+        }
+
+        function resetExplanationBox() {
+            feedbackTitle.className = 'flex items-center gap-1.5 font-bold mb-0.5 text-slate-400';
+            feedbackTitle.innerHTML = `
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>Explanation</span>
+            `;
+            explanationText.className = 'leading-snug text-[11px] text-slate-400 italic';
+            explanationText.textContent = 'Select an answer above to view the high-yield explanation...';
+            
+            nextBtn.disabled = true;
+            nextBtn.className = 'w-full h-full bg-slate-200 text-slate-400 font-bold text-xs sm:text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-not-allowed opacity-60';
+        }
+
+        function renderCard() {
+            if (state.activeCards.length === 0) return;
+
+            state.isAnswered = false;
+            state.userSelectedOption = null;
+
+            resetExplanationBox();
+
+            const currentCard = state.activeCards[state.currentIndex];
+            
+            cardCategoryBadge.textContent = `Day ${currentCard.day}: ${currentCard.dayTitle}`;
+            cardProgressText.textContent = `Card ${state.currentIndex + 1} of ${state.activeCards.length}`;
+
+            questionPrompt.textContent = currentCard.prompt;
+
+            const options = generateOptions(currentCard);
+            optionsContainer.innerHTML = '';
+
+            options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `w-full text-left p-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 active:scale-[0.98] transition-all flex items-center gap-2 text-clamp-option text-slate-900 font-medium cursor-pointer shadow-sm min-h-[40px] overflow-hidden`;
+                
+                const letter = String.fromCharCode(65 + idx);
+                btn.innerHTML = `
+                    <span class="shrink-0 w-5 h-5 rounded-md bg-red-50 border border-red-200 text-[10px] font-bold text-slide-red flex items-center justify-center">
+                        ${letter}
+                    </span>
+                    <span class="flex-1 text-balance line-clamp-2 leading-tight">${optText}</span>
+                `;
+
+                btn.onclick = () => handleOptionSelect(optText, currentCard, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleOptionSelect(selectedOption, currentCard, clickedBtn) {
+            if (state.isAnswered) return;
+            state.isAnswered = true;
+
+            const isCorrect = selectedOption === currentCard.answer;
+            state.doneCount++;
+
+            const optionButtons = optionsContainer.querySelectorAll('button');
+            
+            optionButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.remove('hover:bg-slate-50', 'active:scale-[0.98]', 'cursor-pointer');
+                btn.classList.add('cursor-default');
+
+                const textSpan = btn.querySelector('span:last-child');
+                const optText = textSpan ? textSpan.textContent.trim() : '';
+
+                if (optText === currentCard.answer) {
+                    btn.classList.remove('bg-white', 'border-slate-300');
+                    btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-950', 'ring-1', 'ring-emerald-500');
+                    const badge = btn.querySelector('span:first-child');
+                    if (badge) {
+                        badge.classList.remove('bg-red-50', 'border-red-200', 'text-slide-red');
+                        badge.classList.add('bg-emerald-600', 'border-emerald-600', 'text-white');
+                    }
+                }
+            });
+
+            if (isCorrect) {
+                state.correctCount++;
+                state.streakCount++;
+                
+                feedbackTitle.className = 'flex items-center gap-1.5 font-bold mb-0.5 text-emerald-700';
+                feedbackTitle.innerHTML = `
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                    <span>Correct! High-Yield Fact</span>
+                `;
+            } else {
+                state.streakCount = 0;
+                
+                clickedBtn.classList.remove('bg-white', 'border-slate-300');
+                clickedBtn.classList.add('bg-rose-50', 'border-rose-500', 'text-rose-950');
+                const badge = clickedBtn.querySelector('span:first-child');
+                if (badge) {
+                    badge.classList.remove('bg-red-50', 'border-red-200', 'text-slide-red');
+                    badge.classList.add('bg-rose-600', 'border-rose-600', 'text-white');
+                }
+
+                feedbackTitle.className = 'flex items-center gap-1.5 font-bold mb-0.5 text-rose-700';
+                feedbackTitle.innerHTML = `
+                    <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <span>Incorrect &bull; Key High-Yield Concept</span>
+                `;
+            }
+
+            updateStatsDisplay();
+
+            explanationText.className = 'leading-snug text-[11px] text-slate-700 not-italic';
+            explanationText.textContent = currentCard.explanation || 'Correct answer: ' + currentCard.answer;
+
+            nextBtn.disabled = false;
+            nextBtn.className = 'w-full h-full bg-slide-red hover:bg-slide-darkred text-white font-bold text-xs sm:text-sm rounded-xl shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer';
+        }
+
+        function updateStatsDisplay() {
+            statDone.textContent = state.doneCount;
+            statCorrect.textContent = state.correctCount;
+            
+            const accuracy = state.doneCount > 0 
+                ? Math.round((state.correctCount / state.doneCount) * 100) 
+                : 0;
+            statAccuracy.textContent = `(${accuracy}%)`;
+
+            statStreak.textContent = state.streakCount;
+        }
+
+        function nextQuestion() {
+            if (!state.isAnswered) return;
+            state.currentIndex++;
+            if (state.currentIndex >= state.activeCards.length) {
+                state.activeCards = shuffleArray(state.activeCards);
+                state.currentIndex = 0;
+            }
+            renderCard();
+        }
+
+        function resetStats() {
+            state.doneCount = 0;
+            state.correctCount = 0;
+            state.streakCount = 0;
+            updateStatsDisplay();
+            filterCards();
+            renderCard();
+        }
+
+        daySelect.addEventListener('change', (e) => {
+            state.currentDay = e.target.value;
+            filterCards();
+            renderCard();
+        });
+
+        nextBtn.addEventListener('click', nextQuestion);
+        resetStatsBtn.addEventListener('click', resetStats);
+
+        document.addEventListener('keydown', (e) => {
+            if (!state.isAnswered) {
+                const keyMap = { '1': 0, '2': 1, '3': 2, '4': 3, 'a': 0, 'b': 1, 'c': 2, 'd': 3 };
+                const idx = keyMap[e.key.toLowerCase()];
+                if (idx !== undefined) {
+                    const buttons = optionsContainer.querySelectorAll('button');
+                    if (buttons[idx]) buttons[idx].click();
+                }
+            } else {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    nextQuestion();
+                }
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initDayDropdown();
+            filterCards();
+            renderCard();
+            updateStatsDisplay();
+        });
+    </script>
+</body>
+</html>
