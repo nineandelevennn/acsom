@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Embryogenesis — ACSOM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --crimson-primary: #e11d2a;
+      --crimson-dark: #b91c1c;
+      --bg-cool: #f4f6f9;
+      --prompt-bg: #eef4fa;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-cool);
+      color: #0f172a;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Reference-matched vibrant crimson header */
+    .usmle-header {
+      background: linear-gradient(180deg, #e61e2b 0%, #d61824 100%);
+      box-shadow: 0 2px 10px rgba(220, 38, 38, 0.22);
+    }
+
+    .header-pill-btn {
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      transition: all 0.15s ease;
+    }
+    .header-pill-btn:hover {
+      background: rgba(255, 255, 255, 0.28);
+    }
+    .header-pill-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* Subtle card elevation matching reference screenshot */
+    .surface-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03), 0 1px 2px rgba(15, 23, 42, 0.02);
+    }
+
+    /* Option button transitions & states */
+    .option-btn {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+      transform: translateY(-1px);
+    }
+    .option-btn:active:not(:disabled) {
+      transform: translateY(0px);
+    }
+
+    /* Badge inside option */
+    .option-badge {
+      background-color: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      transition: all 0.15s ease;
+    }
+
+    /* Correct Answer Styling */
+    .option-correct {
+      background-color: #f0fdf4 !important;
+      border-color: #22c55e !important;
+      color: #14532d !important;
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
+    }
+    .option-correct .option-badge {
+      background-color: #22c55e !important;
+      color: #ffffff !important;
+      border-color: #16a34a !important;
+    }
+
+    /* Incorrect Answer Styling */
+    .option-wrong {
+      background-color: #fef2f2 !important;
+      border-color: #ef4444 !important;
+      color: #7f1d1d !important;
+    }
+    .option-wrong .option-badge {
+      background-color: #ef4444 !important;
+      color: #ffffff !important;
+      border-color: #dc2626 !important;
+    }
+
+    /* Muted unselected options once answered */
+    .option-dimmed {
+      opacity: 0.62;
+    }
+
+    /* Custom select styling */
+    .custom-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23dc2626' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1rem;
+    }
+
+    /* Smooth explanation reveal */
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-reveal {
+      animation: fadeSlideUp 0.22s ease-out forwards;
+    }
+
+    /* Hide scrollbar for clean mobile experience */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="selection:bg-red-100 selection:text-red-900">
+
+  <!-- TOP HEADER BAR (Matches Screenshot Aesthetic + Mobile Optimized) -->
+  <header class="usmle-header text-white sticky top-0 z-30 w-full px-3 sm:px-6 py-2.5 sm:py-3">
+    <div class="max-w-[540px] mx-auto flex items-center justify-between gap-2">
+      <!-- Left Button: Interactive Timeline Cheat-Sheet -->
+      <button id="openTimelineBtn" type="button" class="header-pill-btn text-white text-xs sm:text-[13px] font-semibold px-2.5 sm:px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 shrink-0" title="Open -Yield Embryo Timeline">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Timeline</span>
+      </button>
+
+      <!-- Center Title & Subtitle -->
+      <div class="text-center min-w-0 flex-1 px-1">
+        <h1 class="text-sm sm:text-[17px] font-extrabold tracking-tight uppercase truncate leading-tight">
+          EMBRYOGENESIS
+        </h1>
+        <p class="text-[9px] sm:text-[10px] font-semibold tracking-[0.14em] text-red-100 uppercase truncate mt-0.5">
+          American Canadian School of Medicine
+        </p>
+      </div>
+
+      <!-- Right Button: Reset Progress -->
+      <button id="resetStatsBtn" type="button" class="header-pill-btn text-white text-xs sm:text-[13px] font-semibold px-2.5 sm:px-3.5 py-1.5 rounded-lg flex items-center gap-1 shrink-0" title="Reset session score">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <span>Reset</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT COLUMN -->
+  <main class="flex-1 w-full max-w-[540px] mx-auto px-3 sm:px-4 pt-3.5 pb-8 flex flex-col gap-3">
+
+    <!-- DECK / STAGE FILTER SELECTOR -->
+    <div class="relative">
+      <label for="stageFilter" class="sr-only">Select Embryonic Stage or Deck</label>
+      <select id="stageFilter" class="custom-select surface-card w-full rounded-xl px-4 py-3 pr-10 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-500/30 cursor-pointer">
+        <option value="ALL">All Days (Master Embryology Review • 28 Cards)</option>
+        <option value="WEEK1">Week 1: Fertilization to Implantation (Days 0–7)</option>
+        <option value="WEEK2">Week 2: The Week of Twos &amp; Bilaminar Disc (Days 8–14)</option>
+        <option value="WEEK3">Week 3: Gastrulation &amp; Trilaminar Disc (Days 15–21)</option>
+        <option value="WEEK4_8">Weeks 4–8: Neural Crest, Germ Layers &amp; Organogenesis</option>
+        <option value="CLINICAL">Teratogens, Remnants &amp; High-Yield USMLE Traps</option>
+        <option value="BOOKMARKED">★ Flagged / High-Priority Review Cards</option>
+      </select>
+    </div>
+
+    <!-- 3-COLUMN SCORE & STREAK BAR (Exact Match to Screenshot Layout) -->
+    <section aria-label="Study Session Statistics" class="grid grid-cols-3 gap-2.5">
+      <!-- DONE -->
+      <div class="surface-card rounded-xl py-2.5 px-3 text-center flex flex-col items-center justify-center">
+        <span class="text-[10px] font-bold tracking-wider text-slate-400 uppercase">DONE</span>
+        <span id="statDone" class="text-base sm:text-lg font-extrabold text-slate-900 mt-0.5 leading-none">0</span>
+      </div>
+
+      <!-- CORRECT -->
+      <div class="surface-card rounded-xl py-2.5 px-3 text-center flex flex-col items-center justify-center">
+        <span class="text-[10px] font-bold tracking-wider text-slate-400 uppercase">CORRECT</span>
+        <div class="flex items-baseline gap-1 mt-0.5 leading-none">
+          <span id="statCorrect" class="text-base sm:text-lg font-extrabold text-emerald-600">0</span>
+          <span id="statPercent" class="text-[11px] font-semibold text-slate-400">(0%)</span>
+        </div>
+      </div>
+
+      <!-- STREAK -->
+      <div class="surface-card rounded-xl py-2.5 px-3 text-center flex flex-col items-center justify-center">
+        <span class="text-[10px] font-bold tracking-wider text-slate-400 uppercase">STREAK 🔥</span>
+        <span id="statStreak" class="text-base sm:text-lg font-extrabold text-amber-500 mt-0.5 leading-none">0</span>
+      </div>
+    </section>
+
+    <!-- MAIN FLASHCARD CONTAINER -->
+    <article class="surface-card rounded-2xl p-4 sm:p-5 flex flex-col gap-3.5">
+
+      <!-- Card Top Meta Row: Red Stage Pill + Card Counter + Quick Tools -->
+      <div class="flex items-center justify-between gap-2 flex-wrap">
+        <div class="flex items-center gap-1.5">
+          <span id="cardStageBadge" class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-extrabold tracking-wide uppercase bg-red-50 text-red-600 border border-red-200/80">
+            DAY 7–8: EPIBLAST POV
+          </span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Bookmark / Flag toggle -->
+          <button id="bookmarkBtn" type="button" class="text-xs font-semibold px-2 py-1 rounded-md border border-slate-200 text-slate-400 hover:text-amber-500 hover:border-amber-200 transition flex items-center gap-1" title="Flag this card for review">
+            <span id="bookmarkIcon">☆</span>
+          </button>
+          <!-- Shuffle button -->
+          <button id="shuffleBtn" type="button" class="text-xs font-semibold px-2 py-1 rounded-md border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition" title="Shuffle current deck">
+            ⇄ Shuffle
+          </button>
+          <!-- Card X of Y -->
+          <span id="cardCounter" class="text-xs font-semibold text-slate-400 tabular-nums">
+            Card 1 of 28
+          </span>
+        </div>
+      </div>
+
+      <!-- Subtle Interactive Embryonic Timeline Position Bar -->
+      <div class="bg-slate-50 border border-slate-200/70 rounded-xl px-3 py-2">
+        <div class="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+          <span id="timelineMarkerLabel" class="text-red-600">⏱ Embryonic Clock: Day 7–8</span>
+          <span id="povActorBadge" class="text-slate-600 font-semibold">Role: Epiblast</span>
+        </div>
+        <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden flex">
+          <div id="timelineProgressFill" class="bg-gradient-to-r from-red-500 to-rose-600 h-full rounded-full transition-all duration-300" style="width: 28%"></div>
+        </div>
+        <div class="flex justify-between text-[9px] font-semibold text-slate-400 mt-1">
+          <span>Day 0 (Ampulla)</span>
+          <span>Day 4 (Morula)</span>
+          <span>Wk 2 (Rule of 2s)</span>
+          <span>Wk 3 (3 Layers)</span>
+          <span>Wk 4–8 (Organs)</span>
+        </div>
+      </div>
+
+      <!-- Question Prompt Box (Soft Blue-Gray Tint from Reference Image) -->
+      <div class="rounded-xl bg-[#eef4fa] border border-slate-200/80 px-4 py-6 sm:px-6 sm:py-7 text-center flex flex-col items-center justify-center min-h-[124px]">
+        <p id="questionPrompt" class="text-[15px] sm:text-[17px] font-bold text-slate-900 leading-snug max-w-[46ch]">
+          It is the 7th–8th day after fertilization. You are the epiblast in the newly implanted blastocyst. What are you going to do right now?
+        </p>
+      </div>
+
+      <!-- Answer Choices Stack (A, B, C, D) -->
+      <div id="optionsContainer" class="flex flex-col gap-2.5" role="listbox" aria-label="Answer Options">
+        <!-- Dynamically populated by JS -->
+      </div>
+
+      <!-- High-Yield Explanation Box -->
+      <div id="explanationBox" class="rounded-xl bg-[#f8fafc] border border-slate-200/90 p-3.5 sm:p-4 text-xs sm:text-[13px] leading-relaxed text-slate-700 transition-all">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="font-bold text-slate-500 flex items-center gap-1.5 text-xs">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Explanation
+          </span>
+          <span id="explanationStatusTag" class="hidden text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full"></span>
+        </div>
+
+        <!-- Default Unanswered Prompt -->
+        <div id="explanationPlaceholder" class="italic text-slate-400 py-1">
+          Select an answer above to view the high-yield USMLE explanation, timing trap &amp; memory hook...
+        </div>
+
+        <!-- Populated Revealed Explanation -->
+        <div id="explanationContent" class="hidden space-y-2.5 pt-1">
+          <p id="expMainText" class="text-slate-800 leading-relaxed"></p>
+          <div class="bg-amber-50/90 border border-amber-200/80 rounded-lg p-2.5 text-amber-950">
+            <span class="font-extrabold text-[11px] uppercase tracking-wider text-amber-800 block mb-0.5">🧠 USMLE Memory Hook &amp; Timing Trap</span>
+            <p id="expMnemonic" class="text-xs leading-relaxed"></p>
+          </div>
+          <div class="bg-blue-50/80 border border-blue-200/70 rounded-lg p-2.5 text-slate-800">
+            <span class="font-extrabold text-[11px] uppercase tracking-wider text-blue-800 block mb-0.5">🩺 Step 1 &amp; Step 2 Clinical Pearl</span>
+            <p id="expClinical" class="text-xs leading-relaxed"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Action Row: Prev + Next Question -->
+      <div class="flex items-center gap-2 pt-0.5">
+        <button id="prevQuestionBtn" type="button" class="px-3.5 py-3 rounded-xl font-bold text-xs sm:text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 active:scale-[0.99] transition disabled:opacity-40 disabled:pointer-events-none shrink-0" title="Previous Card (Left Arrow)">
+          ←
+        </button>
+        <button id="nextQuestionBtn" type="button" disabled class="w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm transition flex items-center justify-center gap-1.5 bg-slate-200 text-slate-400 cursor-not-allowed">
+          <span>Next Question</span>
+          <span>→</span>
+        </button>
+      </div>
+
+    </article>
+
+    <!-- Footer Caption & Keyboard Hints -->
+    <footer class="text-center text-[11px] text-slate-400 font-medium pt-1 pb-4 space-y-1">
+      <p>Embryology High-Yield Review</p>
+      <p class="hidden sm:block text-[10px] text-slate-400/80">
+        Keyboard shortcuts: <kbd class="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-slate-600">A</kbd>–<kbd class="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-slate-600">D</kbd> or <kbd class="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-slate-600">1</kbd>–<kbd class="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-slate-600">4</kbd> to answer • <kbd class="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-slate-600">Space</kbd> / <kbd class="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-slate-600">Enter</kbd> for next card
+      </p>
+    </footer>
+  </main>
+
+  <!-- INTERACTIVE EMBRYOGENESIS TIMELINE CHEAT-SHEET MODAL -->
+  <div id="timelineModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full max-w-2xl rounded-t-2xl sm:rounded-2xl max-h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-reveal">
+      <!-- Modal Header -->
+      <div class="usmle-header text-white px-4 py-3.5 flex items-center justify-between">
+        <div>
+          <h2 class="text-sm sm:text-base font-extrabold uppercase tracking-tight">Master Embryogenesis Timeline Cheat-Sheet</h2>
+          <p class="text-[11px] text-red-100">Day-by-Day Cellular Roles, Rule of 2s/3s &amp; High-Yield USMLE Associations</p>
+        </div>
+        <button id="closeTimelineBtn" type="button" class="header-pill-btn text-white rounded-lg px-2.5 py-1 text-xs font-bold">
+          ✕ Close
+        </button>
+      </div>
+
+      <!-- Modal Scrollable Content -->
+      <div class="p-4 sm:p-5 overflow-y-auto space-y-3 text-xs sm:text-sm">
+        <!-- Quick Rule Summary Box -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div class="bg-red-50 border border-red-200 rounded-xl p-3">
+            <div class="font-extrabold text-red-700 text-xs uppercase tracking-wider mb-1">Week 2 = "The Week of Twos" (Days 8–14)</div>
+            <ul class="text-xs text-slate-700 space-y-1 list-disc list-inside">
+              <li><strong>2 Germ Layers (Bilaminar):</strong> Epiblast + Hypoblast</li>
+              <li><strong>2 Cavities:</strong> Amniotic cavity + Primary yolk sac</li>
+              <li><strong>2 Trophoblast layers:</strong> Cytotrophoblast + Syncytiotrophoblast</li>
+              <li><strong>2 Extraembryonic mesoderms:</strong> Somatic + Splanchnic</li>
+            </ul>
+          </div>
+          <div class="bg-blue-50 border border-blue-200 rounded-xl p-3">
+            <div class="font-extrabold text-blue-800 text-xs uppercase tracking-wider mb-1">Week 3 = "The Week of Threes" (Days 15–21)</div>
+            <ul class="text-xs text-slate-700 space-y-1 list-disc list-inside">
+              <li><strong>Gastrulation:</strong> Primitive streak forms on Day 14–15</li>
+              <li><strong>Epiblast invaginates</strong> to form all <strong>3 Germ Layers</strong> (Ectoderm, Mesoderm, Endoderm)</li>
+              <li><strong>Notochord</strong> induces overlying ectoderm → <strong>Neural Plate</strong></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Timeline Milestones List -->
+        <div class="border border-slate-200 rounded-xl divide-y divide-slate-200 overflow-hidden">
+          <div class="p-3 bg-white flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+            <span class="font-extrabold text-red-600 text-xs uppercase w-28 shrink-0">Day 0</span>
+            <div class="text-xs text-slate-700"><strong>Fertilization:</strong> Secondary oocyte arrested in Metaphase II is fertilized in the <strong>ampulla</strong> of the Fallopian tube. Cortical reaction blocks polyspermy.</div>
+          </div>
+          <div class="p-3 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+            <span class="font-extrabold text-red-600 text-xs uppercase w-28 shrink-0">Days 1–3</span>
+            <div class="text-xs text-slate-700"><strong>Cleavage:</strong> Zygote undergoes rapid mitotic divisions inside the intact zona pellucida while swept toward the uterus by tubal cilia.</div>
+          </div>
+          <div class="p-3 bg-white flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+            <span class="font-extrabold text-red-600 text-xs uppercase w-28 shrink-0">Days 3–4</span>
+            <div class="text-xs text-slate-700"><strong>Morula (16–32 cells):</strong> Solid ball of blastomeres ("mulberry") enters the uterine cavity. Compaction segregates inner vs. outer cells.</div>
+          </div>
+          <div class="p-3 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+            <span class="font-extrabold text-red-600 text-xs uppercase w-28 shrink-0">Day 5</span>
+            <div class="text-xs text-slate-700"><strong>Blastocyst Formation &amp; Hatching:</strong> Fluid-filled blastocoel cavity forms. <strong>Zona pellucida degenerates</strong> so the blastocyst can implant. Inner Cell Mass (embryoblast) + Outer Trophoblast.</div>
+          </div>
+          <div class="p-3 bg-white flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+            <span class="font-extrabold text-red-600 text-xs uppercase w-28 shrink-0">Days 6–7</span>
+            <div class="text-xs text-slate-700"><strong>Implantation:</strong> Embryonic pole attaches to posterior superior uterine wall. Trophoblast differentiates into <strong>Cytotrophoblast</strong> (mitotic cells) &amp; <strong>Syncytiotrophoblast</strong> (invades endometrium, secretes <strong>β-hCG</strong>).</div>
+          </div>
+          <div class="p-3 bg-amber-50/60 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+            <span class="font-extrabold text-red-600 text-xs uppercase w-28 shrink-0">Days 7–8 (Trap!)</span>
+            <div class="text-xs text-slate-800"><strong>Bilaminar Disc Forms:</strong> Inner cell mass splits into <strong>Epiblast</strong> (dorsal columnar) &amp; <strong>Hypoblast</strong> (ventral cuboidal). Small clefts coalesce inside the <strong>Epiblast to form the Amniotic Cavity</strong> (amnioblasts), while Hypoblast cells migrate to line the <strong>Primary Yolk Sac</strong> (Heuser membrane).</div>
+          </div>
+          <div class="p-3 bg-white flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+            <span class="font-extrabold text-red-600 text-xs uppercase w-28 shrink-0">Days 9–12</span>
+            <div class="text-xs text-slate-700"><strong>Lacunar Stage &amp; Uteroplacental Circulation:</strong> Syncytiotrophoblast lacunae fuse with maternal sinusoids. β-hCG becomes detectable in maternal serum (~Day 8–10) and urine (~Day 14).</div>
+          </div>
+          <div class="p-3 bg-amber-50/60 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+            <span class="font-extrabold text-red-600 text-xs uppercase w-28 shrink-0">Days 14–15 (Wk 3)</span>
+            <div class="text-xs text-slate-800"><strong>Gastrulation Begins:</strong> <strong>Epiblast</strong> forms the <strong>Primitive Streak</strong> and invaginates to give rise to <strong>ALL THREE germ layers</strong>: Endoderm (replaces hypoblast), Mesoderm, and Ectoderm.</div>
+          </div>
+          <div class="p-3 bg-white flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+            <span class="font-extrabold text-red-600 text-xs uppercase w-28 shrink-0">Days 16–21</span>
+            <div class="text-xs text-slate-700"><strong>Neurulation Begins:</strong> <strong>Notochord</strong> (from primitive node) secretes Sonic Hedgehog (SHH) to induce overlying ectoderm into the <strong>Neural Plate</strong>. Neural folds elevate.</div>
+          </div>
+          <div class="p-3 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+            <span class="font-extrabold text-red-600 text-xs uppercase w-28 shrink-0">Week 4 (Days 22–28)</span>
+            <div class="text-xs text-slate-700"><strong>Heart Beats &amp; Neural Tube Closes:</strong> Heart begins beating (Day 22). Anterior neuropore closes (Day 25 → failure = anencephaly); Posterior neuropore closes (Day 27 → failure = spina bifida). Upper/lower limb buds appear.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION LOGIC & HIGH-YIELD USMLE QUESTION BANK -->
+  <script>
+    const QUESTION_BANK = [
+      {
+        id: "q1",
+        category: "WEEK2",
+        stageBadge: "DAY 7–8: EPIBLAST POV",
+        timelineLabel: "⏱ Embryonic Clock: Day 7–8 (Start of Week 2)",
+        povRole: "Role: Epiblast (Bilaminar Disc)",
+        progressPct: 26,
+        prompt: "It is the 7th–8th day after fertilization. You are the newly segregated Epiblast in the implanting blastocyst. What is your immediate developmental move right now?",
+        options: [
+          "Cavitate to form the amniotic cavity and generate amnioblasts",
+          "Invaginate through the primitive streak to form ectoderm, mesoderm, and endoderm",
+          "Divide into a solid mulberry-like ball of 16 to 32 blastomeres (morula)",
+          "Migrate ventrally to line the blastocoel and form the primary yolk sac"
+        ],
+        correctIndex: 0,
+        explanation: "On Day 7–8 (beginning of Week 2, the 'Week of Twos'), the inner cell mass differentiates into the bilaminar embryonic disc: the dorsal Epiblast and ventral Hypoblast. Small fluid-filled clefts immediately appear within the Epiblast and coalesce to form the Amniotic Cavity, lined dorsally by epiblast-derived amnioblasts.",
+        mnemonic: "CLASSIC USMLE TIMING TRAP: Do NOT confuse Day 7–8 Epiblast with Week 3 (Day 14–15) Epiblast! On Day 7–8, the Epiblast forms the amniotic cavity (Week 2 = Rule of 2s). It waits until Week 3 (Gastrulation, Day 14–15) to form the primitive streak and differentiate into the 3 germ layers!",
+        clinical: "While the epiblast cavitates into the amniotic cavity, the ventral hypoblast migrates to line the primary yolk sac (exocoelomic membrane). Amniotic fluid volume later serves as a vital marker of fetal renal function (oligohydramnios in Potter sequence vs. polyhydramnios in esophageal/duodenal atresia)."
+      },
+      {
+        id: "q2",
+        category: "WEEK3",
+        stageBadge: "DAY 14–15: EPIBLAST POV",
+        timelineLabel: "⏱ Embryonic Clock: Day 14–15 (Week 3 Gastrulation)",
+        povRole: "Role: Epiblast (Primitive Streak)",
+        progressPct: 52,
+        prompt: "It is now Day 14–15 after fertilization (the start of Week 3). You are STILL the Epiblast, and a thickened linear band (the primitive streak) has just appeared on your caudal dorsal surface. What are you going to do now?",
+        options: [
+          "Secrete human chorionic gonadotropin (β-hCG) to rescue the corpus luteum",
+          "Differentiate into all three definitive germ layers: endoderm, mesoderm, and ectoderm",
+          "Compact into a 16-cell morula and shed the zona pellucida",
+          "Degenerate into the nucleus pulposus of the intervertebral discs"
+        ],
+        correctIndex: 1,
+        explanation: "During Week 3 (Gastrulation, beginning Day 14–15), epiblast cells migrate toward the primitive streak and invaginate (ingress). The first wave displaces the hypoblast to become definitive Endoderm; the second wave spreads between the layers to become Mesoderm; the remaining surface epiblast cells become Ectoderm.",
+        mnemonic: "Week 3 = Rule of 3s (Gastrulation = 3 germ layers). Remember: The Epiblast is the sole parent of ALL 3 definitive germ layers (Ectoderm, Mesoderm, Endoderm). The hypoblast contributes ZERO cells to the adult body!",
+        clinical: "If the primitive streak fails to regress after Week 4, pluripotent epiblast remnants persist in the coccygeal region and present in newborns as a Sacrococcygeal Teratoma (the most common germ cell tumor of infancy, containing tissues from all 3 germ layers)."
+      },
+      {
+        id: "q3",
+        category: "WEEK1",
+        stageBadge: "DAY 3–4: BLASTOMERE POV",
+        timelineLabel: "⏱ Embryonic Clock: Day 3–4 Post-Fertilization",
+        povRole: "Role: Dividing Blastomeres",
+        progressPct: 12,
+        prompt: "It is Day 3–4 after fertilization. You have undergone rapid mitotic cleavage divisions inside the Fallopian tube and are just entering the uterine cavity. What stage are you at right now?",
+        options: [
+          "A trilaminar embryonic disc undergoing neurulation",
+          "A hatched blastocyst invading the maternal decidua basalis",
+          "A solid mulberry-like ball of 16 to 32 blastomeres called a morula",
+          "A secondary oocyte arrested in metaphase II"
+        ],
+        correctIndex: 2,
+        explanation: "By Day 3–4 post-fertilization, cleavage divisions have produced a tightly compacted solid sphere of 16 to 32 totipotent/pluripotent blastomeres known as the morula (Latin for mulberry), which enters the uterine cavity still enclosed within the protective zona pellucida.",
+        mnemonic: "M-O-R-U-L-A = Mulberry On Road into Uterus Around Day 3–4 (16–32 cells).",
+        clinical: "During the morula stage, 'compaction' occurs via E-cadherin tight junctions, segregating the inner cells (future embryoblast/fetus) from the outer cells (future trophoblast/placenta)."
+      },
+      {
+        id: "q4",
+        category: "WEEK1",
+        stageBadge: "DAY 5: ZONA PELLUCIDA POV",
+        timelineLabel: "⏱ Embryonic Clock: Day 5 Post-Fertilization",
+        povRole: "Role: Zona Pellucida / Blastocyst",
+        progressPct: 18,
+        prompt: "It is Day 5 after fertilization inside the uterine cavity. Fluid has just filled the blastocoel cavity to convert the morula into a blastocyst. You are the surrounding Zona Pellucida. What must you do right now?",
+        options: [
+          "Thicken to form the chorionic frondosum",
+          "Degenerate and disappear ('hatch') so the blastocyst can implant into the endometrium",
+          "Differentiate into the cytotrophoblast and syncytiotrophoblast",
+          "Secrete progesterone to maintain the decidual reaction"
+        ],
+        correctIndex: 1,
+        explanation: "On Day 5, the morula develops a fluid-filled cavity (blastocoel) to become a blastocyst. For implantation to occur on Day 6, the glycoprotein shell (zona pellucida) must degenerate, allowing the blastocyst to 'hatch' and make direct cell-to-cell contact with the maternal endometrium.",
+        mnemonic: "Zona Pellucida prevents premature sticking in the Fallopian tube on Days 1–4, then 'hatches' on Day 5 inside the uterus just before Day 6 implantation.",
+        clinical: "If the zona pellucida degenerates too early while the embryo is still delayed inside a scarred Fallopian tube (e.g., from prior PID/Chlamydia salpingitis), an Ectopic Tubal Pregnancy occurs (most commonly in the ampulla)."
+      },
+      {
+        id: "q5",
+        category: "WEEK1",
+        stageBadge: "DAY 6–7: SYNCYTIOTROPHOBLAST POV",
+        timelineLabel: "⏱ Embryonic Clock: Day 6–7 (Implantation)",
+        povRole: "Role: Syncytiotrophoblast",
+        progressPct: 22,
+        prompt: "It is Day 6–7 after fertilization. You are the outer multinucleated Syncytiotrophoblast finger-like projections invading the maternal endometrium. Which hormone must you start synthesizing immediately to save this pregnancy?",
+        options: [
+          "Human placental lactogen (hPL)",
+          "Alpha-fetoprotein (AFP)",
+          "Human chorionic gonadotropin (β-hCG)",
+          "Unconjugated estriol (uE3)"
+        ],
+        correctIndex: 2,
+        explanation: "As the blastocyst implants on Day 6–7, the trophoblast splits into an inner mononucleated Cytotrophoblast and an outer multinucleated Syncytiotrophoblast. The Syncytiotrophoblast invades the maternal decidua and secretes β-hCG, which stimulates the maternal corpus luteum to keep producing progesterone during the first 8–10 weeks.",
+        mnemonic: "Syncytiotrophoblast = Synthesizes hCG & Swims into maternal decidua (lacks MHC class I so maternal T-cells don't reject the fetus). Cytotrophoblast = Cellular (distinct cell borders, mitotically active).",
+        clinical: "β-hCG is detectable in maternal blood by Days 8–10 (once lacunae tap into maternal sinusoids) and in urine by Day 14 (first day of a missed period). Pathologically high β-hCG with 'snowstorm' ultrasound = Complete Hydatidiform Mole OR Choriocarcinoma."
+      },
+      {
+        id: "q6",
+        category: "WEEK2",
+        stageBadge: "DAY 8–9: HYPOBLAST POV",
+        timelineLabel: "⏱ Embryonic Clock: Day 8–9 (Week 2)",
+        povRole: "Role: Hypoblast (Ventral Layer)",
+        progressPct: 30,
+        prompt: "It is Day 8–9 post-fertilization. While your neighbor (the Epiblast) is forming the amniotic cavity dorsally, you are the ventral cuboidal Hypoblast layer. What are your migrating cells forming right now?",
+        options: [
+          "Exocoelomic (Heuser's) membrane lining the primary yolk sac",
+          "The neural crest and peripheral autonomic ganglia",
+          "The definitive endoderm of the adult gastrointestinal tract",
+          "The maternal decidua basalis"
+        ],
+        correctIndex: 0,
+        explanation: "On Day 8–9, flat cells delaminate from the ventral Hypoblast and migrate along the inner surface of the cytotrophoblast (forming Heuser's exocoelomic membrane) to enclose the old blastocoel, transforming it into the Primary Yolk Sac (exocoelomic cavity).",
+        mnemonic: "Week 2 = Rule of 2s: Dorsal Epiblast → Amniotic cavity; Ventral Hypoblast → Primary Yolk Sac.",
+        clinical: "The yolk sac is essential early in gestation as the first site of embryonic hematopoiesis (blood islands in Week 3) and the temporary residence of Primordial Germ Cells (PGCs) before they migrate to the genital ridges in Weeks 4–6."
+      },
+      {
+        id: "q7",
+        category: "WEEK1",
+        stageBadge: "DAY 0: SECONDARY OOCYTE POV",
+        timelineLabel: "⏱ Embryonic Clock: Day 0 (Hour 0)",
+        povRole: "Role: Secondary Oocyte",
+        progressPct: 4,
+        prompt: "You are a newly ovulated secondary oocyte arrested in Metaphase II, waiting for sperm to arrive. Where in the female reproductive tract must you meet the capacitated sperm for normal fertilization to occur?",
+        options: [
+          "Isthmus of the Fallopian tube",
+          "Ampulla of the Fallopian tube",
+          "Posterior superior wall of the uterine fundus",
+          "Infundibulum fimbriae surface of the ovary"
+        ],
+        correctIndex: 1,
+        explanation: "Fertilization occurs in the Ampulla of the Fallopian tube (the widest and longest segment) within 12–24 hours of ovulation. Contact with a capacitated sperm triggers the acrosome reaction, the cortical reaction (preventing polyspermy), and immediate completion of Meiosis II.",
+        mnemonic: "Fertilization = Ampulla; Normal Implantation = Upper posterior uterine wall. (However, Ampulla is also the #1 site of Ectopic Pregnancy if tubal transport is impaired!).",
+        clinical: "Kartagener syndrome (primary ciliary dyskinesia due to dynein arm defect) impairs Fallopian tube ciliary beating, markedly increasing the risk of subfertility and tubal ectopic pregnancy in the ampulla."
+      },
+      {
+        id: "q8",
+        category: "WEEK2",
+        stageBadge: "WEEK 2: EXTRAEMBRYONIC MESODERM POV",
+        timelineLabel: "⏱ Embryonic Clock: Day 11–13 (Week 2)",
+        povRole: "Role: Extraembryonic Mesoderm",
+        progressPct: 40,
+        prompt: "It is Day 12–13 after fertilization. You are the extraembryonic mesoderm split by the chorionic cavity into two layers. One narrow bridge of your tissue still connects the bilaminar embryo to the trophoblast shell. What are you called, and what will you become?",
+        options: [
+          "The Notochord → future nucleus pulposus",
+          "The Connecting Stalk → future Umbilical Cord",
+          "The Allantois → future median umbilical ligament",
+          "The Septum Transversum → future central tendon of the diaphragm"
+        ],
+        correctIndex: 1,
+        explanation: "As the extraembryonic coelom (chorionic cavity) expands on Days 12–13, the embryo remains suspended by a bridge of extraembryonic mesoderm called the Connecting Stalk. With embryonic folding and development of umbilical vessels, the connecting stalk becomes the Umbilical Cord.",
+        mnemonic: "Connecting Stalk = Connects fetus to placenta = Umbilical Cord (eventually containing 2 Umbilical Arteries and 1 Umbilical Vein cushioned by Wharton's jelly).",
+        clinical: "A Single Umbilical Artery (2-vessel cord instead of 3-vessel cord) is strongly associated with congenital renal and cardiovascular anomalies, as well as Trisomy 18 (Edwards syndrome)."
+      },
+      {
+        id: "q9",
+        category: "WEEK3",
+        stageBadge: "DAY 16–18: NOTOCHORD POV",
+        timelineLabel: "⏱ Embryonic Clock: Day 16–18 (Week 3)",
+        povRole: "Role: Notochord (Mesoderm)",
+        progressPct: 60,
+        prompt: "It is Day 17 after fertilization. You are the Notochord, a solid cylinder of mesodermal cells extending cranially from the primitive node. What is your primary signaling job right now, and what adult structure will you leave behind?",
+        options: [
+          "Induce overlying ectoderm to become the neural plate; persist as the nucleus pulposus of intervertebral discs",
+          "Induce underlying endoderm to form the gut tube; persist as the annulus fibrosus",
+          "Form the axial skeleton vertebral bodies; persist as the spinal cord",
+          "Form the dorsal root ganglia and adrenal medulla; regress completely"
+        ],
+        correctIndex: 0,
+        explanation: "The Notochord (derived from mesoderm migrating through the primitive node/pit) secretes Sonic Hedgehog (SHH) and noggin/chordin to induce the overlying surface ectoderm to thicken into the neuroectoderm (Neural Plate) on Day 18. Later, vertebral bodies form around it (from paraxial mesoderm sclerotomes), and the notochord degenerates except where it forms the gelatinous Nucleus Pulposus of intervertebral discs.",
+        mnemonic: "Notochord = Neural plate inductor + Nucleus pulposus. (Do not confuse with Annulus fibrosus, which comes from Sclerotome/Paraxial mesoderm!).",
+        clinical: "Neoplastic remnants of the embryonic notochord give rise to a Chordoma—a slow-growing, locally invasive malignant bone tumor occurring at the skull base (clivus) or sacrococcygeal spine containing physaliferous ('bubbly') cells positive for Brachyury."
+      },
+      {
+        id: "q10",
+        category: "WEEK3",
+        stageBadge: "DAY 16: ALLANTOIS POV",
+        timelineLabel: "⏱ Embryonic Clock: Day 16 (Week 3)",
+        povRole: "Role: Allantois / Urachus",
+        progressPct: 56,
+        prompt: "It is Day 16 post-fertilization. You are the Allantois, a sausage-like diverticulum of the posterior yolk sac extending into the connecting stalk. After forming the fetal urachus, what happens if your lumen completely fails to obliterate before birth?",
+        options: [
+          "Meckel diverticulum with painless lower GI bleeding",
+          "Patent urachus presenting with clear urine discharging from the umbilicus",
+          "Omphalocele covered by peritoneum and amnion",
+          "Bladder exstrophy due to failure of lateral body wall folds"
+        ],
+        correctIndex: 1,
+        explanation: "The Allantois extends from the caudal wall of the yolk sac (future urogenital sinus/bladder apex) into the connecting stalk. Its extraembryonic vessels become the umbilical arteries/vein, while its intraembryonic duct becomes the Urachus, which normally fibroses into the Median Umbilical Ligament. Complete failure of urachal obliteration causes a Patent Urachus, leaking urine from the umbilicus when crying or straining.",
+        mnemonic: "Urachus = Urine from Umbilicus (Allantoic duct remnant → Median umbilical ligament). Contrast with Vitelline (omphalomesenteric) duct = Meckel diverticulum / stool from umbilicus.",
+        clinical: "Partial obliteration of the urachus can result in a Urachal Cyst (midline lower abdominal mass prone to infection) or a Vesicourachal Diverticulum (outpouching at the superior bladder dome that predisposes to UTIs and urachal adenocarcinoma in adults)."
+      },
+      {
+        id: "q11",
+        category: "WEEK4_8",
+        stageBadge: "DAY 22–28: NEURAL TUBE POV",
+        timelineLabel: "⏱ Embryonic Clock: Days 22–28 (Week 4 Neurulation)",
+        povRole: "Role: Closing Neural Tube",
+        progressPct: 72,
+        prompt: "It is Day 25 after fertilization. You are the cranial (anterior) neuropore of the folding neural tube. If you fail to fuse shut today because of maternal folate deficiency, what congenital anomaly will result?",
+        options: [
+          "Spina bifida occulta with a sacral dimple",
+          "Anencephaly with absence of the forebrain and calvarium (plus maternal polyhydramnios)",
+          "Holoprosencephaly with a single cerebral ventricle and cyclopia",
+          "Dandy-Walker malformation with cerebellar vermis agenesis"
+        ],
+        correctIndex: 1,
+        explanation: "The neural folds fuse in the cervical region around Day 21–22 and zip cranially and caudally. The Cranial (Anterior) Neuropore closes on Day 25; failure causes Anencephaly (absence of forebrain and open skull vault, impairing fetal swallowing → polyhydramnios and markedly elevated maternal serum AFP & acetylcholinesterase). The Caudal (Posterior) Neuropore closes 2 days later on Day 27; failure causes Spina Bifida.",
+        mnemonic: "Head before Tail: Anterior neuropore closes Day 25 (Anencephaly); Posterior neuropore closes Day 27 (Spina bifida).",
+        clinical: "Maternal folate (Vitamin B9) supplementation should start at least 1 month BEFORE conception because the neural tube closes by Day 27—often before a patient realizes she is pregnant! Antiepileptics like Valproic acid and Carbamazepine strongly increase neural tube defect risk."
+      },
+      {
+        id: "q12",
+        category: "WEEK4_8",
+        stageBadge: "WEEK 4: NEURAL CREST POV",
+        timelineLabel: "⏱ Embryonic Clock: Week 4 (Epithelial-to-Mesenchymal Transition)",
+        povRole: "Role: Neural Crest Cells",
+        progressPct: 75,
+        prompt: "It is Week 4. Just as the neural folds fuse to form the neural tube, you detach from the lateral crests ('the 4th germ layer') and migrate throughout the embryo. Which set of structures below are YOU responsible for building?",
+        options: [
+          "Astrocytes, oligodendrocytes, ependymal cells, and retinal pigment epithelium",
+          "Chromaffin cells of the adrenal medulla, Schwann cells, melanocytes, odontoblasts, and the aorticopulmonary septum",
+          "Microglia, Kupffer cells, and osteoclasts",
+          "Anterior pituitary (adenohypophysis) and lens of the eye"
+        ],
+        correctIndex: 1,
+        explanation: "Neural Crest Cells migrate extensively and differentiate into the Peripheral Nervous System (Dorsal root ganglia, autonomic ganglia, Schwann cells, enteric nervous system Auerbach/Meissner plexuses), Adrenal medulla chromaffin cells, Melanocytes, Odontoblasts, Pia & Arachnoid mater, Parafollicular C-cells of the thyroid, Craniofacial bones, and the Conotruncal/Aorticopulmonary septum of the heart.",
+        mnemonic: "MOTE-PASS: Melanocytes, Odontoblasts, Tracheal cartilage/cranial bones, Enteric ganglia, Peripheral/autonomic nerves, Adrenal medulla, Schwann cells, Spiral (aorticopulmonary) membrane.",
+        clinical: "Failure of neural crest migration to the distal colon causes Hirschsprung disease (congenital aganglionic megacolon); failure of migration to the conotruncal ridges causes Tetralogy of Fallot and Persistent Truncus Arteriosus (seen in 22q11 DiGeorge syndrome)."
+      },
+      {
+        id: "q13",
+        category: "WEEK4_8",
+        stageBadge: "WEEK 4: MESODERM SUBDIVISIONS POV",
+        timelineLabel: "⏱ Embryonic Clock: Week 3–4 (Mesodermal Differentiation)",
+        povRole: "Role: Intermediate Mesoderm",
+        progressPct: 78,
+        prompt: "You are a block of Mesoderm positioned directly between the Paraxial Mesoderm (somites) medially and the Lateral Plate Mesoderm laterally. What is your name, and what organ systems are you going to form?",
+        options: [
+          "Paraxial mesoderm → axial skeleton, dermis, and skeletal muscle",
+          "Intermediate mesoderm → kidneys (pronephros, mesonephros, metanephros), gonads, and adrenal cortex",
+          "Splanchnic lateral plate mesoderm → myocardium, visceral pleura/peritoneum, and spleen",
+          "Somatic lateral plate mesoderm → parietal serosa and limb bones"
+        ],
+        correctIndex: 1,
+        explanation: "Mesoderm divides into 3 main columns on either side of the notochord: (1) Paraxial mesoderm (somites → axial bone sclerotome, muscle myotome, dermis dermatome), (2) Intermediate mesoderm (urogenital ridge → Kidneys, Ureters, Gonads, Wolffian/Müllerian ducts, and Adrenal Cortex), and (3) Lateral plate mesoderm (heart, blood vessels, spleen, limb bones, and body cavity serosa).",
+        mnemonic: "Intermediate Mesoderm = 'In-between the sheets' (Genitourinary system + Gonads + Adrenal Cortex). Remember: Adrenal Cortex = Mesoderm; Adrenal Medulla = Neural Crest!",
+        clinical: "In Week 5, the Ureteric Bud (from mesonephric duct) and Metanephric Mesenchyme (both derived from Intermediate Mesoderm) must reciprocally induce each other via GDNF/RET signaling to form the definitive kidney. Failure results in Renal Agenesis and oligohydramnios (Potter sequence)."
+      },
+      {
+        id: "q14",
+        category: "WEEK4_8",
+        stageBadge: "DAY 22: CARDIOGENIC MESODERM POV",
+        timelineLabel: "⏱ Embryonic Clock: Day 22 (Start of Week 4)",
+        povRole: "Role: Primitive Heart Tube",
+        progressPct: 70,
+        prompt: "It is Day 22–23 post-fertilization. You are the newly fused primitive heart tube beginning to pump blood and fold rightward (D-looping) via dynein-driven cilia. What happens if your nodal cilia have a dynein arm defect?",
+        options: [
+          "Endocardial cushion defect with ostium primum ASD",
+          "Dextrocardia and situs inversus (Kartagener syndrome)",
+          "Coarctation of the aorta distal to the left subclavian artery",
+          "Patent ductus arteriosus resistant to indomethacin"
+        ],
+        correctIndex: 1,
+        explanation: "The heart is the first functional organ in the embryo, beginning to beat on Day 22 and undergoing rightward looping (D-looping) on Days 23–28. Left-right asymmetry is established during gastrulation by primary cilia at the primitive node beating to drive leftward nodal flow (Lefty/PITX2 signaling). Dynein arm defects randomize looping, causing Dextrocardia and Situs Inversus.",
+        mnemonic: "Day 22 = Heart beats for you! Primary Ciliary Dyskinesia (Kartagener triad) = Sinusitis + Bronchiectasis + Situs Inversus/Dextrocardia.",
+        clinical: "Transvaginal ultrasound can reliably detect fetal cardiac activity by 6 weeks gestational age (~4 weeks post-fertilization)."
+      },
+      {
+        id: "q15",
+        category: "WEEK4_8",
+        stageBadge: "WEEK 4: VITELLINE DUCT POV",
+        timelineLabel: "⏱ Embryonic Clock: Week 4–7 (Midgut Folding)",
+        povRole: "Role: Vitelline (Omphalomesenteric) Duct",
+        progressPct: 82,
+        prompt: "During Week 4 embryonic folding, a portion of the secondary yolk sac is incorporated into the embryo as the midgut. You are the narrow Vitelline (Omphalomesenteric) Duct connecting the midgut ileum to the yolk sac. If your proximal end fails to obliterate in Week 7, what famous surgical condition do you create?",
+        options: [
+          "Duodenal atresia with a 'double bubble' sign",
+          "Meckel diverticulum (a true diverticulum that may contain ectopic acid-secreting gastric mucosa)",
+          "Zenker diverticulum at Killian triangle",
+          "Pyloric stenosis with nonbilious projectile vomiting"
+        ],
+        correctIndex: 1,
+        explanation: "The Vitelline (Omphalomesenteric) Duct connects the midgut lumen to the yolk sac and normally obliterates completely by Week 7. Partial persistence of the proximal portion on the antimesenteric border of the ileum causes a Meckel Diverticulum—the most common congenital anomaly of the GI tract.",
+        mnemonic: "Rule of 2s for Meckel Diverticulum: 2% of population, 2 inches long, within 2 feet of the ileocecal valve, presents in first 2 years of life, may contain 2 types of ectopic tissue (gastric or pancreatic).",
+        clinical: "A Meckel diverticulum is a TRUE diverticulum (contains all 3 gut wall layers). Ectopic gastric mucosa secretes HCl, causing painless melena/hematochezia and RLQ pain mimicking appendicitis. Diagnosed via 99mTc-pertechnetate ('Meckel') scan."
+      },
+      {
+        id: "q16",
+        category: "CLINICAL",
+        stageBadge: "DAYS 15–60: TERATOGEN CLOCK POV",
+        timelineLabel: "⏱ Embryonic Clock: Weeks 3–8 (Embryonic Period)",
+        povRole: "Role: Differentiating Organ Primordia",
+        progressPct: 68,
+        prompt: "A medical student asks when the developing human conceptus is MOST susceptible to major structural birth defects from teratogens (such as isotretinoin, thalidomide, or rubella). Which developmental window do you point to?",
+        options: [
+          "Days 0 to 14 post-fertilization (Weeks 1–2 pre-organogenesis)",
+          "Days 15 to 60 post-fertilization (Weeks 3–8 embryonic period / organogenesis)",
+          "Weeks 9 to 38 post-fertilization (Fetal period)",
+          "Only during the 3rd trimester prior to parturition"
+        ],
+        correctIndex: 1,
+        explanation: "The Embryonic Period (Weeks 3–8, or Days 15–60 post-fertilization) is the period of gastrulation and organogenesis, when all major organ systems are established. Consequently, it is the window of peak susceptibility to structural teratogenic malformations.",
+        mnemonic: "Weeks 1–2 (Days 0–14) = 'All-or-None' period (severe insult causes spontaneous abortion or complete recovery by totipotent cells). Weeks 3–8 (Days 15–60) = Organogenesis (structural malformations). Weeks 9–38 = Fetal Growth & Maturation (functional defects/growth restriction, e.g., ACE inhibitors causing fetal renal failure).",
+        clinical: "Isotretinoin (Vitamin A derivative) during Weeks 3–8 disrupts neural crest migration into the pharyngeal arches, causing microtia, cleft palate, thymic aplasia, and conotruncal heart defects. Two forms of contraception and negative β-hCG tests are mandatory prior to prescribing."
+      },
+      {
+        id: "q17",
+        category: "CLINICAL",
+        stageBadge: "WEEK 1–2: MONOZYGOTIC TWINNING POV",
+        timelineLabel: "⏱ Embryonic Clock: Day 4–8 (Blastocyst Splitting)",
+        povRole: "Role: Splitting Inner Cell Mass",
+        progressPct: 24,
+        prompt: "It is Day 5–7 post-fertilization. The outer trophoblast has already formed a single chorion, and the inner cell mass (embryoblast) splits into two separate groups just BEFORE the amniotic cavity forms on Day 8. What type of monozygotic twins will you become?",
+        options: [
+          "Dichorionic-Diamniotic (Di-Di) twins",
+          "Monochorionic-Diamniotic (Mono-Di) twins",
+          "Monochorionic-Monoamniotic (Mono-Mono) twins",
+          "Conjoined (thoracopagus) twins"
+        ],
+        correctIndex: 1,
+        explanation: "The chorion (from trophoblast) forms around Day 4–5, and the amnion (from epiblast) forms around Day 8. Therefore: Splitting at Days 0–3 (Morula) → Dichorionic-Diamniotic (2 placentas, 2 sacs). Splitting at Days 4–8 (Blastocyst inner cell mass splits AFTER trophoblast forms, BEFORE amnion forms) → Monochorionic-Diamniotic (1 shared placenta, 2 amniotic sacs—the most common monozygotic pattern!). Splitting at Days 9–12 → Monochorionic-Monoamniotic. Splitting after Day 13 (Primitive streak) → Conjoined twins.",
+        mnemonic: "Structure already built BEFORE the split stays SINGLE (shared): Day 4–8 = Trophoblast/Chorion already built (Monochorionic), Amnion not yet built (Diamniotic).",
+        clinical: "Monochorionic twins share a single placenta with vascular anastomoses, placing them at risk for Twin-to-Twin Transfusion Syndrome (TTTS: one twin develops polyhydramnios/heart failure while the donor twin develops oligohydramnios/anemia). Monochorionic-Monoamniotic twins are at high risk for umbilical cord entanglement."
+      },
+      {
+        id: "q18",
+        category: "WEEK4_8",
+        stageBadge: "WEEK 4: FOREGUT ENDODERM POV",
+        timelineLabel: "⏱ Embryonic Clock: Week 4 (Organ Budding)",
+        povRole: "Role: Foregut Endoderm",
+        progressPct: 84,
+        prompt: "It is Week 4. You are the epithelial lining of the embryonic Foregut, derived from Endoderm. While you form the mucosal parenchyma of the respiratory tract, liver, gallbladder, and pancreas, where does the smooth muscle and connective tissue stroma around you come from?",
+        options: [
+          "Surface ectoderm",
+          "Splanchnic (visceral) lateral plate mesoderm",
+          "Somatic (parietal) lateral plate mesoderm",
+          "Persistent hypoblast cells"
+        ],
+        correctIndex: 1,
+        explanation: "A critical USMLE embryology principle: Endoderm forms ONLY the epithelial lining of the GI tract, respiratory tree (tracheobronchial buds), bladder, thyroid follicular cells, parathyroid, thymus epithelium, and the parenchymal cells of the liver (hepatocytes) and pancreas. The surrounding smooth muscle, connective tissue, visceral peritoneum/pleura, and blood vessels come from Splanchnic Lateral Plate Mesoderm!",
+        mnemonic: "Endoderm = Epithelial Inside Tube & Gland Parenchyma; Splanchnic Mesoderm = Smooth Muscle & Serosa wrapping the tube.",
+        clinical: "In Week 4, the respiratory diverticulum (lung bud) sprouts ventrally from the foregut endoderm. Failure of the tracheoesophageal ridges (splanchnic mesoderm + endoderm) to completely separate the trachea from the esophagus results in Esophageal Atresia with a distal Tracheoesophageal Fistula (TEF, Type C = 85%), presenting with polyhydramnios, choking/drooling on first feed, and inability to pass an NG tube + gastric air bubble on X-ray."
+      },
+      {
+        id: "q19",
+        category: "WEEK3",
+        stageBadge: "WEEK 3: CAUDAL MESODERM POV",
+        timelineLabel: "⏱ Embryonic Clock: Days 15–21 (Week 3 Gastrulation)",
+        povRole: "Role: Caudal Eminence Mesoderm",
+        progressPct: 58,
+        prompt: "It is Week 3 during gastrulation. Because of poorly controlled maternal pregestational Type 1 Diabetes (hyperglycemia-induced oxidative stress), insufficient mesoderm migrates into your caudal region. What syndrome or malformation results from this Week 3 insult?",
+        options: [
+          "Caudal regression syndrome (sacral agenesis with lower extremity hypoplasia)",
+          "Fetal hydantoin syndrome with nail hypoplasia",
+          "Ebstein anomaly with apical displacement of the tricuspid valve",
+          "Congenital rubella syndrome with patent ductus arteriosus and cataracts"
+        ],
+        correctIndex: 0,
+        explanation: "Caudal Regression Syndrome (sacral agenesis, sirenomelia/'mermaid syndrome', anorectal and urogenital anomalies, and lower limb motor/sensory deficits) is caused by insufficient caudal mesoderm formation during Week 3 gastrulation. It is strongly associated with poorly controlled maternal pregestational diabetes mellitus.",
+        mnemonic: "Maternal Diabetes in Week 3 Gastrulation = Caudal Regression Syndrome + VACTERL + Neural Tube Defects + Transposition of the Great Vessels.",
+        clinical: "Remember the VACTERL association (also linked to Week 3 mesodermal defects): Vertebral defects, Anal atresia, Cardiac defects, TracheoEsophageal fistula, Renal defects, and Limb defects (radial aplasia)."
+      },
+      {
+        id: "q20",
+        category: "WEEK4_8",
+        stageBadge: "WEEK 4: BODY WALL FOLDS POV",
+        timelineLabel: "⏱ Embryonic Clock: Week 4 (Embryonic Folding)",
+        povRole: "Role: Lateral Body Wall Folds",
+        progressPct: 80,
+        prompt: "It is Week 4, and the flat trilaminar disc is folding into a 3D cylinder. You are the Lateral Body Wall Folds zipping together at the ventral midline. If you fail to close completely to the right of the umbilicus later in development, leaving intestinal loops exposed directly to amniotic fluid with NO peritoneal covering, what defect is this?",
+        options: [
+          "Omphalocele (associated with Trisomy 13 and 18)",
+          "Gastroschisis (extrusion of bowel through a paraumbilical defect, not covered by peritoneum)",
+          "Congenital umbilical hernia covered by skin and subcutaneous tissue",
+          "Prune belly syndrome"
+        ],
+        correctIndex: 1,
+        explanation: "Gastroschisis occurs when the lateral body wall folds fail to close completely (typically just to the right of the umbilicus), causing bowel loops to protrude directly into the amniotic cavity WITHOUT a covering peritoneal/amniotic sac. In contrast, an Omphalocele is a failure of physiologic midgut herniation to return from the umbilical cord in Week 10, so it is midline and COVERED by a shiny amnion-peritoneum sac.",
+        mnemonic: "Gastroschisis = Guts Spill Out (No sac, right of cord, isolated defect in young mothers, ↑↑ maternal serum AFP). Omphalocele = 'O' for Overlying sac (Midline inside cord, strongly linked to chromosomal trisomies & Beckwith-Wiedemann syndrome).",
+        clinical: "If the lateral body wall folds fail to fuse in the pelvic region, the anterior bladder wall remains open to the outside environment—Bladder Exstrophy (linked to epispadias and increased risk of bladder adenocarcinoma)."
+      },
+      {
+        id: "q21",
+        category: "WEEK4_8",
+        stageBadge: "WEEK 4: PITUITARY POV",
+        timelineLabel: "⏱ Embryonic Clock: Week 4 (Dual Ectodermal Origin)",
+        povRole: "Role: Rathke's Pouch vs. Infundibulum",
+        progressPct: 86,
+        prompt: "It is Week 4. You are Rathke's Pouch—an upward evagination of the oral cavity roof—climbing superiorly to meet a downward extension of the diencephalon (the infundibulum) to build the Pituitary Gland. Which embryological tissue are you derived from, and what can your remnants form?",
+        options: [
+          "Neuroectoderm → forms the posterior pituitary and astrocytomas",
+          "Surface ectoderm (stomodeum) → forms the anterior pituitary (adenohypophysis); remnants cause Craniopharyngioma",
+          "Foregut endoderm → forms the thyroid gland; remnants cause thyroglossal duct cyst",
+          "Neural crest → forms the pineal gland; remnants cause germinoma"
+        ],
+        correctIndex: 1,
+        explanation: "The pituitary gland has a dual ectodermal origin: (1) The Anterior Pituitary (Adenohypophysis) arises from Surface Ectoderm via Rathke's pouch (roof of primitive mouth/stomodeum); (2) The Posterior Pituitary (Neurohypophysis) arises from Neuroectoderm (downward growth of the diencephalon floor).",
+        mnemonic: "Anterior Pituitary = Oral Surface Ectoderm (Rathke's pouch → Craniopharyngioma with 'motor-oil' fluid, calcifications, and bitemporal hemianopia). Posterior Pituitary = Neuroectoderm (stores ADH & Oxytocin made in hypothalamus).",
+        clinical: "Craniopharyngioma is the most common childhood supratentorial tumor. Because it arises from surface ectoderm of the oral roof, it histologically resembles ameloblastoma (tooth enamel organ) with wet keratin and dystrophic calcifications."
+      },
+      {
+        id: "q22",
+        category: "WEEK4_8",
+        stageBadge: "WEEK 4–5: AORTIC ARCH POV",
+        timelineLabel: "⏱ Embryonic Clock: Weeks 4–5 (Pharyngeal Apparatus)",
+        povRole: "Role: 4th & 6th Aortic Arches",
+        progressPct: 88,
+        prompt: "It is Week 5. You are the Left 6th Pharyngeal Aortic Arch. While your neighbor (the Left 4th Aortic Arch) is busy forming the permanent aortic arch, what crucial fetal vascular shunt are your distal fibers forming?",
+        options: [
+          "Ductus venosus (shunting umbilical vein blood past the liver into the IVC)",
+          "Ductus arteriosus (shunting blood from the pulmonary artery to the descending aorta) and proximal pulmonary arteries",
+          "Common carotid and proximal internal carotid arteries",
+          "Maxillary and stapedial arteries"
+        ],
+        correctIndex: 1,
+        explanation: "High-Yield Aortic Arch Derivatives: 1st = Maxillary artery; 2nd = Stapedial & hyoid arteries; 3rd = Common Carotid & proximal Internal Carotid ('C is 3rd letter'); 4th = Left forms Aortic Arch, Right forms proximal Right Subclavian artery; 6th = Proximal forms Pulmonary arteries, Distal Left forms the Ductus Arteriosus (which closes after birth to become the ligamentum arteriosum).",
+        mnemonic: "6th Arch = Pulmonary arteries + Ductus Arteriosus. Remember: Left Recurrent Laryngeal Nerve hooks under the 6th arch (Ligamentum arteriosum), whereas on the right side the distal 6th arch degenerates so the Right Recurrent Laryngeal Nerve hooks higher up under the 4th arch (Right Subclavian artery)!",
+        clinical: "In cyanotic congenital heart defects (e.g., Transposition of Great Vessels, Tetralogy of Fallot), give Prostaglandin E1 (Alprostadil) to keep the Ductus Arteriosus OPEN; in a symptomatic PDA (continuous 'machine-like' murmur), give Indomethacin (NSAID) to inhibit PGE synthesis and CLOSE the ductus."
+      },
+      {
+        id: "q23",
+        category: "WEEK4_8",
+        stageBadge: "WEEK 5–6: PHARYNGEAL POUCH POV",
+        timelineLabel: "⏱ Embryonic Clock: Weeks 5–6 (Endodermal Pouches)",
+        povRole: "Role: 3rd & 4th Pharyngeal Pouches",
+        progressPct: 90,
+        prompt: "It is Week 5. You are the Endoderm of the 3rd Pharyngeal Pouch. You divide into a dorsal wing and a ventral wing and prepare to migrate inferiorly down the neck. Which two structures are you forming, and why will your parathyroid gland end up BELOW the 4th pouch's parathyroid gland?",
+        options: [
+          "Middle ear cavity and Eustachian tube",
+          "Palatine tonsil crypts and Ultimobranchial body (parafollicular C cells)",
+          "Thymus (ventral wing) and Inferior Parathyroid glands (dorsal wing), because the thymus pulls the 3rd pouch parathyroids down into the mediastinum",
+          "Superior Parathyroid glands and Thyroid follicular cells"
+        ],
+        correctIndex: 2,
+        explanation: "The 3rd Pharyngeal Pouch forms the Thymus (ventral wing) and the Inferior Parathyroids (dorsal wing). Because the thymus migrates all the way down into the anterior mediastinum, it drags the 3rd-pouch parathyroids down with it below the 4th Pharyngeal Pouch derivatives (Superior Parathyroids + Ultimobranchial body).",
+        mnemonic: "1-2-3-4 Pouch Rule: 1st = Ear (middle ear/Eustachian); 2nd = Tonsils (palatine); 3rd = Dorsal (Inferior Parathyroids) + Ventral (Thymus); 4th = Dorsal (Superior Parathyroids).",
+        clinical: "In DiGeorge Syndrome (22q11.2 microdeletion), failure of the 3rd and 4th pharyngeal pouches to develop results in Thymic aplasia (T-cell deficiency, absent thymic shadow on CXR) and Parathyroid hypoplasia (hypocalcemic tetany, Chvostek/Trousseau signs)."
+      },
+      {
+        id: "q24",
+        category: "CLINICAL",
+        stageBadge: "DAY 0: IMPRINTING & PLOIDY POV",
+        timelineLabel: "⏱ Embryonic Clock: Day 0 (Abnormal Fertilization)",
+        povRole: "Role: Empty Oocyte + Paternal Sperm",
+        progressPct: 8,
+        prompt: "During fertilization in the ampulla, an enucleated ('empty') egg with no maternal chromosomes is fertilized by a single haploid sperm (23,X) that immediately duplicates its own paternal DNA to become 46,XX (androgenetic diploidy). Because paternal genes drive trophoblast overgrowth while maternal genes are needed for the embryoblast, what results?",
+        options: [
+          "Partial hydatidiform mole (69,XXX or 69,XXY with fetal parts present)",
+          "Complete hydatidiform mole (46,XX purely paternal DNA, diffuse edematous chorionic villi, no fetal tissue, and sky-high β-hCG)",
+          "Turner syndrome (45,XO with cystic hygroma)",
+          "Triploidy with syndactyly"
+        ],
+        correctIndex: 1,
+        explanation: "Genomic imprinting in early embryogenesis dictates that Paternal chromosomes favor Trophoblast/Placental proliferation, whereas Maternal chromosomes favor Embryoblast (fetal) development. When an empty ovum is fertilized by 1 sperm that duplicates (90%, 46,XX) or 2 sperm (10%, 46,XY), all chromosomes are paternal → Complete Hydatidiform Mole (p57-negative on immunostaining, 'bunch of grapes' hydropic villi, no fetal parts, and 15–20% risk of invasive mole/choriocarcinoma).",
+        mnemonic: "Complete Mole = Completely Paternal (2x 23,X = 46,XX, NO fetus, p57 negative, snowstorm ultrasound). Partial Mole = 1 Egg + 2 Sperm (69,XXX/XXY triploid, has Partial fetal parts, p57 positive, much lower malignancy risk).",
+        clinical: "Patients with a Complete Mole present in the 1st trimester with vaginal bleeding, uterus larger than dates, hyperemesis gravidarum, and early pre-eclampsia (<20 weeks) or hyperthyroidism (because α-subunit of hCG is identical to TSH!). Treat with suction curettage and serial β-hCG monitoring."
+      },
+      {
+        id: "q25",
+        category: "WEEK4_8",
+        stageBadge: "WEEK 6: GERM LAYER DERIVATIVES POV",
+        timelineLabel: "⏱ Embryonic Clock: Week 6 (Hematopoiesis & Microglia)",
+        povRole: "Role: Mesoderm inside the CNS",
+        progressPct: 92,
+        prompt: "You are reviewing CNS histology for Step 1. Almost every cell inside the brain and spinal cord (neurons, astrocytes, oligodendrocytes, ependymal cells) originates from Neuroectoderm. Which resident CNS cell is the high-yield EXCEPTION because it actually arises from Mesoderm (yolk sac/bone marrow monocytes)?",
+        options: [
+          "Schwann cells of the peripheral nerves",
+          "Microglia (the phagocytic resident macrophages of the CNS)",
+          "Choroid plexus epithelial cells",
+          "Pituicytes of the posterior pituitary"
+        ],
+        correctIndex: 1,
+        explanation: "While neurons, astrocytes, oligodendrocytes, and ependymal cells are derived from the Neural Tube (Neuroectoderm) and Schwann/satellite cells are derived from the Neural Crest, Microglia are the phagocytic macrophages of the CNS and originate from Mesoderm (specifically yolk sac hematopoiesis / myeloid progenitor monocytes that invade the developing brain).",
+        mnemonic: "Microglia = Macrophages = Mesoderm! Everything else in the CNS parenchyma = Neuroectoderm.",
+        clinical: "In HIV-associated neurocognitive disorder, infected mesoderm-derived microglia fuse to form multinucleated giant cells in the brain parenchyma."
+      },
+      {
+        id: "q26",
+        category: "WEEK4_8",
+        stageBadge: "WEEK 3–4: SOMITE POV",
+        timelineLabel: "⏱ Embryonic Clock: Days 20–30 (Somitogenesis)",
+        povRole: "Role: Paraxial Mesoderm (Somites)",
+        progressPct: 65,
+        prompt: "It is Day 20–30, and you are one of the paired blocks of Paraxial Mesoderm (Somites) forming alongside the neural tube like beads on a string. You differentiate into three sub-compartments: Sclerotome, Myotome, and Dermatome. What is the Sclerotome going to build?",
+        options: [
+          "Vertebral bodies, intervertebral disc annulus fibrosus, and ribs (axial skeleton)",
+          "Long bones of the upper and lower limbs (appendicular skeleton)",
+          "Bones of the facial skeleton and anterior skull vault",
+          "Smooth muscle of the gastrointestinal and urinary tracts"
+        ],
+        correctIndex: 0,
+        explanation: "Paraxial Mesoderm segments into Somites, which divide into: (1) Sclerotome → surrounds the neural tube and notochord to form the Vertebrae, Annulus Fibrosus of intervertebral discs, and Ribs; (2) Myotome → forms all skeletal muscle of the trunk and limbs; (3) Dermatome → forms the dermis of the dorsal skin.",
+        mnemonic: "Bone Origins Made Easy: Axial Skeleton (Vertebrae/Ribs) = Paraxial Mesoderm (Sclerotome). Appendicular/Limb Skeleton & Sternum = Somatic Lateral Plate Mesoderm. Craniofacial Bones = Neural Crest.",
+        clinical: "Each caudal half of one sclerotome fuses with the cranial half of the sclerotome below it ('resegmentation') so that spinal nerves can exit between the vertebrae and myotomes bridge across intervertebral joints. Failure of unilateral vertebral segmentation produces a congenital Hemivertebra, a classic cause of congenital scoliosis."
+      },
+      {
+        id: "q27",
+        category: "WEEK4_8",
+        stageBadge: "WEEK 6: DIAPHRAGM POV",
+        timelineLabel: "⏱ Embryonic Clock: Weeks 4–7 (Thoracoabdominal Partition)",
+        povRole: "Role: Pleuroperitoneal Membranes",
+        progressPct: 94,
+        prompt: "It is Week 6. Four embryonic structures are fusing together to build the Diaphragm ('Some Niceersen People Eat Meat'). You are the Left Pleuroperitoneal Membrane forming the posterolateral diaphragm. If you fail to fuse with the other components, what life-threatening neonatal condition occurs?",
+        options: [
+          "Sliding hiatal hernia through the esophageal hiatus",
+          "Congenital Bochdalek diaphragmatic hernia with abdominal viscera herniating into the left hemithorax, causing pulmonary hypoplasia",
+          "Tracheomalacia with expiratory stridor",
+          "Eventration of the diaphragm due to C3–C5 phrenic nerve injury"
+        ],
+        correctIndex: 1,
+        explanation: "The Diaphragm forms from 4 components: (1) Septum transversum → central tendon; (2) Pleuroperitoneal membranes → posterolateral diaphragm; (3) Dorsal mesentery of esophagus → crura; (4) Muscular body wall → peripheral muscular rim. Failure of the pleuroperitoneal membrane to fuse posteriorly (85–90% on the LEFT side) causes a Congenital Bochdalek Diaphragmatic Hernia.",
+        mnemonic: "Bochdalek = Back & Left ('B-L' = Posterolateral pleuroperitoneal failure). Newborns present with scaphoid abdomen, bowel sounds heard in the left chest, mediastinal shift to the right, and severe neonatal respiratory distress from Left Pulmonary Hypoplasia.",
+        clinical: "Immediately intubate and place an NG tube for gastric decompression (do NOT use bag-mask ventilation, which inflates the herniated stomach/bowel in the chest and further compresses the lungs!)."
+      },
+      {
+        id: "q28",
+        category: "CLINICAL",
+        stageBadge: "WEEK 3–8: HEMATOPOIESIS TIMELINE POV",
+        timelineLabel: "⏱ Embryonic Clock: Week 3 to Birth (Blood Island Relay)",
+        povRole: "Role: Shifting Hematopoietic Stem Cells",
+        progressPct: 98,
+        prompt: "You are a Hematopoietic Stem Cell producing blood cells for the developing embryo and fetus. You relocate your headquarters across four different organs from Week 3 until birth. Which sequence below correctly tracks your migration timeline?",
+        options: [
+          "Bone Marrow (Wk 3) → Liver (Wk 6) → Spleen (Wk 12) → Yolk Sac (Birth)",
+          "Yolk Sac (Wk 3–8) → Liver (Wk 6–Birth) → Spleen (Wk 10–28) → Bone Marrow (Wk 18 to adulthood)",
+          "Placenta (Wk 1) → Thymus (Wk 4) → Liver (Wk 12) → Vertebrae (Birth)",
+          "Spleen (Wk 3) → Yolk Sac (Wk 8) → Bone Marrow (Wk 16)"
+        ],
+        correctIndex: 1,
+        explanation: "Fetal hematopoiesis shifts sites sequentially as organs develop: First in the Yolk Sac mesoderm blood islands (Weeks 3–8); second in the Liver (Weeks 6 until birth—the principal hematopoietic organ of the 2nd trimester); third transiently in the Spleen (Weeks 10–28); and finally in the Bone Marrow (from Week 18 onward through adulthood).",
+        mnemonic: "'Young Livers Synthesize Blood': Yolk sac (Wk 3) → Liver (Wk 6) → Spleen (Wk 10) → Bone marrow (Wk 18+).",
+        clinical: "Simultaneously, hemoglobin switches from Embryonic Gower/Portland (ζ2ε2) in the yolk sac → Fetal Hemoglobin HbF (α2γ2, high O2 affinity due to reduced 2,3-BPG binding) in the liver/spleen → Adult HbA (α2β2) after birth."
+      }
+    ];
+
+    // App State
+    let activeDeck = [...QUESTION_BANK];
+    let currentCardIndex = 0;
+    let answeredMap = {}; // questionId -> selectedIndex
+    let bookmarkedIds = new Set();
+    let stats = {
+      done: 0,
+      correct: 0,
+      streak: 0
+    };
+
+    // DOM Elements
+    const stageFilterEl = document.getElementById('stageFilter');
+    const statDoneEl = document.getElementById('statDone');
+    const statCorrectEl = document.getElementById('statCorrect');
+    const statPercentEl = document.getElementById('statPercent');
+    const statStreakEl = document.getElementById('statStreak');
+
+    const cardStageBadgeEl = document.getElementById('cardStageBadge');
+    const cardCounterEl = document.getElementById('cardCounter');
+    const timelineMarkerLabelEl = document.getElementById('timelineMarkerLabel');
+    const povActorBadgeEl = document.getElementById('povActorBadge');
+    const timelineProgressFillEl = document.getElementById('timelineProgressFill');
+    const questionPromptEl = document.getElementById('questionPrompt');
+    const optionsContainerEl = document.getElementById('optionsContainer');
+
+    const explanationPlaceholderEl = document.getElementById('explanationPlaceholder');
+    const explanationContentEl = document.getElementById('explanationContent');
+    const explanationStatusTagEl = document.getElementById('explanationStatusTag');
+    const expMainTextEl = document.getElementById('expMainText');
+    const expMnemonicEl = document.getElementById('expMnemonic');
+    const expClinicalEl = document.getElementById('expClinical');
+
+    const prevQuestionBtn = document.getElementById('prevQuestionBtn');
+    const nextQuestionBtn = document.getElementById('nextQuestionBtn');
+    const resetStatsBtn = document.getElementById('resetStatsBtn');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const bookmarkBtn = document.getElementById('bookmarkBtn');
+    const bookmarkIcon = document.getElementById('bookmarkIcon');
+
+    const timelineModal = document.getElementById('timelineModal');
+    const openTimelineBtn = document.getElementById('openTimelineBtn');
+    const closeTimelineBtn = document.getElementById('closeTimelineBtn');
+
+    const LETTERS = ['A', 'B', 'C', 'D'];
+
+    function updateStatsUI() {
+      statDoneEl.textContent = stats.done;
+      statCorrectEl.textContent = stats.correct;
+      const pct = stats.done > 0 ? Math.round((stats.correct / stats.done) * 100) : 0;
+      statPercentEl.textContent = `(${pct}%)`;
+      statStreakEl.textContent = stats.streak;
+    }
+
+    function renderCard() {
+      if (activeDeck.length === 0) {
+        questionPromptEl.textContent = "No flagged cards yet! Tap the star (☆) on any card to add it to your Flagged Review deck.";
+        optionsContainerEl.innerHTML = "";
+        cardStageBadgeEl.textContent = "EMPTY DECK";
+        cardCounterEl.textContent = "Card 0 of 0";
+        prevQuestionBtn.disabled = true;
+        nextQuestionBtn.disabled = true;
+        return;
+      }
+
+      const card = activeDeck[currentCardIndex];
+      const alreadySelected = answeredMap[card.id];
+      const isAnswered = alreadySelected !== undefined;
+
+      // Update Header Badges & Timeline Bar
+      cardStageBadgeEl.textContent = card.stageBadge;
+      cardCounterEl.textContent = `Card ${currentCardIndex + 1} of ${activeDeck.length}`;
+      timelineMarkerLabelEl.textContent = card.timelineLabel;
+      povActorBadgeEl.textContent = card.povRole;
+      timelineProgressFillEl.style.width = `${card.progressPct}%`;
+      questionPromptEl.textContent = card.prompt;
+
+      // Update Bookmark Star
+      if (bookmarkedIds.has(card.id)) {
+        bookmarkIcon.textContent = '★';
+        bookmarkBtn.classList.add('text-amber-500', 'border-amber-300', 'bg-amber-50');
+      } else {
+        bookmarkIcon.textContent = '☆';
+        bookmarkBtn.classList.remove('text-amber-500', 'border-amber-300', 'bg-amber-50');
+      }
+
+      // Render Options A, B, C, D
+      optionsContainerEl.innerHTML = '';
+      card.options.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.disabled = isAnswered;
+        btn.className = 'option-btn w-full text-left rounded-xl px-3.5 py-3 sm:px-4 sm:py-3.5 flex items-center gap-3 min-h-[52px] focus:outline-none focus:ring-2 focus:ring-red-500/30';
+
+        // Apply post-answer coloring
+        if (isAnswered) {
+          if (idx === card.correctIndex) {
+            btn.classList.add('option-correct');
+          } else if (idx === alreadySelected && alreadySelected !== card.correctIndex) {
+            btn.classList.add('option-wrong');
+          } else {
+            btn.classList.add('option-dimmed');
+          }
+        }
+
+        const badge = document.createElement('span');
+        badge.className = 'option-badge w-7 h-7 rounded-lg text-xs font-extrabold flex items-center justify-center shrink-0';
+        badge.textContent = LETTERS[idx];
+
+        const label = document.createElement('span');
+        label.className = 'text-xs sm:text-[14px] font-semibold text-slate-800 leading-snug flex-1';
+        label.textContent = optText;
+
+        btn.appendChild(badge);
+        btn.appendChild(label);
+
+        // Status icon on right when answered
+        if (isAnswered && (idx === card.correctIndex || idx === alreadySelected)) {
+          const statusMark = document.createElement('span');
+          statusMark.className = 'text-sm font-black shrink-0 ml-1';
+          statusMark.textContent = idx === card.correctIndex ? '✓' : '✕';
+          btn.appendChild(statusMark);
+        }
+
+        btn.addEventListener('click', () => handleSelectOption(idx));
+        optionsContainerEl.appendChild(btn);
+      });
+
+      // Render Explanation State
+      if (isAnswered) {
+        explanationPlaceholderEl.classList.add('hidden');
+        explanationContentEl.classList.remove('hidden');
+        explanationContentEl.classList.add('animate-reveal');
+
+        const isCorrect = alreadySelected === card.correctIndex;
+        explanationStatusTagEl.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-red-100', 'text-red-700');
+        if (isCorrect) {
+          explanationStatusTagEl.textContent = '✓ Correct • High-Yield Mastery';
+          explanationStatusTagEl.classList.add('bg-emerald-100', 'text-emerald-800');
+        } else {
+          explanationStatusTagEl.textContent = `✕ Incorrect • Answer is ${LETTERS[card.correctIndex]}`;
+          explanationStatusTagEl.classList.add('bg-red-100', 'text-red-700');
+        }
+
+        expMainTextEl.textContent = card.explanation;
+        expMnemonicEl.textContent = card.mnemonic;
+        expClinicalEl.textContent = card.clinical;
+
+        // Enable Next Question button with active styling
+        nextQuestionBtn.disabled = false;
+        nextQuestionBtn.className = 'w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm transition flex items-center justify-center gap-1.5 bg-[#e11d2a] hover:bg-[#c81824] text-white shadow-sm active:scale-[0.99] cursor-pointer';
+      } else {
+        explanationPlaceholderEl.classList.remove('hidden');
+        explanationContentEl.classList.add('hidden');
+        explanationStatusTagEl.classList.add('hidden');
+
+        // Disable Next Question button matching screenshot muted gray state
+        nextQuestionBtn.disabled = true;
+        nextQuestionBtn.className = 'w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm transition flex items-center justify-center gap-1.5 bg-slate-200/80 text-slate-400 cursor-not-allowed';
+      }
+
+      prevQuestionBtn.disabled = currentCardIndex === 0;
+    }
+
+    function handleSelectOption(selectedIndex) {
+      const card = activeDeck[currentCardIndex];
+      if (!card || answeredMap[card.id] !== undefined) return;
+
+      answeredMap[card.id] = selectedIndex;
+      stats.done += 1;
+
+      if (selectedIndex === card.correctIndex) {
+        stats.correct += 1;
+        stats.streak += 1;
+      } else {
+        stats.streak = 0;
+      }
+
+      updateStatsUI();
+      renderCard();
+    }
+
+    function goToNextCard() {
+      if (activeDeck.length === 0) return;
+      if (currentCardIndex < activeDeck.length - 1) {
+        currentCardIndex += 1;
+      } else {
+        currentCardIndex = 0; // Loop back to start of deck
+      }
+      renderCard();
+    }
+
+    function goToPrevCard() {
+      if (currentCardIndex > 0) {
+        currentCardIndex -= 1;
+        renderCard();
+      }
+    }
+
+    // Filter Deck Change
+    stageFilterEl.addEventListener('change', () => {
+      const val = stageFilterEl.value;
+      if (val === 'ALL') {
+        activeDeck = [...QUESTION_BANK];
+      } else if (val === 'BOOKMARKED') {
+        activeDeck = QUESTION_BANK.filter(q => bookmarkedIds.has(q.id));
+      } else {
+        activeDeck = QUESTION_BANK.filter(q => q.category === val);
+      }
+      currentCardIndex = 0;
+      renderCard();
+    });
+
+    // Shuffle Deck
+    shuffleBtn.addEventListener('click', () => {
+      for (let i = activeDeck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [activeDeck[i], activeDeck[j]] = [activeDeck[j], activeDeck[i]];
+      }
+      currentCardIndex = 0;
+      renderCard();
+    });
+
+    // Bookmark Toggle
+    bookmarkBtn.addEventListener('click', () => {
+      if (activeDeck.length === 0) return;
+      const card = activeDeck[currentCardIndex];
+      if (bookmarkedIds.has(card.id)) {
+        bookmarkedIds.delete(card.id);
+      } else {
+        bookmarkedIds.add(card.id);
+      }
+      renderCard();
+    });
+
+    // Reset Session Stats & Answers
+    resetStatsBtn.addEventListener('click', () => {
+      answeredMap = {};
+      stats = { done: 0, correct: 0, streak: 0 };
+      currentCardIndex = 0;
+      updateStatsUI();
+      renderCard();
+    });
+
+    // Prev / Next Buttons
+    nextQuestionBtn.addEventListener('click', () => {
+      if (!nextQuestionBtn.disabled) {
+        goToNextCard();
+      }
+    });
+    prevQuestionBtn.addEventListener('click', goToPrevCard);
+
+    // Timeline Modal Controls
+    openTimelineBtn.addEventListener('click', () => {
+      timelineModal.classList.remove('hidden');
+    });
+    closeTimelineBtn.addEventListener('click', () => {
+      timelineModal.classList.add('hidden');
+    });
+    timelineModal.addEventListener('click', (e) => {
+      if (e.target === timelineModal) {
+        timelineModal.classList.add('hidden');
+      }
+    });
+
+    // Desktop Keyboard Shortcuts (A-D / 1-4 / Space / Enter / Arrows)
+    window.addEventListener('keydown', (e) => {
+      if (!timelineModal.classList.contains('hidden')) {
+        if (e.key === 'Escape') timelineModal.classList.add('hidden');
+        return;
+      }
+
+      const key = e.key.toUpperCase();
+      if (['A', '1'].includes(key)) handleSelectOption(0);
+      else if (['B', '2'].includes(key)) handleSelectOption(1);
+      else if (['C', '3'].includes(key)) handleSelectOption(2);
+      else if (['D', '4'].includes(key)) handleSelectOption(3);
+      else if ((e.key === 'Enter' || e.key === ' ') && !nextQuestionBtn.disabled) {
+        e.preventDefault();
+        goToNextCard();
+      } else if (e.key === 'ArrowRight' && !nextQuestionBtn.disabled) {
+        goToNextCard();
+      } else if (e.key === 'ArrowLeft') {
+        goToPrevCard();
+      }
+    });
+
+    // Initialize App on Load
+    window.onload = function () {
+      updateStatsUI();
+      renderCard();
+    };
+  </script>
+</body>
+</html>
