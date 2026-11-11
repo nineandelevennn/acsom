@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Embryo Ward — Nurse Catch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at 50% 35%, #2b0f1c 0%, #140812 50%, #09040a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* Arcade Card Frame matching the reference screenshot */
+        .arcade-card {
+            width: 100%;
+            max-width: 470px;
+            background: #ffffff;
+            border-radius: 26px;
+            border: 3px solid rgba(255, 255, 255, 0.92);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.75), 0 0 40px rgba(200, 30, 30, 0.18);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Top Header Red Gradient */
+        .header-bar {
+            background: linear-gradient(180deg, #cf2323 0%, #b31919 100%);
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            border-bottom: 1px solid rgba(0,0,0,0.15);
+        }
+
+        .header-pill {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 9999px;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+        .header-pill:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateY(-1px);
+        }
+        .header-pill:active {
+            transform: translateY(0px);
+        }
+
+        /* Target Concept Cream Banner */
+        .concept-banner {
+            background: #fef8e6;
+            border-left: 5px solid #c81e1e;
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin: 0 12px 10px 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            transition: transform 0.2s ease, background-color 0.25s ease;
+        }
+        .concept-banner.pulse-highlight {
+            animation: bannerPulse 0.6s ease-in-out 2;
+        }
+        @keyframes bannerPulse {
+            0%, 100% { transform: scale(1); background: #fef8e6; }
+            50% { transform: scale(1.02); background: #fde68a; }
+        }
+
+        /* Game Viewport Area */
+        .viewport-container {
+            position: relative;
+            width: 100%;
+            height: 440px;
+            background: #13151f;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+
+        /* Bottom Control Buttons matching screenshot */
+        .lane-btn {
+            flex: 1;
+            border: 2px solid #c81e1e;
+            background: #ffffff;
+            color: #c81e1e;
+            font-weight: 800;
+            font-size: 14px;
+            padding: 12px 10px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            box-shadow: 0 2px 0 rgba(200, 30, 30, 0.12);
+        }
+        .lane-btn:hover {
+            background: #fff5f5;
+        }
+        .lane-btn:active, .lane-btn.active-press {
+            background: #c81e1e;
+            color: #ffffff;
+            transform: translateY(1px);
+        }
+
+        /* CTA Red Button */
+        .cta-red-btn {
+            background: linear-gradient(180deg, #d92626 0%, #b21818 100%);
+            box-shadow: 0 4px 15px rgba(217, 38, 38, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            color: white;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            border-radius: 12px;
+            transition: all 0.15s ease;
+        }
+        .cta-red-btn:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+        }
+        .cta-red-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Custom Scrollbar for Modals */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.25);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="p-2 sm:p-4">
+
+    <!-- MAIN ARCADE CONTAINER -->
+    <div class="arcade-card">
+
+        <!-- TOP RED HEADER BAR -->
+        <div class="header-bar">
+<a href="https://nineandelevennn.github.io/acsom/generations/" id="btnHome" class="header-pill no-underline" title="Go Back">
+    <span>←</span> <span>Go Back</span>
+</a>
+
+            <div class="flex items-center gap-1.5 font-extrabold text-sm sm:text-base tracking-wide">
+                <span>🏥</span>
+                <span>NURSE CATCH</span>
+            </div>
+
+            <div class="flex items-center gap-1.5">
+                <button id="btnTopicsModal" class="header-pill" title="High-Yield Embryology Study Guide">
+                    <span>📚</span> <span>Topics</span>
+                </button>
+                <button id="btnSoundToggle" class="header-pill px-2.5" title="Toggle Sound & Voice Announcements">
+                    <span id="soundIcon">🔊</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- SUB-HEADER STATS BAR -->
+        <div class="bg-white px-4 pt-2.5 pb-2 flex items-center justify-between text-xs sm:text-sm font-bold text-slate-800">
+            <div>Score: <span id="uiScore" class="font-extrabold text-slate-950">0</span></div>
+            <div>Best: <span id="uiBest" class="font-extrabold text-slate-950">0</span> 🏆</div>
+            <div>Round: <span id="uiRound" class="font-extrabold text-indigo-700">1/5</span></div>
+            <div>Pace: <span id="uiPace" class="font-extrabold text-red-600">x1.0</span> ⚡</div>
+        </div>
+
+        <!-- ROUND TIMER PROGRESS BAR -->
+        <div class="w-full px-3 pb-2 bg-white">
+            <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                <div id="uiTimerBar" class="h-full bg-red-600 transition-all duration-100" style="width: 100%;"></div>
+            </div>
+        </div>
+
+        <!-- TARGET CONCEPT CREAM BANNER -->
+        <div id="conceptBanner" class="concept-banner">
+            <div class="flex items-center justify-between text-[11px] font-extrabold tracking-wider uppercase text-red-800 mb-0.5">
+                <span class="flex items-center gap-1">🩺 CATCH DERIVATIVES OF BED TARGET:</span>
+                <span id="uiTimerText" class="text-red-700 bg-red-100 px-2 py-0.5 rounded-full">20.0s</span>
+            </div>
+            <div id="uiTargetConcept" class="text-center font-black text-slate-900 text-lg sm:text-xl tracking-tight leading-snug">
+                Ready for Night Shift?
+            </div>
+        </div>
+
+        <!-- MAIN GAME VIEWPORT & OVERLAYS -->
+        <div class="viewport-container" id="viewportContainer">
+            <!-- HTML5 Game Canvas -->
+            <canvas id="gameCanvas"></canvas>
+
+            <!-- LIVE HUD FLOATING CONTROLS DURING GAMEPLAY -->
+            <div id="inGameHud" class="hidden absolute top-2.5 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
+                <div id="streakBadge" class="bg-slate-900/85 border border-slate-700 text-amber-300 text-[11px] font-extrabold px-2.5 py-1 rounded-full shadow">
+                    🔥 Streak: 0
+                </div>
+                <button id="btnEndShiftEarly" class="pointer-events-auto bg-slate-900/85 hover:bg-red-900/90 border border-slate-600 text-slate-200 text-[11px] font-bold px-2.5 py-1 rounded-full transition">
+                    ⏹ End Shift & Review
+                </button>
+            </div>
+
+            <!-- ROUND ANNOUNCEMENT OVERLAY (20s shift transition) -->
+            <div id="roundAnnounceOverlay" class="hidden absolute inset-0 bg-slate-950/85 backdrop-blur-sm z-20 flex flex-col items-center justify-center p-6 text-center">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 text-xs font-extrabold uppercase tracking-widest mb-2">
+                    ⚡ Shift Change — Speed Up!
+                </div>
+                <div id="announceRoundTitle" class="text-slate-300 font-bold text-sm mb-1">ROUND 2 OF 5 (20 SECONDS)</div>
+                <div class="text-white text-xs uppercase tracking-wider opacity-75 mb-1">New Hospital Bed Target:</div>
+                <div id="announceTargetName" class="text-2xl sm:text-3xl font-black text-amber-300 bg-slate-900/90 border-2 border-amber-400/60 px-5 py-3 rounded-2xl shadow-lg mb-3">
+                    3rd Pharyngeal Arch
+                </div>
+                <div id="announceTargetHint" class="text-xs text-slate-300 max-w-xs mb-4 leading-relaxed">
+                    Catch falling patients matching this origin!
+                </div>
+                <div class="text-xs font-extrabold text-red-400 animate-pulse">
+                    Get Ready...
+                </div>
+            </div>
+
+            <!-- START MENU OVERLAY (Matches Reference Screenshot closely) -->
+            <div id="startOverlay" class="absolute inset-0 bg-[#12131c]/95 backdrop-blur-sm z-20 flex flex-col justify-between p-4 sm:p-5 text-white overflow-y-auto custom-scroll">
+                <div class="flex flex-col items-center text-center my-auto">
+                    <!-- Top Edition Badge -->
+                    <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-950/70 border border-amber-600/50 text-amber-400 text-[11px] font-extrabold tracking-wider uppercase mb-2.5">
+                        <span>🧬</span> <span>HIGH-YIELD EMBRYOLOGY EDITION</span> <span>👶</span>
+                    </div>
+
+                    <!-- Main Title -->
+                    <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white mb-1.5">
+                        EMBRYOLOGY WARD RUN
+                    </h1>
+
+                    <!-- Subtitle Rules -->
+                    <p class="text-xs text-slate-300 leading-relaxed max-w-sm mb-3.5">
+                        The nurse is on night shift! Push the hospital bed to catch falling patients whose structures arise from the <span class="text-amber-300 font-bold">bed's displayed precursor</span>.
+                        <span class="block mt-1 text-[11px] text-slate-400">
+                            ✅ Correct catch: <b class="text-emerald-400">+1</b> &nbsp;|&nbsp; ❌ Wrong catch: <b class="text-rose-400">-1</b> &nbsp;|&nbsp; ⚠️ Missed match: <b class="text-amber-400">-1</b>
+                        </span>
+                    </p>
+
+                    <!-- Student Name Input -->
+                    <div class="w-full mb-2.5">
+                        <input id="playerNameInput" type="text" maxlength="18" placeholder="Enter Student Name (e.g., Alikhan)"
+                            value="Alikhan"
+                            class="w-full bg-white text-slate-900 font-extrabold text-center text-sm py-2.5 px-4 rounded-xl border-2 border-slate-300 focus:border-red-500 focus:outline-none shadow-inner" />
+                    </div>
+
+                    <!-- Subtopic Selector Box -->
+                    <div class="w-full bg-slate-900/90 border border-amber-600/40 rounded-xl p-2.5 mb-2.5 flex items-center justify-between text-left">
+                        <div class="pr-2">
+                            <div class="text-[10px] font-extrabold uppercase tracking-wider text-amber-400">
+                                SELECTED SUBTOPIC:
+                            </div>
+                            <div id="selectedTopicLabel" class="text-xs sm:text-sm font-extrabold text-white flex items-center gap-1.5 mt-0.5">
+                                <span>🧬</span> <span>All Embryology Concepts (72)</span>
+                            </div>
+                        </div>
+                        <button id="btnCycleTopic" class="bg-red-600 hover:bg-red-500 text-white font-extrabold text-[11px] px-3 py-1.5 rounded-lg shrink-0 transition shadow">
+                            CHANGE ▾
+                        </button>
+                    </div>
+
+                    <!-- Shift Length Selector -->
+                    <div class="w-full flex items-center justify-between gap-2 mb-3 text-xs">
+                        <span class="text-slate-400 font-semibold">Shift Mode (20s / round):</span>
+                        <div class="flex gap-1.5">
+                            <button data-rounds="5" class="mode-btn bg-red-600 text-white font-bold px-2.5 py-1 rounded-lg text-xs border border-red-500">5 Rounds (100s)</button>
+                            <button data-rounds="999" class="mode-btn bg-slate-800 text-slate-300 font-bold px-2.5 py-1 rounded-lg text-xs border border-slate-700">Endless Shift</button>
+                        </div>
+                    </div>
+
+                    <!-- Start Night Shift CTA -->
+                    <button id="btnStartShift" class="w-full cta-red-btn py-3 text-sm sm:text-base cursor-pointer mb-3">
+                        START NIGHT SHIFT →
+                    </button>
+
+                    <!-- Mini Competitive Leaderboard Preview -->
+                    <div class="w-full bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 text-left">
+                        <div class="flex items-center justify-between text-[11px] font-extrabold text-amber-400 uppercase tracking-wider mb-1.5">
+                            <span>🏆 Ward Leaderboard (Top Med Students)</span>
+                            <button id="btnClearBoard" class="text-[10px] text-slate-400 hover:text-red-400">Reset</button>
+                        </div>
+                        <div id="leaderboardList" class="space-y-1 text-xs max-h-24 overflow-y-auto custom-scroll">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- POST-SHIFT SUMMARY & MISTAKE REVIEW OVERLAY -->
+            <div id="gameOverOverlay" class="hidden absolute inset-0 bg-[#12131c]/95 backdrop-blur-md z-30 flex flex-col justify-between p-4 sm:p-5 text-white overflow-y-auto custom-scroll">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="px-2.5 py-0.5 rounded-full bg-red-500/20 border border-red-500/40 text-red-300 text-[11px] font-extrabold uppercase">
+                            📋 Shift Complete
+                        </span>
+                        <span id="summaryStudentName" class="text-xs font-bold text-slate-300">Dr. Alikhan</span>
+                    </div>
+
+                    <h2 class="text-xl font-black text-white mb-3 text-center">NIGHT SHIFT REPORT</h2>
+
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-3 gap-2 mb-3 text-center">
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-2">
+                            <div class="text-[10px] text-slate-400 font-bold uppercase">Final Score</div>
+                            <div id="sumScore" class="text-xl font-black text-amber-400">0</div>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-2">
+                            <div class="text-[10px] text-slate-400 font-bold uppercase">Caught ✅</div>
+                            <div id="sumCaught" class="text-xl font-black text-emerald-400">0</div>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-2">
+                            <div class="text-[10px] text-slate-400 font-bold uppercase">Errors / Missed</div>
+                            <div id="sumErrors" class="text-xl font-black text-rose-400">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Mistakes / High-Yield Review Box -->
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 mb-3">
+                        <div class="text-xs font-extrabold text-amber-300 uppercase tracking-wider mb-2 flex items-center justify-between">
+                            <span>🧠 High-Yield Mistake Log</span>
+                            <span id="mistakeCountBadge" class="text-[11px] bg-slate-800 px-2 py-0.5 rounded text-slate-300">0 items</span>
+                        </div>
+                        <div id="mistakeLogList" class="space-y-1.5 max-h-44 overflow-y-auto custom-scroll text-xs">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 mt-2">
+                    <button id="btnBackToMenu" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl text-xs transition">
+                        ← Menu
+                    </button>
+                    <button id="btnPlayAgain" class="w-2/3 cta-red-btn py-2.5 text-xs sm:text-sm cursor-pointer">
+                        🔄 PLAY NEXT SHIFT
+                    </button>
+                </div>
+            </div>
+
+            <!-- STUDY GUIDE / TOPICS MODAL -->
+            <div id="studyModal" class="hidden absolute inset-0 bg-[#0f111a]/98 z-40 flex flex-col p-4 text-white">
+                <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-800">
+                    <div>
+                        <h3 class="font-black text-sm sm:text-base text-amber-400 flex items-center gap-1.5">
+                            <span>📚</span> <span>EMBRYOLOGY STUDY SHEET</span>
+                        </h3>
+                        <p class="text-[11px] text-slate-400">Review every precursor & its derivatives before your shift</p>
+                    </div>
+                    <button id="btnCloseStudy" class="bg-slate-800 hover:bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">
+                        ✕ Close
+                    </button>
+                </div>
+                <div id="studySheetContent" class="flex-1 overflow-y-auto custom-scroll space-y-2.5 pr-1">
+                    <!-- Populated dynamically from the medical database -->
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM LANE / BED MOVEMENT BUTTONS (Matches Reference Screenshot) -->
+        <div class="bg-white p-3 flex items-center gap-3 border-t border-slate-200">
+            <button id="btnLeft" class="lane-btn" aria-label="Move Nurse Bed Left">
+                <span>←</span> <span>Move Left</span>
+            </button>
+            <button id="btnRight" class="lane-btn" aria-label="Move Nurse Bed Right">
+                <span>Move Right</span> <span>→</span>
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        /********************************************************************
+         * 1. HIGH-YIELD EMBRYOLOGY DATABASE (Germ Layers & Pharyngeal Arches)
+         ********************************************************************/
+        const EMBRYO_DATABASE = [
+            // ================= GERM LAYERS =================
+            {
+                id: "surface_ectoderm",
+                category: "GERM_LAYERS",
+                name: "Surface Ectoderm",
+                bedLabel: "SURFACE ECTODERM",
+                hint: "Think external structures, lens/cornea, anterior pituitary (Rathke), parotid, inner ear.",
+                derivatives: [
+                    "Epidermis & Hair/Nails",
+                    "Adenohypophysis (Rathke)",
+                    "Lens & Cornea",
+                    "Parotid Gland",
+                    "Inner Ear (Otic Placode)",
+                    "Tooth Enamel (Ameloblasts)",
+                    "Mammary & Sweat Glands",
+                    "Lacrimal Gland"
+                ]
+            },
+            {
+                id: "neural_tube",
+                category: "GERM_LAYERS",
+                name: "Neural Tube (Neuroectoderm)",
+                bedLabel: "NEURAL TUBE",
+                hint: "Think CNS parenchyma, retina, optic nerve, posterior pituitary, pineal gland.",
+                derivatives: [
+                    "Brain & Spinal Cord",
+                    "Retina & Optic Nerve",
+                    "Neurohypophysis",
+                    "Pineal Gland",
+                    "Astrocytes & Oligodendro.",
+                    "Ependymal Cells",
+                    "Spinal Motor Neurons"
+                ]
+            },
+            {
+                id: "neural_crest",
+                category: "GERM_LAYERS",
+                name: "Neural Crest Cells",
+                bedLabel: "NEURAL CREST",
+                hint: "Think PNS ganglia, Schwann cells, adrenal medulla, melanocytes, aorticopulmonary septum.",
+                derivatives: [
+                    "DRG & Autonomic Ganglia",
+                    "Schwann Cells",
+                    "Adrenal Medulla",
+                    "Melanocytes",
+                    "Aorticopulmonary Septum",
+                    "Odontoblasts (Dentin)",
+                    "Parafollicular C Cells",
+                    "Pia & Arachnoid Mater",
+                    "Enteric Nervous Plexus"
+                ]
+            },
+            {
+                id: "paraxial_mesoderm",
+                category: "GERM_LAYERS",
+                name: "Paraxial Mesoderm (Somites)",
+                bedLabel: "PARAXIAL MESODERM",
+                hint: "Think axial skeleton, vertebrae, skeletal muscles of trunk, and dermis.",
+                derivatives: [
+                    "Axial Skeleton / Vertebrae",
+                    "Trunk Skeletal Muscle",
+                    "Dermis of Dorsal Skin",
+                    "Tendons & Cartilage",
+                    "Intervertebral Discs (Annulus)"
+                ]
+            },
+            {
+                id: "intermediate_mesoderm",
+                category: "GERM_LAYERS",
+                name: "Intermediate Mesoderm",
+                bedLabel: "INTERMEDIATE MESO.",
+                hint: "Think urogenital ridge: kidneys, ureters, gonads, adrenal cortex, Wolffian/Müllerian ducts.",
+                derivatives: [
+                    "Kidneys (Metanephros)",
+                    "Ureters & Renal Pelvis",
+                    "Gonads (Testes / Ovaries)",
+                    "Adrenal Cortex",
+                    "Mesonephric (Wolffian) Duct",
+                    "Paramesonephric Duct"
+                ]
+            },
+            {
+                id: "lateral_plate_mesoderm",
+                category: "GERM_LAYERS",
+                name: "Lateral Plate Mesoderm",
+                bedLabel: "LATERAL PLATE MESO.",
+                hint: "Think heart, blood vessels, spleen, gut smooth muscle, limb bones, serous membranes.",
+                derivatives: [
+                    "Heart & Blood Vessels",
+                    "Spleen & Lymphatics",
+                    "Gut Wall Smooth Muscle",
+                    "Limb Appendicular Bones",
+                    "Pericardium / Pleura / Perit.",
+                    "Blood & Microglia"
+                ]
+            },
+            {
+                id: "endoderm",
+                category: "GERM_LAYERS",
+                name: "Endoderm",
+                bedLabel: "ENDODERM",
+                hint: "Think GI/Respiratory mucosal lining, liver, pancreas, thyroid follicles, thymus, bladder.",
+                derivatives: [
+                    "GI Tract Epithelium",
+                    "Liver & Gallbladder",
+                    "Pancreas Parenchyma",
+                    "Lungs & Tracheal Lining",
+                    "Thyroid Follicular Cells",
+                    "Thymus & Parathyroids",
+                    "Urinary Bladder Urothelium",
+                    "Auditory Tube & Middle Ear"
+                ]
+            },
+
+            // ================= PHARYNGEAL ARCHES =================
+            {
+                id: "arch_1",
+                category: "PHARYNGEAL_ARCHES",
+                name: "1st Pharyngeal Arch",
+                bedLabel: "1st ARCH (CN V2/V3)",
+                hint: "M-words: Maxillary a., Mastication muscles, Malleus & Incus, Mandible, Tensor tympani.",
+                derivatives: [
+                    "Maxillary Artery",
+                    "Muscles of Mastication",
+                    "Malleus & Incus",
+                    "Mandible & Maxilla",
+                    "Tensor Tympani",
+                    "Tensor Veli Palatini",
+                    "Mylohyoid & Ant. Digastric",
+                    "Sphenomandibular Ligament"
+                ]
+            },
+            {
+                id: "arch_2",
+                category: "PHARYNGEAL_ARCHES",
+                name: "2nd Pharyngeal Arch",
+                bedLabel: "2nd ARCH (CN VII)",
+                hint: "S-words: Stapes, Styloid process, Stapedius, Stylohyoid, Lesser cornu, Facial expression.",
+                derivatives: [
+                    "Stapes & Styloid Process",
+                    "Lesser Cornu of Hyoid",
+                    "Facial Expression Muscles",
+                    "Stapedius Muscle",
+                    "Stylohyoid & Post. Digastric",
+                    "Platysma & Auricular mm.",
+                    "Stylohyoid Ligament",
+                    "Stapedial / Hyoid Artery"
+                ]
+            },
+            {
+                id: "arch_3",
+                category: "PHARYNGEAL_ARCHES",
+                name: "3rd Pharyngeal Arch",
+                bedLabel: "3rd ARCH (CN IX)",
+                hint: "Think Common/Internal Carotid artery, Stylopharyngeus muscle, Greater cornu of hyoid.",
+                derivatives: [
+                    "Common Carotid Artery",
+                    "Internal Carotid Artery",
+                    "Stylopharyngeus Muscle",
+                    "Greater Cornu of Hyoid",
+                    "Inferior Body of Hyoid",
+                    "Glossopharyngeal (CN IX)"
+                ]
+            },
+            {
+                id: "arch_4",
+                category: "PHARYNGEAL_ARCHES",
+                name: "4th Pharyngeal Arch",
+                bedLabel: "4th ARCH (CN X Sup.)",
+                hint: "Think Aortic arch (L), Right subclavian (R), Cricothyroid, Pharyngeal constrictors, Levator veli.",
+                derivatives: [
+                    "Aortic Arch (Left 4th)",
+                    "Right Subclavian Artery",
+                    "Cricothyroid Muscle",
+                    "Pharyngeal Constrictors",
+                    "Levator Veli Palatini",
+                    "Thyroid & Epiglottic Cart.",
+                    "Superior Laryngeal Nerve"
+                ]
+            },
+            {
+                id: "arch_6",
+                category: "PHARYNGEAL_ARCHES",
+                name: "6th Pharyngeal Arch",
+                bedLabel: "6th ARCH (CN X Rec.)",
+                hint: "Think Pulmonary arteries, Ductus arteriosus, Intrinsic laryngeal muscles (except cricothyroid).",
+                derivatives: [
+                    "Pulmonary Arteries",
+                    "Ductus Arteriosus",
+                    "Intrinsic Laryngeal mm.",
+                    "Arytenoid & Cricoid Cart.",
+                    "Recurrent Laryngeal Nerve",
+                    "Vocalis & Thyroarytenoid"
+                ]
+            }
+        ];
+
+        // Subtopic filter presets
+        const SUBTOPIC_FILTERS = [
+            { key: "ALL", label: "🧬 All Embryology Concepts" },
+            { key: "PHARYNGEAL_ARCHES", label: "🦴 Pharyngeal Arches Only (1st–6th)" },
+            { key: "GERM_LAYERS", label: "🧫 Germ Layers Only (Ecto/Meso/Endo)" }
+        ];
+
+        /********************************************************************
+         * 2. SOUND & VOICE SYNTHESIS ENGINE (Web Audio API + SpeechSynthesis)
+         ********************************************************************/
+        class SoundManager {
+            constructor() {
+                this.enabled = true;
+                this.ctx = null;
+            }
+
+            initContext() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) this.ctx = new AudioCtx();
+                }
+                if (this.ctx && this.ctx.state === "suspended") {
+                    this.ctx.resume();
+                }
+            }
+
+            playCatchSuccess(streak = 1) {
+                if (!this.enabled) return;
+                this.initContext();
+                if (!this.ctx) return;
+
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = "triangle";
+
+                const baseFreq = 520 + Math.min(streak * 35, 280);
+                osc.frequency.setValueAtTime(baseFreq, now);
+                osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.45, now + 0.14);
+
+                gain.gain.setValueAtTime(0.16, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.19);
+            }
+
+            playPenaltyBuzz() {
+                if (!this.enabled) return;
+                this.initContext();
+                if (!this.ctx) return;
+
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = "sawtooth";
+
+                osc.frequency.setValueAtTime(190, now);
+                osc.frequency.linearRampToValueAtTime(115, now + 0.22);
+
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+
+            playShiftChangeFanfare() {
+                if (!this.enabled) return;
+                this.initContext();
+                if (!this.ctx) return;
+
+                const notes = [440, 554.37, 659.25, 880];
+                notes.forEach((freq, idx) => {
+                    const now = this.ctx.currentTime + idx * 0.07;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = "sine";
+                    osc.frequency.setValueAtTime(freq, now);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.19);
+                });
+            }
+
+            announceTargetVoice(conceptName) {
+                if (!this.enabled || !("speechSynthesis" in window)) return;
+                try {
+                    window.speechSynthesis.cancel();
+                    const utter = new SpeechSynthesisUtterance(`Target: ${conceptName}`);
+                    utter.rate = 1.08;
+                    utter.pitch = 1.02;
+                    utter.volume = 0.85;
+                    window.speechSynthesis.speak(utter);
+                } catch (e) {
+                    // Ignore speech errors if blocked by browser policy
+                }
+            }
+        }
+
+        const soundFX = new SoundManager();
+
+        /********************************************************************
+         * 3. GAME STATE & LEADERBOARD STORAGE
+         ********************************************************************/
+        const STORAGE_KEY_BOARD = "embryo_ward_leaderboard_v1";
+        const STORAGE_KEY_NAME = "embryo_ward_student_name_v1";
+
+        let filterIndex = 0;
+        let maxRoundsPerShift = 5; // 5 rounds (100s) or 999 (Endless)
+
+        const state = {
+            mode: "MENU", // MENU | ANNOUNCE | PLAYING | GAMEOVER
+            score: 0,
+            bestScore: 0,
+            round: 1,
+            maxRounds: 5,
+            roundTimeRemaining: 20.0,
+            paceMultiplier: 1.0,
+            streak: 0,
+            caughtCount: 0,
+            errorCount: 0,
+            mistakes: [], // { structure, actualPrecursor, targetAtTime, reason }
+            currentTarget: null,
+            usedTargetIds: [],
+            patients: [],
+            popups: [],
+            spawnTimer: 0,
+            spawnInterval: 1.35, // seconds between patients
+            bed: {
+                x: 220,
+                y: 375,
+                width: 146,
+                height: 46,
+                vx: 0,
+                speed: 370
+            },
+            keys: { left: false, right: false },
+            pointerActive: false
+        };
+
+        // Load saved student name & leaderboard
+        function loadLeaderboard() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY_BOARD);
+                if (raw) return JSON.parse(raw);
+            } catch (e) {}
+            // Default competitive entries
+            return [
+                { name: "Alikhan", score: 24, topic: "All" },
+                { name: "Amina M.", score: 19, topic: "Arches" },
+                { name: "timur_md", score: 15, topic: "All" }
+            ];
+        }
+
+        function saveScoreToLeaderboard(name, score, topicKey) {
+            const cleanName = (name || "Med Student").trim().slice(0, 18) || "Med Student";
+            const board = loadLeaderboard();
+            board.push({
+                name: cleanName,
+                score: score,
+                topic: topicKey === "PHARYNGEAL_ARCHES" ? "Arches" : topicKey === "GERM_LAYERS" ? "Germ" : "All"
+            });
+            board.sort((a, b) => b.score - a.score);
+            const topBoard = board.slice(0, 8);
+            try {
+                localStorage.setItem(STORAGE_KEY_BOARD, JSON.stringify(topBoard));
+                localStorage.setItem(STORAGE_KEY_NAME, cleanName);
+            } catch (e) {}
+            renderLeaderboardUI();
+        }
+
+        function renderLeaderboardUI() {
+            const board = loadLeaderboard();
+            const best = board.length > 0 ? Math.max(board[0].score, state.bestScore) : state.bestScore;
+            state.bestScore = best;
+            document.getElementById("uiBest").textContent = best;
+
+            const container = document.getElementById("leaderboardList");
+            if (!board.length) {
+                container.innerHTML = `<div class="text-slate-500 italic">No shifts recorded yet. Be #1!</div>`;
+                return;
+            }
+            container.innerHTML = board.map((entry, idx) => {
+                const medal = idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `#${idx + 1}`;
+                return `
+                    <div class="flex items-center justify-between bg-slate-950/60 px-2.5 py-1 rounded-lg border border-slate-800/80">
+                        <div class="flex items-center gap-2 font-bold text-slate-200">
+                            <span>${medal}</span>
+                            <span>${escapeHtml(entry.name)}</span>
+                            <span class="text-[10px] text-slate-400 font-normal">(${entry.topic})</span>
+                        </div>
+                        <div class="font-black text-amber-400">${entry.score} pts</div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, s => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[s]));
+        }
+
+        /********************************************************************
+         * 4. UI REFERENCES & TOPIC POOL SELECTION
+         ********************************************************************/
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            state.bed.y = canvas.height - 62;
+            state.bed.x = Math.min(Math.max(state.bed.x, state.bed.width / 2 + 8), canvas.width - state.bed.width / 2 - 8);
+        }
+        window.addEventListener("resize", resizeCanvas);
+
+        function getActiveConceptPool() {
+            const filterKey = SUBTOPIC_FILTERS[filterIndex].key;
+            if (filterKey === "ALL") return EMBRYO_DATABASE;
+            return EMBRYO_DATABASE.filter(c => c.category === filterKey);
+        }
+
+        function updateSubtopicButtonLabel() {
+            const pool = getActiveConceptPool();
+            const totalDerivatives = pool.reduce((acc, c) => acc + c.derivatives.length, 0);
+            const currentFilter = SUBTOPIC_FILTERS[filterIndex];
+            document.getElementById("selectedTopicLabel").innerHTML = `${currentFilter.label} (${totalDerivatives})`;
+        }
+
+        /********************************************************************
+         * 5. ROUND MANAGEMENT & PATIENT SPAWNING LOGIC
+         ********************************************************************/
+        function pickNextTargetConcept() {
+            const pool = getActiveConceptPool();
+            let available = pool.filter(c => !state.usedTargetIds.includes(c.id));
+            if (available.length === 0) {
+                state.usedTargetIds = [];
+                available = pool;
+            }
+            const chosen = available[Math.floor(Math.random() * available.length)];
+            state.usedTargetIds.push(chosen.id);
+            return chosen;
+        }
+
+        function startNewGameShift() {
+            soundFX.initContext();
+            const studentName = document.getElementById("playerNameInput").value.trim() || "Alikhan";
+            try { localStorage.setItem(STORAGE_KEY_NAME, studentName); } catch (e) {}
+
+            state.score = 0;
+            state.round = 1;
+            state.maxRounds = maxRoundsPerShift;
+            state.paceMultiplier = 1.0;
+            state.streak = 0;
+            state.caughtCount = 0;
+            state.errorCount = 0;
+            state.mistakes = [];
+            state.usedTargetIds = [];
+            state.patients = [];
+            state.popups = [];
+
+            resizeCanvas();
+            state.bed.x = canvas.width / 2;
+
+            document.getElementById("startOverlay").classList.add("hidden");
+            document.getElementById("gameOverOverlay").classList.add("hidden");
+            document.getElementById("inGameHud").classList.remove("hidden");
+
+            triggerRoundTransition(1);
+        }
+
+        function triggerRoundTransition(roundNumber) {
+            state.round = roundNumber;
+            state.roundTimeRemaining = 20.0;
+            // Pace increases by +0.18x each round
+            state.paceMultiplier = +(1.0 + (roundNumber - 1) * 0.18).toFixed(2);
+            state.spawnInterval = Math.max(0.68, 1.35 - (roundNumber - 1) * 0.11);
+            state.patients = []; // Clear sky for the new target announcement
+
+            state.currentTarget = pickNextTargetConcept();
+            updateTopStatsHUD();
+
+            // Update Top Cream Banner
+            document.getElementById("uiTargetConcept").textContent = state.currentTarget.name;
+            const banner = document.getElementById("conceptBanner");
+            banner.classList.remove("pulse-highlight");
+            void banner.offsetWidth;
+            banner.classList.add("pulse-highlight");
+
+            // Show 2.3-second Dramatic Round Announcement
+            state.mode = "ANNOUNCE";
+            const roundLabel = state.maxRounds > 100
+                ? `ROUND ${state.round} (20 SECONDS)`
+                : `ROUND ${state.round} OF ${state.maxRounds} (20 SECONDS)`;
+            document.getElementById("announceRoundTitle").textContent = roundLabel;
+            document.getElementById("announceTargetName").textContent = state.currentTarget.name;
+            document.getElementById("announceTargetHint").textContent = state.currentTarget.hint;
+            document.getElementById("roundAnnounceOverlay").classList.remove("hidden");
+
+            soundFX.playShiftChangeFanfare();
+            soundFX.announceTargetVoice(state.currentTarget.name);
+
+            setTimeout(() => {
+                if (state.mode === "ANNOUNCE") {
+                    document.getElementById("roundAnnounceOverlay").classList.add("hidden");
+                    state.mode = "PLAYING";
+                    state.spawnTimer = 0.25; // Spawn first patient quickly
+                }
+            }, 2250);
+        }
+
+        function spawnFallingPatient() {
+            if (!state.currentTarget) return;
+            const pool = getActiveConceptPool();
+
+            // ~48% chance of spawning a MATCHING patient for the bed target, ~52% distractor
+            // Also prevent too many consecutive distractors
+            const forceMatch = state.patients.length > 0 && state.patients.every(p => !p.isMatch);
+            const isMatch = forceMatch || Math.random() < 0.48;
+
+            let chosenConcept = state.currentTarget;
+            if (!isMatch) {
+                const distractors = pool.filter(c => c.id !== state.currentTarget.id);
+                chosenConcept = distractors[Math.floor(Math.random() * distractors.length)];
+            }
+
+            const structureText = chosenConcept.derivatives[
+                Math.floor(Math.random() * chosenConcept.derivatives.length)
+            ];
+
+            // Avoid spawning right on top of the previous patient's X position
+            const cardWidth = 148;
+            const margin = cardWidth / 2 + 12;
+            let xPos = margin + Math.random() * (canvas.width - margin * 2);
+            if (state.patients.length > 0) {
+                const lastP = state.patients[state.patients.length - 1];
+                if (Math.abs(xPos - lastP.x) < 95) {
+                    xPos = (xPos + canvas.width / 2) % (canvas.width - margin * 2) + margin;
+                }
+            }
+
+            // Patient visual avatar colors (scrubs/gown colors)
+            const gownColors = ["#38bdf8", "#a78bfa", "#34d399", "#fbbf24", "#f472b6", "#60a5fa"];
+            const gownColor = gownColors[Math.floor(Math.random() * gownColors.length)];
+
+            const baseSpeed = 92 + Math.random() * 24;
+            state.patients.push({
+                x: xPos,
+                y: -42,
+                width: cardWidth,
+                height: 54,
+                vy: baseSpeed * state.paceMultiplier,
+                structure: structureText,
+                precursorName: chosenConcept.name,
+                precursorBedLabel: chosenConcept.bedLabel,
+                isMatch: chosenConcept.id === state.currentTarget.id,
+                gownColor: gownColor,
+                wobblePhase: Math.random() * Math.PI * 2
+            });
+        }
+
+        function addFloatingPopup(x, y, text, subtext, color) {
+            state.popups.push({
+                x: Math.min(Math.max(x, 85), canvas.width - 85),
+                y: y,
+                text: text,
+                subtext: subtext || "",
+                color: color,
+                alpha: 1.0,
+                vy: -42
+            });
+        }
+
+        /********************************************************************
+         * 6. SCORING & MISTAKE LOGGING (STRICT +1 / -1 RULES)
+         ********************************************************************/
+        function handlePatientCaught(patient) {
+            if (patient.isMatch) {
+                // +1 Score for catching matching patient
+                state.score += 1;
+                state.caughtCount += 1;
+                state.streak += 1;
+                soundFX.playCatchSuccess(state.streak);
+                addFloatingPopup(
+                    patient.x,
+                    state.bed.y - 28,
+                    "+1 Correct Catch!",
+                    patient.structure,
+                    "#34d399"
+                );
+            } else {
+                // -1 Score for catching wrong patient
+                state.score -= 1;
+                state.errorCount += 1;
+                state.streak = 0;
+                soundFX.playPenaltyBuzz();
+                addFloatingPopup(
+                    patient.x,
+                    state.bed.y - 28,
+                    "-1 Wrong Patient!",
+                    `From: ${patient.precursorBedLabel}`,
+                    "#fb7185"
+                );
+                state.mistakes.push({
+                    structure: patient.structure,
+                    actualPrecursor: patient.precursorName,
+                    targetAtTime: state.currentTarget.name,
+                    reason: "Caught Wrong Derivative"
+                });
+            }
+            updateTopStatsHUD();
+        }
+
+        function handlePatientHitFloor(patient) {
+            if (patient.isMatch) {
+                // -1 Score if a matching patient was NOT caught
+                state.score -= 1;
+                state.errorCount += 1;
+                state.streak = 0;
+                soundFX.playPenaltyBuzz();
+                addFloatingPopup(
+                    patient.x,
+                    canvas.height - 36,
+                    "-1 Missed Target!",
+                    `${patient.structure} (${state.currentTarget.bedLabel})`,
+                    "#fbbf24"
+                );
+                state.mistakes.push({
+                    structure: patient.structure,
+                    actualPrecursor: patient.precursorName,
+                    targetAtTime: state.currentTarget.name,
+                    reason: "Missed Matching Patient"
+                });
+                updateTopStatsHUD();
+            } else {
+                // Non-matching patient safely avoided — brief subtle checkmark
+                addFloatingPopup(
+                    patient.x,
+                    canvas.height - 24,
+                    "✓ Dodged",
+                    "",
+                    "#64748b"
+                );
+            }
+        }
+
+        function updateTopStatsHUD() {
+            document.getElementById("uiScore").textContent = state.score;
+            if (state.score > state.bestScore) {
+                state.bestScore = state.score;
+                document.getElementById("uiBest").textContent = state.bestScore;
+            }
+            const roundLabel = state.maxRounds > 100 ? `${state.round}` : `${state.round}/${state.maxRounds}`;
+            document.getElementById("uiRound").textContent = roundLabel;
+            document.getElementById("uiPace").textContent = `x${state.paceMultiplier.toFixed(1)}`;
+            document.getElementById("streakBadge").textContent = `🔥 Streak: ${state.streak}`;
+        }
+
+        function finishNightShift() {
+            state.mode = "GAMEOVER";
+            document.getElementById("inGameHud").classList.add("hidden");
+            document.getElementById("roundAnnounceOverlay").classList.add("hidden");
+
+            const studentName = document.getElementById("playerNameInput").value.trim() || "Alikhan";
+            const filterKey = SUBTOPIC_FILTERS[filterIndex].key;
+            saveScoreToLeaderboard(studentName, state.score, filterKey);
+
+            // Populate Summary Modal
+            document.getElementById("summaryStudentName").textContent = `Student: ${studentName}`;
+            document.getElementById("sumScore").textContent = state.score;
+            document.getElementById("sumCaught").textContent = state.caughtCount;
+            document.getElementById("sumErrors").textContent = state.errorCount;
+            document.getElementById("mistakeCountBadge").textContent = `${state.mistakes.length} errors`;
+
+            const logContainer = document.getElementById("mistakeLogList");
+            if (state.mistakes.length === 0) {
+                logContainer.innerHTML = `
+                    <div class="text-emerald-400 font-bold text-center py-4">
+                        🌟 Flawless Shift! Zero embryological mistakes made.
+                    </div>
+                `;
+            } else {
+                logContainer.innerHTML = state.mistakes.map(m => `
+                    <div class="bg-slate-950/80 border border-slate-800 rounded-lg p-2 flex flex-col gap-0.5">
+                        <div class="flex items-center justify-between">
+                            <span class="font-extrabold text-white">${escapeHtml(m.structure)}</span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded font-bold ${
+                                m.reason.includes("Missed") ? "bg-amber-500/20 text-amber-300" : "bg-rose-500/20 text-rose-300"
+                            }">${escapeHtml(m.reason)}</span>
+                        </div>
+                        <div class="text-[11px] text-slate-300">
+                            Arises from: <strong class="text-emerald-400">${escapeHtml(m.actualPrecursor)}</strong>
+                        </div>
+                    </div>
+                `).join("");
+            }
+
+            document.getElementById("gameOverOverlay").classList.remove("hidden");
+        }
+
+        /********************************************************************
+         * 7. MAIN UPDATE & RENDERING LOOP
+         ********************************************************************/
+        let lastFrameTime = performance.now();
+
+        function gameLoop(now) {
+            const dt = Math.min((now - lastFrameTime) / 1000, 0.1);
+            lastFrameTime = now;
+
+            updateGame(dt);
+            renderGame();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function updateGame(dt) {
+            // Update Bed horizontal position from keys/buttons
+            let moveDir = 0;
+            if (state.keys.left) moveDir -= 1;
+            if (state.keys.right) moveDir += 1;
+
+            if (moveDir !== 0) {
+                state.bed.x += moveDir * state.bed.speed * dt;
+            }
+            const halfBed = state.bed.width / 2 + 8;
+            state.bed.x = Math.min(Math.max(state.bed.x, halfBed), canvas.width - halfBed);
+
+            // Update floating popups even during transitions
+            for (let i = state.popups.length - 1; i >= 0; i--) {
+                const pop = state.popups[i];
+                pop.y += pop.vy * dt;
+                pop.alpha -= dt * 0.85;
+                if (pop.alpha <= 0) state.popups.splice(i, 1);
+            }
+
+            if (state.mode !== "PLAYING") return;
+
+            // Update 20-second Round Countdown
+            state.roundTimeRemaining -= dt;
+            const clampedTime = Math.max(0, state.roundTimeRemaining);
+            document.getElementById("uiTimerText").textContent = `${clampedTime.toFixed(1)}s`;
+            document.getElementById("uiTimerBar").style.width = `${(clampedTime / 20.0) * 100}%`;
+
+            if (state.roundTimeRemaining <= 0) {
+                if (state.round >= state.maxRounds) {
+                    finishNightShift();
+                } else {
+                    triggerRoundTransition(state.round + 1);
+                }
+                return;
+            }
+
+            // Spawn falling patients
+            state.spawnTimer -= dt;
+            if (state.spawnTimer <= 0) {
+                spawnFallingPatient();
+                state.spawnTimer = state.spawnInterval;
+            }
+
+            // Update falling patients & check collision with Nurse's Hospital Bed
+            const bedTop = state.bed.y - state.bed.height / 2;
+            const bedBottom = state.bed.y + state.bed.height / 2;
+            const bedLeft = state.bed.x - state.bed.width / 2;
+            const bedRight = state.bed.x + state.bed.width / 2;
+
+            for (let i = state.patients.length - 1; i >= 0; i--) {
+                const p = state.patients[i];
+                p.y += p.vy * dt;
+                p.wobblePhase += dt * 4;
+
+                const pBottom = p.y + p.height / 2;
+                const pTop = p.y - p.height / 2;
+                const pLeft = p.x - p.width / 2;
+                const pRight = p.x + p.width / 2;
+
+                // Check AABB collision with Hospital Bed mattress
+                const horizontalOverlap = pRight > bedLeft + 8 && pLeft < bedRight - 8;
+                const verticalOverlap = pBottom >= bedTop + 4 && pTop <= bedBottom;
+
+                if (horizontalOverlap && verticalOverlap) {
+                    handlePatientCaught(p);
+                    state.patients.splice(i, 1);
+                    continue;
+                }
+
+                // Check if patient fell past the bed onto the ward floor
+                if (pTop > canvas.height - 10) {
+                    handlePatientHitFloor(p);
+                    state.patients.splice(i, 1);
+                }
+            }
+        }
+
+        function renderGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Draw Night-Shift Hospital Ward Backdrop
+            drawHospitalBackdrop();
+
+            // 2. Draw Falling Patients
+            for (const p of state.patients) {
+                drawFallingPatient(p);
+            }
+
+            // 3. Draw Nurse & Hospital Bed at Bottom
+            drawNurseAndBed();
+
+            // 4. Draw Floating Score Popups
+            for (const pop of state.popups) {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, pop.alpha);
+                ctx.textAlign = "center";
+
+                // Pill background for readability
+                ctx.font = "800 13px Inter, sans-serif";
+                const mainW = ctx.measureText(pop.text).width;
+                ctx.font = "600 11px Inter, sans-serif";
+                const subW = pop.subtext ? ctx.measureText(pop.subtext).width : 0;
+                const boxW = Math.max(mainW, subW) + 20;
+                const boxH = pop.subtext ? 38 : 24;
+
+                ctx.fillStyle = "rgba(15, 23, 42, 0.92)";
+                ctx.strokeStyle = pop.color;
+                ctx.lineWidth = 1.5;
+                roundRect(ctx, pop.x - boxW / 2, pop.y - boxH / 2, boxW, boxH, 8);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = pop.color;
+                ctx.font = "800 12px Inter, sans-serif";
+                ctx.fillText(pop.text, pop.x, pop.y - (pop.subtext ? 3 : -4));
+
+                if (pop.subtext) {
+                    ctx.fillStyle = "#e2e8f0";
+                    ctx.font = "600 10px Inter, sans-serif";
+                    ctx.fillText(pop.subtext, pop.x, pop.y + 11);
+                }
+                ctx.restore();
+            }
+        }
+
+        function drawHospitalBackdrop() {
+            // Subtle vertical ward lanes
+            ctx.save();
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.035)";
+            ctx.lineWidth = 1;
+            const cols = 4;
+            for (let i = 1; i < cols; i++) {
+                const x = (canvas.width / cols) * i;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+
+            // Subtle ECG / Hospital monitor grid lines
+            for (let y = 50; y < canvas.height; y += 60) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+
+            // Ward floor line
+            ctx.fillStyle = "#1e2233";
+            ctx.fillRect(0, canvas.height - 16, canvas.width, 16);
+            ctx.strokeStyle = "rgba(200, 30, 30, 0.45)";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height - 16);
+            ctx.lineTo(canvas.width, canvas.height - 16);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawFallingPatient(p) {
+            ctx.save();
+            const wobbleX = Math.sin(p.wobblePhase) * 2.2;
+            const cx = p.x + wobbleX;
+            const cy = p.y;
+
+            // Patient Character Head & Scrubs peeking above the stretcher card
+            ctx.fillStyle = p.gownColor;
+            ctx.beginPath();
+            ctx.arc(cx, cy - p.height / 2 - 3, 11, Math.PI, 0);
+            ctx.fill();
+
+            // Cute Patient Head
+            ctx.fillStyle = "#fde68a";
+            ctx.beginPath();
+            ctx.arc(cx, cy - p.height / 2 - 11, 8.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = "#1e293b";
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Bandage / Medical cap detail on patient head
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(cx - 6, cy - p.height / 2 - 17, 12, 4);
+
+            // Patient Stretcher Label Badge
+            const cardX = cx - p.width / 2;
+            const cardY = cy - p.height / 2;
+
+            ctx.fillStyle = "#ffffff";
+            ctx.strokeStyle = "#cbd5e1";
+            ctx.lineWidth = 2;
+            roundRect(ctx, cardX, cardY, p.width, p.height - 8, 12);
+            ctx.fill();
+            ctx.stroke();
+
+            // Top colored medical chart strip on patient card
+            ctx.fillStyle = p.gownColor;
+            roundRect(ctx, cardX + 3, cardY + 3, p.width - 6, 8, 5);
+            ctx.fill();
+
+            // Anatomical Structure Text on Patient Card
+            ctx.fillStyle = "#0f172a";
+            ctx.textAlign = "center";
+            ctx.font = "800 12px Inter, sans-serif";
+
+            // Auto-fit text if long
+            let label = p.structure;
+            if (ctx.measureText(label).width > p.width - 14) {
+                ctx.font = "800 10.5px Inter, sans-serif";
+            }
+            ctx.fillText(label, cx, cy + 5);
+
+            ctx.restore();
+        }
+
+        function drawNurseAndBed() {
+            const bx = state.bed.x;
+            const by = state.bed.y;
+            const bw = state.bed.width;
+            const bh = state.bed.height;
+
+            ctx.save();
+
+            // 1. Nurse Character standing right behind/side of the hospital bed
+            const nurseX = bx - bw / 2 + 22;
+            const nurseY = by - bh / 2 - 12;
+
+            // Nurse Scrubs Body
+            ctx.fillStyle = "#e11d48";
+            ctx.beginPath();
+            ctx.arc(nurseX, nurseY + 12, 12, Math.PI, 0);
+            ctx.fill();
+
+            // Nurse Head
+            ctx.fillStyle = "#fed7aa";
+            ctx.beginPath();
+            ctx.arc(nurseX, nurseY - 1, 9, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Nurse Cap with Red Cross
+            ctx.fillStyle = "#ffffff";
+            roundRect(ctx, nurseX - 8, nurseY - 14, 16, 7, 3);
+            ctx.fill();
+            ctx.fillStyle = "#dc2626";
+            ctx.fillRect(nurseX - 1, nurseY - 13, 2, 5);
+            ctx.fillRect(nurseX - 2.5, nurseY - 11.5, 5, 2);
+
+            // 2. Hospital Bed Frame & Wheels
+            const leftX = bx - bw / 2;
+            const topY = by - bh / 2;
+
+            // Bed Headboard & Footboard posts
+            ctx.fillStyle = "#94a3b8";
+            roundRect(ctx, leftX - 4, topY - 8, 6, bh + 12, 3);
+            ctx.fill();
+            roundRect(ctx, leftX + bw - 2, topY - 4, 6, bh + 8, 3);
+            ctx.fill();
+
+            // Crisp White MattressTop
+            ctx.fillStyle = "#f8fafc";
+            roundRect(ctx, leftX, topY, bw, 12, 5);
+            ctx.fill();
+
+            // Pillow on left of bed
+            ctx.fillStyle = "#bae6fd";
+            roundRect(ctx, leftX + 6, topY - 4, 24, 7, 3);
+            ctx.fill();
+
+            // Hospital Bed Banner Sign (Displays Target Precursor Name)
+            ctx.fillStyle = "#b91c1c";
+            ctx.strokeStyle = "#fca5a5";
+            ctx.lineWidth = 2;
+            roundRect(ctx, leftX + 2, topY + 9, bw - 4, bh - 12, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            // Target Precursor Writing on the Hospital Bed
+            const bedText = state.currentTarget ? state.currentTarget.bedLabel : "EMBRYO BED";
+            ctx.fillStyle = "#ffffff";
+            ctx.textAlign = "center";
+            ctx.font = "900 11.5px Inter, sans-serif";
+            if (ctx.measureText(bedText).width > bw - 14) {
+                ctx.font = "900 10px Inter, sans-serif";
+            }
+            ctx.fillText(bedText, bx, topY + 29);
+
+            // Wheels at bottom of bed
+            ctx.fillStyle = "#334155";
+            ctx.beginPath();
+            ctx.arc(leftX + 16, by + bh / 2 + 4, 5.5, 0, Math.PI * 2);
+            ctx.arc(leftX + bw - 16, by + bh / 2 + 4, 5.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#cbd5e1";
+            ctx.beginPath();
+            ctx.arc(leftX + 16, by + bh / 2 + 4, 2.2, 0, Math.PI * 2);
+            ctx.arc(leftX + bw - 16, by + bh / 2 + 4, 2.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        /********************************************************************
+         * 8. CONTROLS (KEYBOARD, TOUCH/MOUSE DRAG, & BOTTOM LANE BUTTONS)
+         ********************************************************************/
+        window.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
+                state.keys.left = true;
+                document.getElementById("btnLeft").classList.add("active-press");
+            }
+            if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
+                state.keys.right = true;
+                document.getElementById("btnRight").classList.add("active-press");
+            }
+        });
+
+        window.addEventListener("keyup", (e) => {
+            if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
+                state.keys.left = false;
+                document.getElementById("btnLeft").classList.remove("active-press");
+            }
+            if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
+                state.keys.right = false;
+                document.getElementById("btnRight").classList.remove("active-press");
+            }
+        });
+
+        // Bottom Left / Right Hold Buttons
+        function bindHoldButton(btnId, dirKey) {
+            const btn = document.getElementById(btnId);
+            const startHold = (e) => {
+                e.preventDefault();
+                state.keys[dirKey] = true;
+                btn.classList.add("active-press");
+            };
+            const endHold = (e) => {
+                e.preventDefault();
+                state.keys[dirKey] = false;
+                btn.classList.remove("active-press");
+            };
+            btn.addEventListener("mousedown", startHold);
+            btn.addEventListener("touchstart", startHold, { passive: false });
+            window.addEventListener("mouseup", endHold);
+            btn.addEventListener("touchend", endHold);
+            btn.addEventListener("touchcancel", endHold);
+        }
+        bindHoldButton("btnLeft", "left");
+        bindHoldButton("btnRight", "right");
+
+        // Direct Mouse / Touch Drag on Canvas to slide the Hospital Bed smoothly
+        function updateBedFromPointer(clientX) {
+            const rect = canvas.getBoundingClientRect();
+            const relX = clientX - rect.left;
+            const halfBed = state.bed.width / 2 + 8;
+            state.bed.x = Math.min(Math.max(relX, halfBed), canvas.width - halfBed);
+        }
+
+        canvas.addEventListener("mousedown", (e) => {
+            if (state.mode !== "PLAYING") return;
+            state.pointerActive = true;
+            updateBedFromPointer(e.clientX);
+        });
+        window.addEventListener("mousemove", (e) => {
+            if (state.pointerActive && state.mode === "PLAYING") {
+                updateBedFromPointer(e.clientX);
+            }
+        });
+        window.addEventListener("mouseup", () => {
+            state.pointerActive = false;
+        });
+
+        canvas.addEventListener("touchstart", (e) => {
+            if (state.mode !== "PLAYING") return;
+            if (e.touches.length > 0) {
+                updateBedFromPointer(e.touches[0].clientX);
+            }
+        }, { passive: true });
+
+        canvas.addEventListener("touchmove", (e) => {
+            if (state.mode !== "PLAYING") return;
+            if (e.touches.length > 0) {
+                updateBedFromPointer(e.touches[0].clientX);
+            }
+        }, { passive: true });
+
+        /********************************************************************
+         * 9. STUDY MODAL & UI EVENT LISTENERS
+         ********************************************************************/
+        function populateStudyGuideModal() {
+            const container = document.getElementById("studySheetContent");
+            container.innerHTML = EMBRYO_DATABASE.map(item => {
+                const badgeColor = item.category === "PHARYNGEAL_ARCHES"
+                    ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                    : "bg-sky-500/20 text-sky-300 border-sky-500/40";
+                return `
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-3">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <span class="font-black text-white text-xs sm:text-sm">${escapeHtml(item.name)}</span>
+                            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${badgeColor}">
+                                ${escapeHtml(item.bedLabel)}
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 italic mb-2">${escapeHtml(item.hint)}</p>
+                        <div class="flex flex-wrap gap-1">
+                            ${item.derivatives.map(d => `
+                                <span class="bg-slate-950 border border-slate-800 text-slate-200 text-[11px] font-semibold px-2 py-0.5 rounded-md">
+                                    • ${escapeHtml(d)}
+                                </span>
+                            `).join("")}
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        // Subtopic Cycle Button
+        document.getElementById("btnCycleTopic").addEventListener("click", () => {
+            filterIndex = (filterIndex + 1) % SUBTOPIC_FILTERS.length;
+            updateSubtopicButtonLabel();
+        });
+
+        // Shift Mode Buttons (5 Rounds vs Endless)
+        document.querySelectorAll(".mode-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                maxRoundsPerShift = parseInt(btn.getAttribute("data-rounds"), 10);
+                document.querySelectorAll(".mode-btn").forEach(b => {
+                    b.className = "mode-btn bg-slate-800 text-slate-300 font-bold px-2.5 py-1 rounded-lg text-xs border border-slate-700";
+                });
+                btn.className = "mode-btn bg-red-600 text-white font-bold px-2.5 py-1 rounded-lg text-xs border border-red-500";
+            });
+        });
+
+        // Start & Play Again Buttons
+        document.getElementById("btnStartShift").addEventListener("click", startNewGameShift);
+        document.getElementById("btnPlayAgain").addEventListener("click", startNewGameShift);
+
+        // Return to Menu Buttons
+        function returnToMainMenu() {
+            state.mode = "MENU";
+            document.getElementById("inGameHud").classList.add("hidden");
+            document.getElementById("roundAnnounceOverlay").classList.add("hidden");
+            document.getElementById("gameOverOverlay").classList.add("hidden");
+            document.getElementById("startOverlay").classList.remove("hidden");
+            document.getElementById("uiTargetConcept").textContent = "Ready for Night Shift?";
+            document.getElementById("uiTimerText").textContent = "20.0s";
+            document.getElementById("uiTimerBar").style.width = "100%";
+            renderLeaderboardUI();
+        }
+// AFTER
+document.getElementById("btnHome").addEventListener("click", (e) => {
+    e.preventDefault();
+    window.location.href = "https://nineandelevennn.github.io/acsom/generations/";
+});
+        document.getElementById("btnBackToMenu").addEventListener("click", returnToMainMenu);
+        document.getElementById("btnEndShiftEarly").addEventListener("click", finishNightShift);
+
+        // Study Guide Modal Toggles
+        document.getElementById("btnTopicsModal").addEventListener("click", () => {
+            document.getElementById("studyModal").classList.remove("hidden");
+        });
+        document.getElementById("btnCloseStudy").addEventListener("click", () => {
+            document.getElementById("studyModal").classList.add("hidden");
+        });
+
+        // Sound Toggle Button
+        document.getElementById("btnSoundToggle").addEventListener("click", () => {
+            soundFX.enabled = !soundFX.enabled;
+            document.getElementById("soundIcon").textContent = soundFX.enabled ? "🔊" : "🔇";
+        });
+
+        // Clear Leaderboard Button
+        document.getElementById("btnClearBoard").addEventListener("click", () => {
+            try { localStorage.removeItem(STORAGE_KEY_BOARD); } catch (e) {}
+            state.bestScore = 0;
+            renderLeaderboardUI();
+        });
+
+        // Initialize on Window Load
+        window.onload = function () {
+            try {
+                const savedName = localStorage.getItem(STORAGE_KEY_NAME);
+                if (savedName) document.getElementById("playerNameInput").value = savedName;
+            } catch (e) {}
+
+            resizeCanvas();
+            updateSubtopicButtonLabel();
+            renderLeaderboardUI();
+            populateStudyGuideModal();
+            requestAnimationFrame(gameLoop);
+        };
+    </script>
+</body>
+</html>
