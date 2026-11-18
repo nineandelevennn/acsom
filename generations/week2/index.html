@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>USMLE Step 1 | Pediatrics & Neonatology Buzzword Drill - ACSOM</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f4f5f7;
+      color: #1f2937;
+    }
+    .acsom-red {
+      background-color: #d32f2f;
+    }
+    .acsom-red-hover:hover {
+      background-color: #b71c1c;
+    }
+    .acsom-text-red {
+      color: #d32f2f;
+    }
+    .card-transition {
+      transition: all 0.16s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+    .animate-shake {
+      animation: shake 0.35s ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- =====================================================================
+       1. TOP RED HEADER BAR (Matches ACSOM Screenshot)
+       ===================================================================== -->
+  <header class="acsom-red text-white shadow-md sticky top-0 z-30">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Left: Back Button + USMLE Pill + Main Title -->
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="https://nineandelevennn.github.io/acsom/generations/" 
+           class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold border border-white/70 rounded-md hover:bg-white/15 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to ACSOM
+        </a>
+
+        <span class="bg-white acsom-text-red text-[11px] font-extrabold tracking-wider px-2.5 py-1 rounded uppercase shadow-xs">
+          USMLE STEP 1
+        </span>
+
+        <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white">
+          Pediatrics &amp; Neonatology
+        </h1>
+      </div>
+
+      <!-- Right: School Branding -->
+      <div class="text-right leading-tight hidden sm:block">
+        <div class="text-xs font-extrabold tracking-widest uppercase text-white">AMERICAN CANADIAN</div>
+        <div class="text-[10px] font-medium tracking-widest uppercase text-white/85">SCHOOL OF MEDICINE</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- =====================================================================
+       2. MAIN CONTAINER
+       ===================================================================== -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 space-y-5">
+
+    <!-- Top Action Row (Back to ACSOM + Training Settings + Restart Game) -->
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <a href="https://nineandelevennn.github.io/acsom/generations/" 
+         class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-xs font-semibold text-gray-800 shadow-xs hover:bg-gray-50 transition">
+        <svg class="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to ACSOM
+      </a>
+
+      <!-- Live Speed & Score Pill -->
+      <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-md px-3 py-1.5 shadow-xs text-xs">
+        <span class="flex items-center gap-1 font-semibold text-gray-700" title="Stage Timer">
+          <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span id="timerDisplay" class="font-mono">00:00</span>
+        </span>
+        <span class="text-gray-300">|</span>
+        <span class="font-semibold text-gray-700">
+          Accuracy: <span id="accuracyDisplay" class="text-emerald-600 font-bold">100%</span>
+        </span>
+        <span class="text-gray-300 hidden md:inline">|</span>
+        <span class="hidden md:inline text-[11px] text-gray-500">
+          Keys: <kbd class="px-1 py-0.5 bg-gray-100 border rounded text-[10px]">1-6</kbd> &amp; <kbd class="px-1 py-0.5 bg-gray-100 border rounded text-[10px]">A-F</kbd>
+        </span>
+      </div>
+
+      <button id="restartBtn" onclick="initDeck(true)" 
+              class="inline-flex items-center gap-2 px-4 py-2 acsom-red acsom-red-hover text-white rounded-md text-xs font-semibold shadow-sm transition cursor-pointer">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        Restart Game
+      </button>
+    </div>
+
+    <!-- Customizer Control Bar (Subtopic, Direction, Mode, Items per Stage) -->
+    <div class="bg-white border border-gray-200 rounded-lg p-3.5 shadow-xs grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+      <!-- Subtopic Filter -->
+      <div>
+        <label for="subtopicSelect" class="block text-[10px] font-bold uppercase text-gray-500 mb-1">Subtopic Filter</label>
+        <select id="subtopicSelect" onchange="initDeck(true)" class="w-full border border-gray-300 rounded-md px-2.5 py-1.5 bg-gray-50 font-medium text-gray-800 focus:outline-none focus:border-red-600">
+          <option value="ALL">All Subtopics (Randomized)</option>
+          <option value="Neonatology & Newborn Care">1. Neonatology &amp; Newborn Care</option>
+          <option value="Congenital & Acquired Cardiology">2. Congenital &amp; Acquired Cardiology</option>
+          <option value="Pediatric Pulmonology">3. Pediatric Pulmonology</option>
+          <option value="Infectious Diseases, Derm & Vaccines">4. Infectious Diseases, Derm &amp; Vaccines</option>
+        </select>
+      </div>
+
+      <!-- Direction Filter -->
+      <div>
+        <label for="directionSelect" class="block text-[10px] font-bold uppercase text-gray-500 mb-1">Drill Direction</label>
+        <select id="directionSelect" onchange="renderCurrentStage()" class="w-full border border-gray-300 rounded-md px-2.5 py-1.5 bg-gray-50 font-medium text-gray-800 focus:outline-none focus:border-red-600">
+          <option value="COND_TO_DEF">Diagnosis / Concept &rarr; Presentation</option>
+          <option value="DEF_TO_COND">Presentation / Buzzword &rarr; Diagnosis</option>
+          <option value="MIXED">Mixed (Both Directions Randomly)</option>
+        </select>
+      </div>
+
+      <!-- Validation Mode -->
+      <div>
+        <label for="modeSelect" class="block text-[10px] font-bold uppercase text-gray-500 mb-1">Feedback Mode</label>
+        <select id="modeSelect" onchange="handleModeChange()" class="w-full border border-gray-300 rounded-md px-2.5 py-1.5 bg-gray-50 font-medium text-gray-800 focus:outline-none focus:border-red-600">
+          <option value="BATCH">Submit &amp; Review (Exam Style)</option>
+          <option value="INSTANT">Instant Check (Rapid Speed Drill)</option>
+        </select>
+      </div>
+
+      <!-- Cards Per Stage -->
+      <div>
+        <label for="batchSizeSelect" class="block text-[10px] font-bold uppercase text-gray-500 mb-1">Items Per Stage</label>
+        <select id="batchSizeSelect" onchange="initDeck(true)" class="w-full border border-gray-300 rounded-md px-2.5 py-1.5 bg-gray-50 font-medium text-gray-800 focus:outline-none focus:border-red-600">
+          <option value="4" selected>4 Items per Stage (Standard)</option>
+          <option value="6">6 Items per Stage (Challenge)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ===================================================================
+         3. STAGE PROGRESS CARD (Matches Screenshot strictly)
+         =================================================================== -->
+    <section class="bg-white border border-gray-200 rounded-lg p-5 shadow-xs">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <div class="flex flex-wrap items-center gap-2.5">
+          <span id="stageBadge" class="acsom-red text-white text-[11px] font-bold uppercase px-2.5 py-1 rounded">
+            STAGE 1 OF 12
+          </span>
+          <h2 id="stageTitle" class="text-base sm:text-lg font-bold text-gray-900">
+            Stage 1: Clinical Buzzwords
+          </h2>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- Stage Jump Buttons -->
+          <div class="inline-flex rounded-md shadow-2xs" role="group">
+            <button onclick="prevStage()" id="prevStageBtn" title="Previous Stage"
+                    class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-l-md hover:bg-gray-200 disabled:opacity-40 cursor-pointer">
+              &larr; Prev
+            </button>
+            <button onclick="nextStage()" id="nextStageTopBtn" title="Next Stage"
+                    class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 border-t border-b border-r border-gray-300 rounded-r-md hover:bg-gray-200 disabled:opacity-40 cursor-pointer">
+              Next &rarr;
+            </button>
+          </div>
+          <span class="text-xs text-gray-600 font-medium">
+            Total Items: <strong id="stageItemCount" class="text-gray-900">4</strong>
+          </span>
+        </div>
+      </div>
+
+      <!-- Red Progress Bar -->
+      <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden mb-2.5">
+        <div id="progressBar" class="acsom-red h-full rounded-full transition-all duration-300" style="width: 10%;"></div>
+      </div>
+
+      <!-- Italic Instruction Subtitle -->
+      <p id="stageSubtitle" class="text-xs italic text-gray-500">
+        Match each condition on the left to its correct clinical presentation or concept on the right.
+      </p>
+    </section>
+
+    <!-- ===================================================================
+         4. TWO-COLUMN MATCHING BOARD (Matches Screenshot strictly)
+         =================================================================== -->
+    <section class="bg-white border border-gray-200 rounded-lg p-5 sm:p-6 shadow-xs">
+      
+      <!-- Feedback Banner (Hidden until submission or stage complete) -->
+      <div id="feedbackBanner" class="hidden mb-5 p-3.5 rounded-md border text-xs font-medium flex items-center justify-between">
+        <div id="feedbackText"></div>
+        <button id="feedbackNextBtn" onclick="nextStage()" class="hidden px-3 py-1.5 acsom-red text-white rounded font-semibold hover:bg-red-800 transition cursor-pointer">
+          Advance to Next Stage &rarr;
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- LEFT COLUMN -->
+        <div>
+          <!-- Column Header -->
+          <div class="flex items-center justify-between bg-gray-50/80 border border-gray-200 rounded-md px-3.5 py-2 mb-3.5">
+            <div class="flex items-center gap-2">
+              <!-- Stethoscope Icon -->
+              <svg class="w-4 h-4 acsom-text-red" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 3v4.5a4.5 4.5 0 009 0V3M9 12v3a4.5 4.5 0 009 0v-3m0 0a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" />
+              </svg>
+              <span id="leftColHeader" class="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                CONDITIONS
+              </span>
+            </div>
+            <span class="text-[11px] text-gray-400 font-medium">(tap to select)</span>
+          </div>
+
+          <!-- Left Cards Container -->
+          <div id="leftColumnList" class="space-y-3"></div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div>
+          <!-- Column Header -->
+          <div class="flex items-center justify-between bg-gray-50/80 border border-gray-200 rounded-md px-3.5 py-2 mb-3.5">
+            <div class="flex items-center gap-2">
+              <!-- List Icon -->
+              <svg class="w-4 h-4 acsom-text-red" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+              </svg>
+              <span id="rightColHeader" class="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                PRESENTATIONS &amp; KEY CONCEPTS
+              </span>
+            </div>
+            <span class="text-[11px] text-gray-400 font-medium">(tap to match)</span>
+          </div>
+
+          <!-- Right Cards Container -->
+          <div id="rightColumnList" class="space-y-3"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         5. BOTTOM ACTION BAR (Matches Screenshot strictly)
+         =================================================================== -->
+    <section class="bg-white border border-gray-200 rounded-lg p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Left: Clear Selection Button -->
+      <div class="flex items-center gap-2">
+        <button onclick="clearStageSelections()" 
+                class="inline-flex items-center gap-2 px-3.5 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 rounded-md text-xs font-semibold transition cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+          </svg>
+          Clear Selection
+        </button>
+
+        <button onclick="toggleManageModal(true)" 
+                class="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-gray-50 border border-gray-300 text-gray-600 rounded-md text-xs font-medium transition cursor-pointer">
+          <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          Add / Edit Concepts (<span id="totalConceptCountBadge">48</span>)
+        </button>
+      </div>
+
+      <!-- Right: Submit & Review Button -->
+      <div class="flex items-center gap-2">
+        <button id="submitStageBtn" onclick="submitAndReview()" 
+                class="inline-flex items-center gap-2 px-5 py-2.5 acsom-red acsom-red-hover text-white rounded-md text-xs font-bold shadow-sm transition cursor-pointer">
+          <span>Submit &amp; Review</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       6. MODAL: ADD / EXPORT CONCEPTS (For Instructor & Self-Study Expansion)
+       ===================================================================== -->
+  <div id="manageModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-2xl w-full p-6 shadow-xl border border-gray-200 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b pb-3 mb-4">
+        <div>
+          <h3 class="text-base font-bold text-gray-900">Add or Customize USMLE Buzzwords</h3>
+          <p class="text-xs text-gray-500">Add a new concept below to test immediately or copy the code snippet to paste into your HTML file.</p>
+        </div>
+        <button onclick="toggleManageModal(false)" class="text-gray-400 hover:text-gray-600 text-lg font-bold px-2">&times;</button>
+      </div>
+
+      <!-- Add Single Concept Form -->
+      <div class="space-y-3 bg-gray-50 p-4 rounded-md border border-gray-200 mb-4 text-xs">
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">Subtopic Category</label>
+          <select id="newCategory" class="w-full border border-gray-300 rounded px-2.5 py-1.5 bg-white">
+            <option value="Neonatology & Newborn Care">Neonatology &amp; Newborn Care</option>
+            <option value="Congenital & Acquired Cardiology">Congenital &amp; Acquired Cardiology</option>
+            <option value="Pediatric Pulmonology">Pediatric Pulmonology</option>
+            <option value="Infectious Diseases, Derm & Vaccines">Infectious Diseases, Derm &amp; Vaccines</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">Diagnosis / Key Concept / Drug (Left Card)</label>
+          <input id="newCondition" type="text" placeholder="e.g., Necrotizing Enterocolitis (NEC)" class="w-full border border-gray-300 rounded px-2.5 py-1.5 bg-white" />
+        </div>
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">Buzzword / Clinical Presentation (Right Card)</label>
+          <input id="newDefinition" type="text" placeholder="e.g., Premature formula-fed infant with bloody stools and pneumatosis intestinalis (air in bowel wall)" class="w-full border border-gray-300 rounded px-2.5 py-1.5 bg-white" />
+        </div>
+        <div class="flex items-center justify-between pt-1">
+          <span id="addConceptNotice" class="text-emerald-600 font-semibold"></span>
+          <button onclick="addCustomConcept()" class="px-4 py-1.5 acsom-red text-white font-semibold rounded hover:bg-red-800 transition cursor-pointer">
+            + Add to Active Deck
+          </button>
+        </div>
+      </div>
+
+      <!-- Generated JS Code Snippet to Copy -->
+      <div class="text-xs space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-gray-700">How to permanently add items in the HTML file:</span>
+          <button onclick="copySnippet()" class="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 border rounded text-[11px] font-semibold cursor-pointer">
+            Copy Latest JSON Entry
+          </button>
+        </div>
+        <p class="text-gray-600">
+          Open <code class="bg-gray-100 px-1 py-0.5 rounded">index.html</code> in any text editor, scroll down to <code class="bg-gray-100 px-1 py-0.5 rounded">const CONCEPT_BANK = [ ... ]</code> inside the <code class="bg-gray-100 px-1 py-0.5 rounded">&lt;script&gt;</code> tag, and add a new line using this exact structure:
+        </p>
+        <pre id="codeSnippetPreview" class="bg-gray-900 text-emerald-400 p-3 rounded-md overflow-x-auto text-[11px] font-mono leading-relaxed">{
+  category: "Neonatology & Newborn Care",
+  condition: "Necrotizing Enterocolitis (NEC)",
+  definition: "Premature formula-fed infant with bloody stools and pneumatosis intestinalis (air in bowel wall)"
+},</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       7. JAVASCRIPT ENGINE & COMPLETE USMLE STEP 1 CONCEPT BANK
+       ===================================================================== -->
+  <script>
+    /**
+     * =====================================================================
+     * HOW TO ADD MORE CONCEPTS TO THIS TRAINER:
+     * Simply add a new object `{ category: "...", condition: "...", definition: "..." },`
+     * to the `CONCEPT_BANK` array below. The game automatically calculates
+     * stages, shuffles cards, and adapts to both drill directions!
+     * =====================================================================
+     */
+    const CONCEPT_BANK = [
+      // -------------------------------------------------------------------
+      // 1. NEONATOLOGY & ROUTINE NEWBORN CARE
+      // -------------------------------------------------------------------
+      {
+        category: "Neonatology & Newborn Care",
+        condition: "Vitamin K deficiency (Hemorrhagic disease of newborn)",
+        definition: "Bleeding from umbilical stump, circumcision site, or GI tract in a newborn (especially home birth without IM prophylaxis)"
+      },
+      {
+        category: "Neonatology & Newborn Care",
+        condition: "Pathologic neonatal jaundice",
+        definition: "Jaundice appearing within the first 24 hours of life (e.g., ABO/Rh hemolytic disease or G6PD deficiency)"
+      },
+      {
+        category: "Neonatology & Newborn Care",
+        condition: "Breastfeeding jaundice",
+        definition: "Jaundice at days 3–4 of life caused by insufficient breast milk intake, dehydration, and delayed meconium passage"
+      },
+      {
+        category: "Neonatology & Newborn Care",
+        condition: "Breast milk jaundice",
+        definition: "Unconjugated jaundice peaking at 2 weeks of life in a thriving infant due to high beta-glucuronidase in breast milk"
+      },
+      {
+        category: "Neonatology & Newborn Care",
+        condition: "Respiratory Distress Syndrome (RDS)",
+        definition: "Premature infant with tachypnea, grunting, and 'ground-glass' reticulogranular lungs with air bronchograms on CXR"
+      },
+      {
+        category: "Neonatology & Newborn Care",
+        condition: "Transient Tachypnea of the Newborn (TTN)",
+        definition: "Term infant born via C-section with early tachypnea, clear lungs, and fluid in the interlobar fissures on CXR"
+      },
+      {
+        category: "Neonatology & Newborn Care",
+        condition: "Neonatal hypoglycemia",
+        definition: "Macrosomic infant of a diabetic mother presenting with jitteriness, tremors, lethargy, or seizures shortly after birth"
+      },
+      {
+        category: "Neonatology & Newborn Care",
+        condition: "Neonatal sepsis",
+        definition: "Newborn with lethargy, poor feeding, grunting, and temperature instability (hypothermia); commonly GBS, E. coli, or Listeria"
+      },
+      {
+        category: "Neonatology & Newborn Care",
+        condition: "Acrocyanosis",
+        definition: "Benign symmetric bluish discoloration of the hands and feet with a pink torso during the first 24–48 hours of life"
+      },
+      {
+        category: "Neonatology & Newborn Care",
+        condition: "Neonatal polycythemia",
+        definition: "Plethora (ruddy skin), lethargy, and hypoglycemia (Hct > 65%) associated with delayed cord clamping or twin-twin transfusion"
+      },
+      {
+        category: "Neonatology & Newborn Care",
+        condition: "Brief Resolved Unexplained Event (BRUE)",
+        definition: "Sudden, brief (<1 min) episode of cyanosis, limpness, or apnea in an infant <1 yr that fully resolves with a normal exam"
+      },
+      {
+        category: "Neonatology & Newborn Care",
+        condition: "Sudden Infant Death Syndrome (SIDS) prevention",
+        definition: "Supine sleep position ('back to sleep'), firm mattress, room-sharing without bed-sharing, and avoiding smoke exposure"
+      },
+
+      // -------------------------------------------------------------------
+      // 2. CONGENITAL & ACQUIRED CARDIOLOGY
+      // -------------------------------------------------------------------
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Transposition of the Great Arteries (TGA)",
+        definition: "'Egg-on-a-string' heart on CXR, single loud S2, and severe cyanosis within hours of birth (parallel circulation)"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Tetralogy of Fallot (ToF)",
+        definition: "'Boot-shaped' heart on CXR with pulmonic infundibular stenosis, RVH, overriding aorta, and VSD"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Squatting / knees-to-chest during a 'Tet spell'",
+        definition: "Increases systemic vascular resistance (afterload), decreasing R-to-L shunting and forcing blood into the pulmonary artery"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Tricuspid Atresia",
+        definition: "Cyanotic newborn with left axis deviation and left ventricular hypertrophy (LVH) on ECG; requires ASD + VSD for viability"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Total Anomalous Pulmonary Venous Return (TAPVR)",
+        definition: "'Snowman' or 'figure-of-8' cardiac silhouette on CXR; all 4 pulmonary veins drain into systemic venous circulation"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Ebstein anomaly",
+        definition: "In utero Lithium exposure causing apical displacement of tricuspid valve leaflets ('atrialized' RV) and massive cardiomegaly"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Prostaglandin E1 (Alprostadil) infusion",
+        definition: "Lifesaving therapy to maintain ductus arteriosus patency in newborns with worsening cyanosis or shock on days 1–2"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Indomethacin (or Ibuprofen)",
+        definition: "Pharmacologic agent used to close a symptomatic Patent Ductus Arteriosus (PDA) by inhibiting prostaglandin synthesis"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Persistent Pulmonary Hypertension (PPHN)",
+        definition: "Term infant with meconium aspiration, severe hypoxemia, and R-to-L ductal/foraminal shunting with structurally normal heart"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Ventricular Septal Defect (VSD)",
+        definition: "Loud, harsh holosystolic murmur at the left lower sternal border (smaller restrictive defects produce louder murmurs)"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Atrial Septal Defect (ASD)",
+        definition: "Wide, fixed split S2 and systolic ejection murmur at the left upper sternal border due to increased RV volume"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Patent Ductus Arteriosus (PDA)",
+        definition: "Continuous 'machine-like' murmur best heard at the left infraclavicular area with bounding pulses and wide pulse pressure"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Coarctation of the Aorta",
+        definition: "Upper extremity hypertension, diminished/delayed femoral pulses (brachio-femoral delay), and rib notching on CXR"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Eisenmenger syndrome (with PDA)",
+        definition: "Differential cyanosis (blue toes, pink fingers) caused by uncorrected L-to-R shunt progressing to pulmonary HTN and R-to-L reversal"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Complete Atrioventricular Septal Defect (AVSD)",
+        definition: "Endocardial cushion defect (common AV valve + primum ASD + inlet VSD) strongly associated with Down syndrome (Trisomy 21)"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Infective Endocarditis",
+        definition: "Persistent fever, new murmur, splinter hemorrhages, and Janeway lesions in a child with a prosthetic valve or cyanotic CHD"
+      },
+      {
+        category: "Congenital & Acquired Cardiology",
+        condition: "Persistent Truncus Arteriosus",
+        definition: "Single great vessel arising from both ventricles above a VSD (22q11 DiGeorge association) causing early cyanosis and heart failure"
+      },
+
+      // -------------------------------------------------------------------
+      // 3. PEDIATRIC PULMONOLOGY
+      // -------------------------------------------------------------------
+      {
+        category: "Pediatric Pulmonology",
+        condition: "Saccular stage of lung development",
+        definition: "Week 26 to birth: terminal sacs form and Type II pneumocytes begin producing surfactant (threshold of fetal viability)"
+      },
+      {
+        category: "Pediatric Pulmonology",
+        condition: "Croup (Laryngotracheobronchitis)",
+        definition: "'Barking' seal-like cough, inspiratory stridor, and subglottic narrowing ('steeple sign') on AP neck X-ray (Parainfluenza virus)"
+      },
+      {
+        category: "Pediatric Pulmonology",
+        condition: "Bronchiolitis",
+        definition: "Infant < 2 years with rhinorrhea followed by expiratory wheezing, crackles, and hyperinflation on CXR (most commonly RSV)"
+      },
+      {
+        category: "Pediatric Pulmonology",
+        condition: "Foreign body aspiration",
+        definition: "Sudden-onset coughing/choking with unilateral wheeze, asymmetric breath sounds, and focal hyperlucency on expiratory CXR"
+      },
+      {
+        category: "Pediatric Pulmonology",
+        condition: "Cystic Fibrosis (CFTR F508del)",
+        definition: "Meconium ileus at birth, failure to thrive, foul-smelling greasy stools, nasal polyps, and recurrent Pseudomonas pneumonia"
+      },
+      {
+        category: "Pediatric Pulmonology",
+        condition: "Impending respiratory failure in asthma",
+        definition: "Exhausted, drowsy asthmatic child with a 'silent chest' (absent wheezing/air entry) and normalizing or rising PaCO2"
+      },
+      {
+        category: "Pediatric Pulmonology",
+        condition: "Pulsus paradoxus in severe asthma",
+        definition: "Drop in systolic blood pressure > 10 mmHg during inspiration caused by extreme negative intrathoracic pressure"
+      },
+
+      // -------------------------------------------------------------------
+      // 4. INFECTIOUS DISEASES, DERMATOLOGY & VACCINES
+      // -------------------------------------------------------------------
+      {
+        category: "Infectious Diseases, Derm & Vaccines",
+        condition: "Impetigo",
+        definition: "Superficial 'honey-crusted' weeping vesicles/pustules on the face caused by S. aureus or S. pyogenes"
+      },
+      {
+        category: "Infectious Diseases, Derm & Vaccines",
+        condition: "Tinea corporis (Ringworm)",
+        definition: "Pruritic, annular scaly plaque with central clearing and raised erythematous border (KOH prep shows branching septate hyphae)"
+      },
+      {
+        category: "Infectious Diseases, Derm & Vaccines",
+        condition: "Atopic dermatitis (Eczema)",
+        definition: "Intensely pruritic erythematous rash on face/extensors in infancy that localizes to flexural creases (antecubital/popliteal) in childhood"
+      },
+      {
+        category: "Infectious Diseases, Derm & Vaccines",
+        condition: "Measles (Rubeola)",
+        definition: "Prodrome of Cough, Coryza, Conjunctivitis, and Koplik spots (buccal mucosa) followed by a descending maculopapular rash"
+      },
+      {
+        category: "Infectious Diseases, Derm & Vaccines",
+        condition: "Rubella (German measles)",
+        definition: "Tender postauricular and suboccipital lymphadenopathy with a rapid 3-day descending pink maculopapular rash"
+      },
+      {
+        category: "Infectious Diseases, Derm & Vaccines",
+        condition: "Kawasaki disease",
+        definition: "Fever >= 5 days, strawberry tongue, bilateral non-exudative conjunctivitis, and extremity changes; requires Echo for coronary aneurysms"
+      },
+      {
+        category: "Infectious Diseases, Derm & Vaccines",
+        condition: "Congenital Cytomegalovirus (CMV)",
+        definition: "Newborn with periventricular calcifications, sensorineural hearing loss, microcephaly, and 'blueberry muffin' petechial rash"
+      },
+      {
+        category: "Infectious Diseases, Derm & Vaccines",
+        condition: "Congenital Rubella Syndrome",
+        definition: "Newborn with cataracts, sensorineural deafness, Patent Ductus Arteriosus (PDA), and 'blueberry muffin' rash"
+      },
+      {
+        category: "Infectious Diseases, Derm & Vaccines",
+        condition: "Congenital Toxoplasmosis",
+        definition: "Newborn with classic triad of diffuse intracranial calcifications, chorioretinitis, and hydrocephalus (maternal cat litter exposure)"
+      },
+      {
+        category: "Infectious Diseases, Derm & Vaccines",
+        condition: "Acute Rheumatic Fever",
+        definition: "Migratory polyarthritis, pancarditis, subcutaneous nodules, erythema marginatum, and Sydenham chorea after Group A Strep pharyngitis"
+      },
+      {
+        category: "Infectious Diseases, Derm & Vaccines",
+        condition: "Post-Streptococcal Glomerulonephritis (PSGN)",
+        definition: "Cola-colored urine (RBC casts), periorbital edema, hypertension, and low C3 complement 1–3 weeks after Strep throat or impetigo"
+      },
+      {
+        category: "Infectious Diseases, Derm & Vaccines",
+        condition: "Live-attenuated vaccine contraindication",
+        definition: "Avoid MMR, Varicella, Rotavirus, and intranasal influenza vaccines in severely immunocompromised patients or pregnancy"
+      },
+      {
+        category: "Infectious Diseases, Derm & Vaccines",
+        condition: "Vaccine-associated Anaphylaxis",
+        definition: "Acute hypotension, urticaria, and wheezing/stridor minutes after vaccination; treat immediately with IM Epinephrine to anterolateral thigh"
+      }
+    ];
+
+    // Distinct badge colors for paired items in "Submit & Review" mode
+    const PAIR_COLORS = [
+      { bg: "bg-blue-50", border: "border-blue-500", badge: "bg-blue-600 text-white", label: "Pair 1" },
+      { bg: "bg-purple-50", border: "border-purple-500", badge: "bg-purple-600 text-white", label: "Pair 2" },
+      { bg: "bg-amber-50", border: "border-amber-500", badge: "bg-amber-600 text-white", label: "Pair 3" },
+      { bg: "bg-teal-50", border: "border-teal-500", badge: "bg-teal-600 text-white", label: "Pair 4" },
+      { bg: "bg-pink-50", border: "border-pink-500", badge: "bg-pink-600 text-white", label: "Pair 5" },
+      { bg: "bg-indigo-50", border: "border-indigo-500", badge: "bg-indigo-600 text-white", label: "Pair 6" }
+    ];
+
+    // Application State
+    let stages = [];
+    let currentStageIdx = 0;
+    let leftCards = [];
+    let rightCards = [];
+    let selectedLeftId = null;
+    let userPairs = {}; // { leftId: { rightId, colorIdx } }
+    let lockedIds = new Set(); // Used in Instant mode
+    let isStageSubmitted = false;
+
+    // Speed & Accuracy Metrics
+    let totalAttempts = 0;
+    let correctAttempts = 0;
+    let timerSeconds = 0;
+    let timerInterval = null;
+
+    // Utility: Fisher-Yates shuffle
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    // Start or Reset Timer
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerSeconds = 0;
+      updateTimerUI();
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        updateTimerUI();
+      }, 1000);
+    }
+
+    function updateTimerUI() {
+      const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+      const secs = String(timerSeconds % 60).padStart(2, '0');
+      document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
+    }
+
+    function updateAccuracyUI() {
+      const pct = totalAttempts === 0 ? 100 : Math.round((correctAttempts / totalAttempts) * 100);
+      const el = document.getElementById('accuracyDisplay');
+      el.textContent = `${pct}%`;
+      el.className = pct >= 80 ? 'text-emerald-600 font-bold' : pct >= 60 ? 'text-amber-600 font-bold' : 'text-red-600 font-bold';
+    }
+
+    // Initialize Deck & Partition into Stages
+    function initDeck(resetMetrics = false) {
+      const subtopic = document.getElementById('subtopicSelect').value;
+      const batchSize = parseInt(document.getElementById('batchSizeSelect').value, 10) || 4;
+
+      if (resetMetrics) {
+        totalAttempts = 0;
+        correctAttempts = 0;
+        updateAccuracyUI();
+        startTimer();
+      }
+
+      document.getElementById('totalConceptCountBadge').textContent = CONCEPT_BANK.length;
+
+      // Filter by subtopic
+      let filtered = CONCEPT_BANK.map((item, idx) => ({ ...item, id: `item_${idx}` }));
+      if (subtopic !== 'ALL') {
+        filtered = filtered.filter(item => item.category === subtopic);
+      }
+
+      // Shuffle items
+      filtered = shuffleArray(filtered);
+
+      // Partition into stages of `batchSize`
+      stages = [];
+      for (let i = 0; i < filtered.length; i += batchSize) {
+        stages.push(filtered.slice(i, i + batchSize));
+      }
+
+      currentStageIdx = 0;
+      renderCurrentStage();
+    }
+
+    // Handle Switching between Submit & Review vs Instant Drill
+    function handleModeChange() {
+      const mode = document.getElementById('modeSelect').value;
+      const submitBtn = document.getElementById('submitStageBtn');
+      if (mode === 'INSTANT') {
+        submitBtn.innerHTML = `<span>Next Stage &rarr;</span>`;
+      } else {
+        submitBtn.innerHTML = `
+          <span>Submit &amp; Review</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>`;
+      }
+      renderCurrentStage();
+    }
+
+    // Build Left & Right Cards for Current Stage
+    function renderCurrentStage() {
+      if (!stages.length) return;
+
+      const stageItems = stages[currentStageIdx];
+      const direction = document.getElementById('directionSelect').value;
+      const subtopic = document.getElementById('subtopicSelect').value;
+      const mode = document.getElementById('modeSelect').value;
+
+      selectedLeftId = null;
+      userPairs = {};
+      lockedIds = new Set();
+      isStageSubmitted = false;
+
+      // Hide feedback banner
+      const banner = document.getElementById('feedbackBanner');
+      banner.classList.add('hidden');
+      document.getElementById('feedbackNextBtn').classList.add('hidden');
+
+      // Update Stage Header Info
+      const totalStages = stages.length;
+      document.getElementById('stageBadge').textContent = `STAGE ${currentStageIdx + 1} OF ${totalStages}`;
+      
+      // Determine dominant category title
+      const stageCategory = subtopic === 'ALL' ? stageItems[0].category : subtopic;
+      document.getElementById('stageTitle').textContent = `Stage ${currentStageIdx + 1}: ${stageCategory}`;
+      document.getElementById('stageItemCount').textContent = stageItems.length;
+
+      // Update Progress Bar
+      const progressPct = Math.round(((currentStageIdx + 1) / totalStages) * 100);
+      document.getElementById('progressBar').style.width = `${progressPct}%`;
+
+      // Update Prev/Next top buttons
+      document.getElementById('prevStageBtn').disabled = currentStageIdx === 0;
+      document.getElementById('nextStageTopBtn').disabled = currentStageIdx === totalStages - 1;
+
+      // Configure Headers based on Direction
+      if (direction === 'COND_TO_DEF') {
+        document.getElementById('leftColHeader').textContent = 'CONDITIONS & CONCEPTS';
+        document.getElementById('rightColHeader').textContent = 'CLINICAL PRESENTATIONS & BUZZWORDS';
+        document.getElementById('stageSubtitle').textContent = 'Match each condition on the left to its correct clinical presentation on the right.';
+      } else if (direction === 'DEF_TO_COND') {
+        document.getElementById('leftColHeader').textContent = 'CLINICAL PRESENTATIONS & BUZZWORDS';
+        document.getElementById('rightColHeader').textContent = 'DIAGNOSES & PHARMACOLOGY';
+        document.getElementById('stageSubtitle').textContent = 'Match each clinical vignette/buzzword on the left to the rapid diagnosis or treatment on the right.';
+      } else {
+        document.getElementById('leftColHeader').textContent = 'PROMPT (MIXED DIRECTION)';
+        document.getElementById('rightColHeader').textContent = 'CORRESPONDING MATCH';
+        document.getElementById('stageSubtitle').textContent = 'Mixed Drill: Match either the presentation or the diagnosis on the left to its partner on the right.';
+      }
+
+      // Reset Submit button label
+      const submitBtn = document.getElementById('submitStageBtn');
+      if (mode === 'INSTANT') {
+        submitBtn.innerHTML = `<span>Next Stage &rarr;</span>`;
+      } else {
+        submitBtn.innerHTML = `
+          <span>Submit &amp; Review</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>`;
+      }
+
+      // Build Left and Right arrays
+      leftCards = [];
+      rightCards = [];
+
+      stageItems.forEach((item) => {
+        let swap = false;
+        if (direction === 'DEF_TO_COND') swap = true;
+        else if (direction === 'MIXED') swap = Math.random() < 0.5;
+
+        leftCards.push({
+          id: item.id,
+          text: swap ? item.definition : item.condition,
+          isCondition: !swap,
+          category: item.category
+        });
+
+        rightCards.push({
+          id: item.id,
+          text: swap ? item.condition : item.definition,
+          isCondition: swap,
+          category: item.category
+        });
+      });
+
+      // Shuffle left and right columns independently
+      leftCards = shuffleArray(leftCards);
+      rightCards = shuffleArray(rightCards);
+
+      renderBoardDOM();
+    }
+
+    // Render Cards into the Left & Right Columns
+    function renderBoardDOM() {
+      const leftContainer = document.getElementById('leftColumnList');
+      const rightContainer = document.getElementById('rightColumnList');
+      const mode = document.getElementById('modeSelect').value;
+
+      leftContainer.innerHTML = '';
+      rightContainer.innerHTML = '';
+
+      // Map rightId -> pair info for quick lookup
+      const rightPairLookup = {};
+      Object.entries(userPairs).forEach(([lId, pairObj]) => {
+        rightPairLookup[pairObj.rightId] = { leftId: lId, ...pairObj };
+      });
+
+      // 1. Render Left Column Cards
+      leftCards.forEach((card, index) => {
+        const isSelected = selectedLeftId === card.id;
+        const pairInfo = userPairs[card.id];
+        const isLocked = lockedIds.has(card.id);
+
+        let borderClass = 'border-gray-200 bg-gray-50/70 hover:bg-gray-100/80 hover:border-gray-300';
+        let statusBadgeHTML = '';
+
+        if (mode === 'INSTANT' && isLocked) {
+          borderClass = 'border-emerald-500 bg-emerald-50/80 text-emerald-950';
+          statusBadgeHTML = `<span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-emerald-600 text-white">✓ Matched</span>`;
+        } else if (isStageSubmitted) {
+          const isCorrect = pairInfo && pairInfo.rightId === card.id;
+          if (isCorrect) {
+            borderClass = 'border-emerald-500 bg-emerald-50/70';
+            statusBadgeHTML = `<span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-emerald-600 text-white">✓ Correct</span>`;
+          } else {
+            borderClass = 'border-red-500 bg-red-50/70';
+            statusBadgeHTML = `<span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-red-600 text-white">✗ Missed</span>`;
+          }
+        } else if (isSelected) {
+          borderClass = 'border-red-600 bg-red-50/50 ring-2 ring-red-500/20';
+          statusBadgeHTML = `<span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded acsom-red text-white">Selecting...</span>`;
+        } else if (pairInfo) {
+          const color = PAIR_COLORS[pairInfo.colorIdx % PAIR_COLORS.length];
+          borderClass = `${color.border} ${color.bg}`;
+          statusBadgeHTML = `<span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded ${color.badge}">${color.label}</span>`;
+        }
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.id = `left_${card.id}`;
+        btn.onclick = () => handleLeftCardClick(card.id);
+        btn.className = `w-full text-left p-3.5 rounded-md border card-transition flex items-center justify-between gap-3 cursor-pointer ${borderClass}`;
+        btn.innerHTML = `
+          <div class="flex items-start gap-2.5">
+            <span class="inline-flex items-center justify-center w-5 h-5 rounded text-[10px] font-bold bg-white border border-gray-300 text-gray-500 shrink-0 mt-0.5">${index + 1}</span>
+            <span class="${card.isCondition ? 'font-bold text-gray-900 text-xs sm:text-sm' : 'font-medium text-gray-800 text-xs sm:text-[13px] leading-relaxed'}">${card.text}</span>
+          </div>
+          <div class="shrink-0">${statusBadgeHTML}</div>
+        `;
+        leftContainer.appendChild(btn);
+      });
+
+      // 2. Render Right Column Cards
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+      rightCards.forEach((card, index) => {
+        const pairedObj = rightPairLookup[card.id];
+        const isLocked = lockedIds.has(card.id);
+
+        let borderClass = 'border-gray-200 bg-gray-50/70 hover:bg-gray-100/80 hover:border-gray-300';
+        let statusBadgeHTML = '';
+
+        if (mode === 'INSTANT' && isLocked) {
+          borderClass = 'border-emerald-500 bg-emerald-50/80 text-emerald-950';
+          statusBadgeHTML = `<span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-emerald-600 text-white">✓</span>`;
+        } else if (isStageSubmitted) {
+          const isCorrect = pairedObj && pairedObj.leftId === card.id;
+          if (isCorrect) {
+            borderClass = 'border-emerald-500 bg-emerald-50/70';
+            const color = PAIR_COLORS[pairedObj.colorIdx % PAIR_COLORS.length];
+            statusBadgeHTML = `<span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-emerald-600 text-white">${color.label} ✓</span>`;
+          } else {
+            borderClass = 'border-red-400 bg-red-50/50';
+            // Find which left number actually belongs to this right card
+            const correctLeftIdx = leftCards.findIndex(l => l.id === card.id) + 1;
+            statusBadgeHTML = `<span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-red-600 text-white">Matches #${correctLeftIdx}</span>`;
+          }
+        } else if (pairedObj) {
+          const color = PAIR_COLORS[pairedObj.colorIdx % PAIR_COLORS.length];
+          borderClass = `${color.border} ${color.bg}`;
+          statusBadgeHTML = `<span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded ${color.badge}">${color.label}</span>`;
+        }
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.id = `right_${card.id}`;
+        btn.onclick = () => handleRightCardClick(card.id);
+        btn.className = `w-full text-left p-3.5 rounded-md border card-transition flex items-center justify-between gap-3 cursor-pointer ${borderClass}`;
+        btn.innerHTML = `
+          <div class="flex items-start gap-2.5">
+            <span class="inline-flex items-center justify-center w-5 h-5 rounded text-[10px] font-bold bg-white border border-gray-300 text-gray-500 shrink-0 mt-0.5">${letters[index] || index + 1}</span>
+            <span class="${card.isCondition ? 'font-bold text-gray-900 text-xs sm:text-sm' : 'font-normal text-gray-800 text-xs sm:text-[13px] leading-relaxed'}">${card.text}</span>
+          </div>
+          <div class="shrink-0">${statusBadgeHTML}</div>
+        `;
+        rightContainer.appendChild(btn);
+      });
+    }
+
+    // Handle Clicking a Card in the Left Column
+    function handleLeftCardClick(leftId) {
+      if (isStageSubmitted) return;
+      if (lockedIds.has(leftId)) return;
+
+      // Toggle selection or unpair if already paired
+      if (selectedLeftId === leftId) {
+        selectedLeftId = null;
+      } else {
+        selectedLeftId = leftId;
+      }
+      renderBoardDOM();
+    }
+
+    // Handle Clicking a Card in the Right Column
+    function handleRightCardClick(rightId) {
+      if (isStageSubmitted) return;
+      if (lockedIds.has(rightId)) return;
+
+      const mode = document.getElementById('modeSelect').value;
+
+      // If no left card is actively selected, clicking a paired right card removes its pairing
+      if (!selectedLeftId) {
+        if (mode === 'BATCH') {
+          const existingLeft = Object.keys(userPairs).find(lId => userPairs[lId].rightId === rightId);
+          if (existingLeft) {
+            delete userPairs[existingLeft];
+            renderBoardDOM();
+          }
+        }
+        return;
+      }
+
+      // Instant Speed Drill Mode
+      if (mode === 'INSTANT') {
+        totalAttempts++;
+        if (selectedLeftId === rightId) {
+          correctAttempts++;
+          lockedIds.add(rightId);
+          selectedLeftId = null;
+          updateAccuracyUI();
+          renderBoardDOM();
+
+          // Check if entire stage is matched
+          if (lockedIds.size === leftCards.length) {
+            showBanner(`Stage ${currentStageIdx + 1} Cleared! All ${leftCards.length} concepts matched rapidly.`, 'emerald', true);
+          }
+        } else {
+          updateAccuracyUI();
+          // Shake the wrong right card briefly
+          const wrongBtn = document.getElementById(`right_${rightId}`);
+          if (wrongBtn) {
+            wrongBtn.classList.add('animate-shake', 'border-red-500', 'bg-red-50');
+            setTimeout(() => {
+              wrongBtn.classList.remove('animate-shake', 'border-red-500', 'bg-red-50');
+            }, 450);
+          }
+        }
+        return;
+      }
+
+      // Batch ("Submit & Review") Mode
+      // Remove any existing pair attached to this rightId
+      Object.keys(userPairs).forEach(lId => {
+        if (userPairs[lId].rightId === rightId) {
+          delete userPairs[lId];
+        }
+      });
+
+      // Assign smallest available color index
+      const usedColors = new Set(Object.values(userPairs).map(p => p.colorIdx));
+      let colorIdx = 0;
+      while (usedColors.has(colorIdx)) colorIdx++;
+
+      userPairs[selectedLeftId] = { rightId, colorIdx };
+      selectedLeftId = null;
+      renderBoardDOM();
+    }
+
+    // Clear Current Stage Selections
+    function clearStageSelections() {
+      selectedLeftId = null;
+      userPairs = {};
+      lockedIds = new Set();
+      isStageSubmitted = false;
+      document.getElementById('feedbackBanner').classList.add('hidden');
+      handleModeChange();
+      renderBoardDOM();
+    }
+
+    // Submit & Review Stage (or Advance if already submitted)
+    function submitAndReview() {
+      const mode = document.getElementById('modeSelect').value;
+
+      if (mode === 'INSTANT' || isStageSubmitted) {
+        nextStage();
+        return;
+      }
+
+      const pairedCount = Object.keys(userPairs).length;
+      if (pairedCount < leftCards.length) {
+        showBanner(`Please match all ${leftCards.length} items before submitting (${pairedCount}/${leftCards.length} paired).`, 'amber', false);
+        return;
+      }
+
+      isStageSubmitted = true;
+      let stageCorrect = 0;
+
+      leftCards.forEach(card => {
+        totalAttempts++;
+        const pair = userPairs[card.id];
+        if (pair && pair.rightId === card.id) {
+          stageCorrect++;
+          correctAttempts++;
+        }
+      });
+
+      updateAccuracyUI();
+      renderBoardDOM();
+
+      // Change submit button to "Next Stage ->"
+      const submitBtn = document.getElementById('submitStageBtn');
+      if (currentStageIdx < stages.length - 1) {
+        submitBtn.innerHTML = `<span>Next Stage &rarr;</span>`;
+      } else {
+        submitBtn.innerHTML = `<span>Restart Deck &#8635;</span>`;
+      }
+
+      if (stageCorrect === leftCards.length) {
+        showBanner(`Perfect Score! ${stageCorrect}/${leftCards.length} correct on Stage ${currentStageIdx + 1}.`, 'emerald', true);
+      } else {
+        showBanner(`You scored ${stageCorrect}/${leftCards.length} on Stage ${currentStageIdx + 1}. Review the red badges below to see the exact key correlations.`, 'red', true);
+      }
+    }
+
+    // Display Status Banner inside Board
+    function showBanner(message, tone, showNextButton) {
+      const banner = document.getElementById('feedbackBanner');
+      const textEl = document.getElementById('feedbackText');
+      const nextBtn = document.getElementById('feedbackNextBtn');
+
+      banner.className = 'mb-5 p-3.5 rounded-md border text-xs font-semibold flex flex-wrap items-center justify-between gap-2';
+      if (tone === 'emerald') {
+        banner.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-900');
+      } else if (tone === 'amber') {
+        banner.classList.add('bg-amber-50', 'border-amber-300', 'text-amber-900');
+      } else {
+        banner.classList.add('bg-red-50', 'border-red-300', 'text-red-900');
+      }
+
+      textEl.textContent = message;
+      if (showNextButton && currentStageIdx < stages.length - 1) {
+        nextBtn.classList.remove('hidden');
+      } else {
+        nextBtn.classList.add('hidden');
+      }
+    }
+
+    // Stage Navigation
+    function nextStage() {
+      if (currentStageIdx < stages.length - 1) {
+        currentStageIdx++;
+        renderCurrentStage();
+      } else {
+        initDeck(false);
+      }
+    }
+
+    function prevStage() {
+      if (currentStageIdx > 0) {
+        currentStageIdx--;
+        renderCurrentStage();
+      }
+    }
+
+    // Keyboard Shortcuts (1-6 selects Left card, A-F matches Right card, Enter submits)
+    document.addEventListener('keydown', (e) => {
+      // Ignore if typing inside an input field
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+
+      const key = e.key.toUpperCase();
+      if (['1', '2', '3', '4', '5', '6'].includes(key)) {
+        const idx = parseInt(key, 10) - 1;
+        if (leftCards[idx]) handleLeftCardClick(leftCards[idx].id);
+      } else if (['A', 'B', 'C', 'D', 'E', 'F'].includes(key)) {
+        const idx = key.charCodeAt(0) - 65;
+        if (rightCards[idx]) handleRightCardClick(rightCards[idx].id);
+      } else if (e.key === 'Enter') {
+        submitAndReview();
+      }
+    });
+
+    // Modal Controls for Adding Custom Concepts
+    function toggleManageModal(show) {
+      const modal = document.getElementById('manageModal');
+      if (show) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function addCustomConcept() {
+      const category = document.getElementById('newCategory').value;
+      const condition = document.getElementById('newCondition').value.trim();
+      const definition = document.getElementById('newDefinition').value.trim();
+
+      if (!condition || !definition) return;
+
+      const newObj = { category, condition, definition };
+      CONCEPT_BANK.unshift(newObj);
+
+      document.getElementById('codeSnippetPreview').textContent = JSON.stringify(newObj, null, 2) + ',';
+      document.getElementById('newCondition').value = '';
+      document.getElementById('newDefinition').value = '';
+
+      const notice = document.getElementById('addConceptNotice');
+      notice.textContent = '✓ Concept added to active deck!';
+      setTimeout(() => { notice.textContent = ''; }, 3000);
+
+      initDeck(false);
+    }
+
+    function copySnippet() {
+      const text = document.getElementById('codeSnippetPreview').textContent;
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+    }
+
+    // Initialize on load
+    window.onload = () => {
+      initDeck(true);
+    };
+  </script>
+</body>
+</html>
