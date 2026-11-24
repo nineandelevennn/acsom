@@ -1,0 +1,2189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>USMLE STEP 1 JEOPARDY — Pediatric GI</title>
+
+  <!-- Google Fonts for Broadcast Jeopardy Typography & High Legibility -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* =========================================================================
+       BROADCAST JEOPARDY THEME & CUSTOM ANIMATIONS
+       ========================================================================= */
+    :root {
+      --bg-navy-deep: #070B24;
+      --bg-navy-mid: #0D164B;
+      --tile-blue: #0B1C7A;
+      --tile-blue-hover: #1329A8;
+      --tile-header: #08145C;
+      --gold: #FACC15;
+      --gold-bright: #FDE047;
+      --gold-deep: #CA8A04;
+      --border-board: #020514;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #132270 0%, #0D164B 38%, #070B24 100%);
+      color: #F8FAFC;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    /* Desktop / Projector locked viewport so 6x5 board + header + 7-student dock fit without scrolling */
+    @media (min-width: 1024px) and (min-height: 640px) {
+      body {
+        height: 100vh;
+        overflow: hidden;
+      }
+    }
+
+    .font-broadcast {
+      font-family: 'Oswald', 'Inter', sans-serif;
+      letter-spacing: 0.04em;
+    }
+
+    /* Classic Jeopardy Gold Text Shadow */
+    .gold-text-shadow {
+      color: var(--gold);
+      text-shadow: 0 3px 0 rgba(0, 0, 0, 0.78), 0 0 18px rgba(250, 204, 21, 0.22);
+    }
+
+    .header-text-shadow {
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.85);
+    }
+
+    /* Jeopardy Board Tile Styling */
+    .jeopardy-tile {
+      background: linear-gradient(180deg, #102596 0%, #0B1C7A 55%, #071359 100%);
+      border: 2px solid #1E3A8A;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 4px 10px rgba(0, 0, 0, 0.45);
+      transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.16s ease,
+                  border-color 0.16s ease,
+                  background 0.16s ease,
+                  opacity 0.2s ease;
+    }
+
+    .jeopardy-tile:not(.tile-used):hover {
+      background: linear-gradient(180deg, #1733C4 0%, #11279B 60%, #0B1B75 100%);
+      border-color: var(--gold);
+      transform: translateY(-2px) scale(1.015);
+      box-shadow: 0 0 20px rgba(250, 204, 21, 0.45), inset 0 0 14px rgba(250, 204, 21, 0.2);
+      z-index: 10;
+    }
+
+    .jeopardy-tile:not(.tile-used):active {
+      transform: translateY(0) scale(0.99);
+    }
+
+    .jeopardy-tile.tile-used {
+      background: linear-gradient(180deg, #060D38 0%, #040926 100%);
+      border-color: rgba(30, 58, 138, 0.35);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+      opacity: 0.45;
+      cursor: pointer;
+    }
+
+    .jeopardy-tile.tile-used:hover {
+      opacity: 0.72;
+      border-color: rgba(250, 204, 21, 0.45);
+    }
+
+    /* Category Header Tiles */
+    .category-tile {
+      background: linear-gradient(180deg, #0D2080 0%, #071357 100%);
+      border: 2px solid #2546A6;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Active Picker Highlight on Scoreboard */
+    .student-card {
+      background: linear-gradient(180deg, rgba(15, 29, 98, 0.92) 0%, rgba(7, 13, 46, 0.96) 100%);
+      border: 1.5px solid rgba(59, 130, 246, 0.28);
+      transition: all 0.2s ease;
+    }
+
+    .student-card.active-picker {
+      border-color: var(--gold);
+      box-shadow: 0 0 16px rgba(250, 204, 21, 0.32), inset 0 0 12px rgba(250, 204, 21, 0.1);
+      background: linear-gradient(180deg, rgba(25, 45, 130, 0.96) 0%, rgba(11, 20, 68, 0.98) 100%);
+    }
+
+    /* Timer Pulse Animation for <= 10s */
+    @keyframes timerPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.65);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 20px 4px rgba(239, 68, 68, 0.4);
+        transform: scale(1.025);
+      }
+    }
+
+    .timer-critical {
+      animation: timerPulse 0.9s infinite ease-in-out;
+    }
+
+    /* Daily Double Dramatic Entrance */
+    @keyframes ddPop {
+      0% {
+        transform: scale(0.72) rotate(-2deg);
+        opacity: 0;
+      }
+      65% {
+        transform: scale(1.04) rotate(0.5deg);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    .animate-dd {
+      animation: ddPop 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes modalFade {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.985);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .animate-modal {
+      animation: modalFade 0.22s ease-out forwards;
+    }
+
+    /* Subtle Custom Scrollbars inside modals */
+    .custom-scroll::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: rgba(7, 11, 36, 0.5);
+      border-radius: 999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(96, 165, 250, 0.35);
+      border-radius: 999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(250, 204, 21, 0.55);
+    }
+
+    /* Inline Editable Name Input */
+    .student-name-input {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+    }
+    .student-name-input:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    .student-name-input:focus {
+      background: rgba(7, 11, 36, 0.9);
+      border-color: var(--gold);
+      outline: none;
+    }
+
+    /* Confetti canvas for Final Jeopardy winner celebration */
+    #confettiCanvas {
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="flex flex-col select-none">
+
+  <!-- Confetti Layer (Used during Final Jeopardy Podium) -->
+  <canvas id="confettiCanvas" class="fixed inset-0 z-[120] hidden"></canvas>
+
+  <!-- Toast Notification Banner (Non-blocking feedback instead of alert()) -->
+  <div id="toastContainer" class="fixed top-16 right-4 z-[110] flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- =========================================================================
+       TOP HEADER BAR
+       ========================================================================= -->
+  <header class="shrink-0 bg-[#05081B]/95 border-b border-blue-900/70 px-3 sm:px-5 py-2.5 shadow-lg z-20">
+    <div class="max-w-[1920px] mx-auto flex flex-wrap items-center justify-between gap-2">
+      <!-- Brand / Title -->
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center shadow-md shrink-0">
+          <svg class="w-5 h-5 text-[#070B24]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+        </div>
+        <div class="truncate">
+          <h1 class="font-broadcast text-lg sm:text-xl xl:text-2xl tracking-wider text-white leading-tight truncate">
+            <span class="text-yellow-400">USMLE STEP 1 JEOPARDY</span>
+            <span class="text-blue-300/70 mx-1.5">—</span>
+            <span class="text-white">Pediatric GI</span>
+          </h1>
+          <div class="flex items-center gap-3 text-[11px] text-blue-300/80 font-medium">
+            <span id="progressCounter">0 / 30 Clues Completed</span>
+            <span class="hidden md:inline text-blue-400/50">•</span>
+            <span class="hidden md:inline text-blue-300/70">Right-click any played tile to re-open</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Host Control Buttons -->
+      <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+        <!-- Sound FX Toggle -->
+        <button id="btnSoundToggle" type="button"
+          class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all bg-blue-950/80 border-blue-700/60 text-blue-100 hover:border-yellow-400/70 hover:text-white cursor-pointer"
+          title="Toggle synthesized sound effects">
+          <span id="soundIcon">🔊</span>
+          <span class="hidden sm:inline" id="soundLabel">Sound: ON</span>
+        </button>
+
+        <!-- Daily Double Toggle -->
+        <button id="btnDailyDoubleToggle" type="button"
+          class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer"
+          title="Toggle 2 hidden Daily Doubles on 300/400 tiles">
+          <span>★</span>
+          <span>Daily Doubles: <span id="ddStatusText">ON</span></span>
+        </button>
+
+        <!-- Final Jeopardy Button -->
+        <button id="btnFinalJeopardy" type="button"
+          class="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-amber-500 to-yellow-400 text-[#070B24] shadow-md hover:from-amber-400 hover:to-yellow-300 transition-all cursor-pointer">
+          <span>🏆</span>
+          <span>Final Jeopardy</span>
+        </button>
+
+        <!-- Reset Game Button -->
+        <button id="btnResetGame" type="button"
+          class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-950/60 border border-rose-700/60 text-rose-200 hover:bg-rose-900/80 hover:text-white transition-all cursor-pointer"
+          title="Reset board and scores">
+          <span>↺</span>
+          <span class="hidden sm:inline">Reset</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN 6x5 JEOPARDY BOARD + DIFFICULTY TIER MARGIN
+       ========================================================================= -->
+  <main class="flex-1 min-h-0 px-2 sm:px-4 py-2 sm:py-2.5 flex flex-col max-w-[1920px] w-full mx-auto">
+    <div id="boardWrapper" class="flex-1 min-h-0 flex gap-2">
+      <!-- Left Difficulty Tier Legend Column (Visible on lg+ screens) -->
+      <div class="hidden lg:grid grid-rows-[minmax(54px,0.78fr)_repeat(5,1fr)] gap-1.5 w-[108px] xl:w-[126px] shrink-0">
+        <!-- Corner Label -->
+        <div class="rounded-lg bg-[#050A28]/80 border border-blue-900/50 flex flex-col items-center justify-center px-1 text-center">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-blue-300/75">Difficulty</span>
+          <span class="text-[10px] font-semibold text-yellow-400/80">Step 1 Tier</span>
+        </div>
+        <!-- 5 Tier Badges -->
+        <div class="rounded-lg bg-emerald-950/40 border border-emerald-500/30 flex flex-col items-center justify-center px-1.5 text-center">
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-300">Tier 1</span>
+          <span class="text-[11px] font-semibold text-emerald-100/90 leading-tight mt-0.5">Buzzword Recall</span>
+        </div>
+        <div class="rounded-lg bg-sky-950/40 border border-sky-500/30 flex flex-col items-center justify-center px-1.5 text-center">
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-sky-300">Tier 2</span>
+          <span class="text-[11px] font-semibold text-sky-100/90 leading-tight mt-0.5">Clinical Workup</span>
+        </div>
+        <div class="rounded-lg bg-indigo-950/45 border border-indigo-400/35 flex flex-col items-center justify-center px-1.5 text-center">
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-300">Tier 3</span>
+          <span class="text-[11px] font-semibold text-indigo-100/90 leading-tight mt-0.5">Pathophysiology</span>
+        </div>
+        <div class="rounded-lg bg-amber-950/40 border border-amber-500/35 flex flex-col items-center justify-center px-1.5 text-center">
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-300">Tier 4</span>
+          <span class="text-[11px] font-semibold text-amber-100/90 leading-tight mt-0.5">Multi-Step Integration</span>
+        </div>
+        <div class="rounded-lg bg-rose-950/45 border border-rose-500/45 flex flex-col items-center justify-center px-1.5 text-center">
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-rose-300">Tier 5</span>
+          <span class="text-[11px] font-semibold text-rose-100/95 leading-tight mt-0.5">Boss Level</span>
+        </div>
+      </div>
+
+      <!-- 6 Columns x 6 Rows (Header + 5 Point Values) Grid -->
+      <div id="jeopardyGrid"
+        class="flex-1 min-h-0 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 md:grid-rows-[minmax(54px,0.78fr)_repeat(5,1fr)] gap-1.5 sm:gap-2">
+        <!-- Populated dynamically by JS -->
+      </div>
+    </div>
+  </main>
+
+  <!-- =========================================================================
+       BOTTOM 7-STUDENT SCOREBOARD DOCK
+       ========================================================================= -->
+  <footer class="shrink-0 bg-[#05081B]/95 border-t border-blue-900/80 px-2 sm:px-4 py-2 shadow-[0_-6px_24px_rgba(0,0,0,0.5)] z-20">
+    <div class="max-w-[1920px] mx-auto">
+      <div id="scoreboardGrid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-1.5 sm:gap-2">
+        <!-- 7 Student Cards Populated Dynamically -->
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       DAILY DOUBLE WAGER MODAL
+       ========================================================================= -->
+  <div id="dailyDoubleModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-[#030617]/90 backdrop-blur-md p-4">
+    <div class="animate-dd w-full max-w-xl rounded-2xl bg-gradient-to-b from-[#0E1E7A] via-[#0A1557] to-[#060C36] border-2 border-yellow-400 shadow-[0_0_60px_rgba(250,204,21,0.35)] p-6 sm:p-8 text-center relative">
+      <button id="btnCancelDD" type="button"
+        class="absolute top-3 right-3 text-blue-300 hover:text-white px-2.5 py-1 rounded-lg bg-blue-950/70 border border-blue-700/50 text-xs font-semibold cursor-pointer">
+        ✕ Cancel
+      </button>
+
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-400/15 border border-yellow-400/50 text-yellow-300 text-xs font-bold uppercase tracking-widest mb-3">
+        ★ Hidden Bonus Clue ★
+      </div>
+      <h2 class="font-broadcast text-5xl sm:text-6xl gold-text-shadow tracking-wider mb-2">DAILY DOUBLE!</h2>
+      <p id="ddCategoryLabel" class="text-sm sm:text-base font-bold uppercase tracking-wider text-blue-200 mb-5"></p>
+
+      <!-- Select Wagering Student (defaults to active picker) -->
+      <div class="bg-[#060B29]/80 rounded-xl p-4 border border-blue-800/70 mb-5 text-left">
+        <label for="ddStudentSelect" class="block text-xs font-semibold uppercase tracking-wider text-blue-300 mb-1.5">
+          Wagering Student (Board Control)
+        </label>
+        <select id="ddStudentSelect"
+          class="w-full rounded-lg bg-[#0D1A63] border border-blue-600/70 text-white font-semibold px-3 py-2 text-sm focus:outline-none focus:border-yellow-400">
+        </select>
+        <div class="flex justify-between items-center mt-2 text-xs text-blue-200/90">
+          <span>Current Score: <strong id="ddCurrentScore" class="text-white">0</strong></span>
+          <span>Maximum Wager: <strong id="ddMaxWager" class="text-yellow-400">500</strong></span>
+        </div>
+      </div>
+
+      <!-- Wager Amount Input & Quick Presets -->
+      <div class="mb-6">
+        <label for="ddWagerInput" class="block text-xs font-semibold uppercase tracking-wider text-blue-300 mb-2">
+          Enter Wager (0 to <span id="ddMaxWagerInline">500</span> pts)
+        </label>
+        <div class="flex items-center justify-center gap-2 mb-3">
+          <input id="ddWagerInput" type="number" min="0" step="50"
+            class="w-40 text-center font-broadcast text-3xl text-yellow-400 bg-[#050924] border-2 border-yellow-400/70 rounded-xl py-2 px-3 focus:outline-none focus:border-yellow-300" />
+        </div>
+        <div class="flex flex-wrap justify-center gap-2">
+          <button type="button" data-dd-preset="100" class="dd-preset-btn px-3 py-1 rounded-lg text-xs font-bold bg-blue-900/80 hover:bg-blue-800 border border-blue-600/60 text-blue-100 cursor-pointer">100</button>
+          <button type="button" data-dd-preset="300" class="dd-preset-btn px-3 py-1 rounded-lg text-xs font-bold bg-blue-900/80 hover:bg-blue-800 border border-blue-600/60 text-blue-100 cursor-pointer">300</button>
+          <button type="button" data-dd-preset="500" class="dd-preset-btn px-3 py-1 rounded-lg text-xs font-bold bg-blue-900/80 hover:bg-blue-800 border border-blue-600/60 text-blue-100 cursor-pointer">500</button>
+          <button type="button" id="btnDDMaxPreset" class="px-3 py-1 rounded-lg text-xs font-bold bg-amber-500/25 hover:bg-amber-500/40 border border-yellow-400/60 text-yellow-300 cursor-pointer">Max Wager</button>
+        </div>
+        <p id="ddWagerError" class="text-rose-400 text-xs font-semibold mt-2 hidden"></p>
+      </div>
+
+      <button id="btnLockDDWager" type="button"
+        class="w-full py-3.5 rounded-xl font-broadcast text-xl tracking-wider uppercase bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-[#070B24] font-bold shadow-lg hover:brightness-110 transition-all cursor-pointer">
+        Lock Wager &amp; Reveal Clue
+      </button>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       QUESTION MODAL (60-SECOND TIMER, CLUE, ANSWER, PEARL, 7-STUDENT GRADING)
+       ========================================================================= -->
+  <div id="questionModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-[#030617]/92 backdrop-blur-md p-2 sm:p-4 lg:p-6">
+    <div class="animate-modal w-full max-w-6xl max-h-[96vh] flex flex-col rounded-2xl bg-gradient-to-b from-[#0C1C73] via-[#091559] to-[#060D38] border-2 border-blue-500/50 shadow-[0_24px_80px_rgba(0,0,0,0.85)] overflow-hidden">
+
+      <!-- Modal Top Header: Category, Points, Tier, & 60s Timer -->
+      <div class="shrink-0 bg-[#060C33]/95 border-b border-blue-800/70 px-4 sm:px-6 py-3">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <!-- Left Meta -->
+          <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+            <span id="qCategoryBadge" class="font-broadcast text-base sm:text-xl uppercase tracking-wider text-white"></span>
+            <span id="qPointsBadge" class="font-broadcast text-xl sm:text-2xl px-3 py-0.5 rounded-lg bg-yellow-400/15 border border-yellow-400/60 text-yellow-400"></span>
+            <span id="qTierBadge" class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border"></span>
+            <span id="qDailyDoubleBadge" class="hidden text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-yellow-400 text-[#070B24]">★ Daily Double</span>
+          </div>
+
+          <!-- Right Timer Cluster -->
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div id="timerPill" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#040822] border-2 border-cyan-400/60 transition-colors">
+              <span class="text-xs uppercase font-bold tracking-wider text-blue-300/80 hidden sm:inline">Time</span>
+              <span id="timerDisplay" class="font-broadcast text-2xl sm:text-3xl tracking-wider text-cyan-300 tabular-nums">01:00</span>
+            </div>
+            <button id="btnTimerToggle" type="button"
+              class="px-3 py-2 rounded-lg text-xs font-bold bg-blue-900/90 hover:bg-blue-800 border border-blue-600/60 text-white cursor-pointer"
+              title="Pause or Resume Timer (Shortcut: P)">
+              ⏸ Pause
+            </button>
+            <button id="btnTimerReset" type="button"
+              class="px-2.5 py-2 rounded-lg text-xs font-bold bg-blue-950/90 hover:bg-blue-900 border border-blue-700/60 text-blue-200 cursor-pointer"
+              title="Reset Timer to 60s">
+              ↺ 60s
+            </button>
+            <button id="btnCloseUnplayed" type="button"
+              class="px-2.5 py-2 rounded-lg text-xs font-bold bg-slate-800/80 hover:bg-slate-700 border border-slate-600/60 text-slate-200 cursor-pointer"
+              title="Close and leave tile unplayed">
+              ✕ Undo
+            </button>
+          </div>
+        </div>
+
+        <!-- Smooth Countdown Progress Bar -->
+        <div class="w-full h-2.5 bg-[#030619] rounded-full mt-3 overflow-hidden border border-blue-900/70">
+          <div id="timerProgressBar" class="h-full rounded-full transition-all duration-200 ease-linear bg-gradient-to-r from-cyan-400 to-yellow-400" style="width: 100%;"></div>
+        </div>
+      </div>
+
+      <!-- Modal Scrollable Content: Clue + Answer + High-Yield Pearl -->
+      <div class="flex-1 min-h-0 overflow-y-auto custom-scroll px-5 sm:px-8 py-5 sm:py-6 flex flex-col gap-5">
+        <!-- Daily Double Target Banner (Only shown on Daily Doubles) -->
+        <div id="qDDWagerBanner" class="hidden rounded-xl bg-yellow-400/15 border border-yellow-400/50 px-4 py-2.5 text-center text-sm sm:text-base font-semibold text-yellow-200">
+        </div>
+
+        <!-- Main USMLE Step 1 Clue -->
+        <div class="rounded-2xl bg-[#071352]/90 border border-blue-600/40 p-5 sm:p-7 shadow-inner">
+          <div class="text-[11px] font-bold uppercase tracking-widest text-blue-300/75 mb-2">USMLE Step 1 Clinical Vignette / Clue</div>
+          <p id="qClueText" class="text-lg sm:text-2xl lg:text-[1.65rem] leading-relaxed font-medium text-white tracking-[0.005em]"></p>
+        </div>
+
+        <!-- Reveal Answer Trigger -->
+        <div id="revealActionRow" class="flex justify-center">
+          <button id="btnRevealAnswer" type="button"
+            class="px-7 py-3.5 rounded-xl font-broadcast text-lg sm:text-xl tracking-wider uppercase bg-gradient-to-r from-yellow-400 to-amber-500 text-[#070B24] font-bold shadow-[0_0_24px_rgba(250,204,21,0.3)] hover:brightness-110 transition-all cursor-pointer flex items-center gap-2.5">
+            <span>👁 Reveal Answer &amp; Step 1 Explanation</span>
+            <span class="hidden sm:inline text-xs font-sans font-extrabold px-2 py-0.5 rounded bg-[#070B24]/20">SPACE</span>
+          </button>
+        </div>
+
+        <!-- Revealed Answer & High-Yield Pearl -->
+        <div id="answerRevealBox" class="hidden flex flex-col gap-3.5 animate-modal">
+          <div class="rounded-xl bg-emerald-950/65 border-2 border-emerald-400/60 p-4 sm:p-5">
+            <div class="flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-emerald-300 mb-1.5">
+              <span>✓</span>
+              <span>Correct Answer</span>
+            </div>
+            <div id="qAnswerText" class="text-base sm:text-xl font-semibold text-emerald-50 leading-relaxed"></div>
+          </div>
+
+          <div class="rounded-xl bg-amber-950/45 border border-yellow-400/50 p-4 sm:p-5">
+            <div class="flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-yellow-300 mb-1.5">
+              <span>★</span>
+              <span>High-Yield Step 1 Pearl</span>
+            </div>
+            <div id="qExplanationText" class="text-sm sm:text-base text-amber-50/95 leading-relaxed"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Bottom: 7-Student Grading Dock + Complete Button -->
+      <div class="shrink-0 bg-[#050A2B]/98 border-t border-blue-800/80 px-4 sm:px-6 py-3.5">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-300">
+            Award or Deduct <span id="gradingValueLabel" class="text-yellow-400"></span> Points (Click again to undo)
+          </span>
+          <span class="text-[11px] text-blue-300/70 hidden sm:inline">Wrong answer allows another student to steal before closing</span>
+        </div>
+
+        <!-- 7 Compact Student Grading Chips -->
+        <div id="modalGradingGrid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 mb-3.5">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-blue-900/60">
+          <button id="btnLeaveUnplayedFooter" type="button"
+            class="px-3.5 py-2 rounded-lg text-xs font-semibold text-blue-300 hover:text-white hover:bg-blue-900/50 transition-all cursor-pointer">
+            Undo / Leave Tile Unplayed
+          </button>
+          <button id="btnCompleteQuestion" type="button"
+            class="px-6 py-2.5 rounded-xl font-broadcast text-base sm:text-lg tracking-wider uppercase bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-[#04120D] font-bold shadow-lg transition-all cursor-pointer">
+            ✓ Complete &amp; Return to Board
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       FINAL JEOPARDY MODAL (7-STUDENT WAGERING, 60S CLUE, GRADING & PODIUM)
+       ========================================================================= -->
+  <div id="finalJeopardyModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-[#030617]/94 backdrop-blur-md p-2 sm:p-4">
+    <div class="animate-modal w-full max-w-5xl max-h-[95vh] flex flex-col rounded-2xl bg-gradient-to-b from-[#0E1F7D] via-[#091558] to-[#050B30] border-2 border-yellow-400/80 shadow-[0_0_60px_rgba(250,204,21,0.28)] overflow-hidden">
+
+      <!-- Header -->
+      <div class="shrink-0 bg-[#060C33] border-b border-yellow-400/30 px-5 py-3.5 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div class="text-[11px] font-extrabold uppercase tracking-widest text-yellow-400">🏆 Bonus Championship Round</div>
+          <h2 class="font-broadcast text-2xl sm:text-3xl text-white tracking-wider">FINAL JEOPARDY — <span class="text-yellow-300">MULTI-SYSTEM PEDIATRIC GI INTEGRATION</span></h2>
+        </div>
+        <button id="btnCloseFJ" type="button"
+          class="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-950 hover:bg-blue-900 border border-blue-700 text-blue-200 cursor-pointer">
+          ✕ Close
+        </button>
+      </div>
+
+      <!-- Phase Stepper Tabs -->
+      <div class="shrink-0 bg-[#050926] border-b border-blue-900/70 px-5 py-2 flex gap-2 overflow-x-auto">
+        <button type="button" data-fj-step="1" class="fj-tab px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider cursor-pointer transition-all">1. Student Wagers</button>
+        <button type="button" data-fj-step="2" class="fj-tab px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider cursor-pointer transition-all">2. Final Clue &amp; 60s Timer</button>
+        <button type="button" data-fj-step="3" class="fj-tab px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider cursor-pointer transition-all">3. Grade &amp; Podium</button>
+      </div>
+
+      <!-- Phase Body -->
+      <div class="flex-1 min-h-0 overflow-y-auto custom-scroll p-5 sm:p-6">
+
+        <!-- STEP 1: WAGERS -->
+        <div id="fjStep1" class="space-y-4">
+          <div class="rounded-xl bg-blue-950/60 border border-blue-700/50 p-4 text-sm text-blue-100">
+            <strong class="text-yellow-300">Category:</strong> MULTI-SYSTEM PEDIATRIC GI INTEGRATION.
+            Each student may wager up to their current score (students with ≤ 0 points may wager up to <strong>500</strong> points so everyone stays in the round).
+          </div>
+          <div id="fjWagerList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <!-- Populated dynamically -->
+          </div>
+          <div class="flex justify-end pt-2">
+            <button id="btnFJToClue" type="button"
+              class="px-6 py-3 rounded-xl font-broadcast text-lg uppercase tracking-wider bg-gradient-to-r from-yellow-400 to-amber-500 text-[#070B24] font-bold shadow-lg hover:brightness-110 cursor-pointer">
+              Lock Wagers &amp; Show Final Clue →
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 2: CLUE & 60s TIMER -->
+        <div id="fjStep2" class="hidden space-y-5">
+          <!-- Timer Bar -->
+          <div class="rounded-xl bg-[#050924] border border-blue-800/80 p-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-2.5">
+              <span class="text-xs font-bold uppercase tracking-widest text-blue-300">Final Jeopardy Countdown</span>
+              <div class="flex items-center gap-2">
+                <span id="fjTimerDisplay" class="font-broadcast text-3xl text-cyan-300 tabular-nums px-3 py-0.5 rounded-lg bg-blue-950 border border-cyan-500/40">01:00</span>
+                <button id="btnFJTimerStart" type="button" class="px-3.5 py-2 rounded-lg text-xs font-bold bg-cyan-500 text-[#050924] hover:bg-cyan-400 cursor-pointer">▶ Start 60s</button>
+                <button id="btnFJTimerReset" type="button" class="px-3 py-2 rounded-lg text-xs font-bold bg-blue-900 text-blue-100 hover:bg-blue-800 cursor-pointer">↺ Reset</button>
+              </div>
+            </div>
+            <div class="w-full h-2.5 bg-[#020412] rounded-full overflow-hidden">
+              <div id="fjTimerBar" class="h-full rounded-full bg-gradient-to-r from-cyan-400 to-yellow-400 transition-all duration-200" style="width: 100%;"></div>
+            </div>
+          </div>
+
+          <!-- Clue -->
+          <div class="rounded-2xl bg-[#071352] border border-blue-500/50 p-6">
+            <div class="text-xs font-bold uppercase tracking-widest text-yellow-400/90 mb-2">Final Jeopardy Clue</div>
+            <p id="fjClueText" class="text-lg sm:text-2xl leading-relaxed text-white font-medium"></p>
+          </div>
+
+          <!-- Reveal Answer -->
+          <div class="flex justify-center">
+            <button id="btnFJReveal" type="button"
+              class="px-6 py-3 rounded-xl font-broadcast text-lg uppercase tracking-wider bg-gradient-to-r from-yellow-400 to-amber-500 text-[#070B24] font-bold hover:brightness-110 cursor-pointer">
+              👁 Reveal Final Jeopardy Answer
+            </button>
+          </div>
+
+          <div id="fjAnswerBox" class="hidden rounded-xl bg-emerald-950/70 border-2 border-emerald-400/70 p-5 animate-modal">
+            <div class="text-xs font-extrabold uppercase tracking-widest text-emerald-300 mb-1.5">✓ Final Jeopardy Answer</div>
+            <p id="fjAnswerText" class="text-base sm:text-lg text-emerald-50 leading-relaxed font-medium"></p>
+          </div>
+
+          <div class="flex justify-between pt-2">
+            <button type="button" data-fj-nav="1" class="px-4 py-2 rounded-lg text-xs font-bold bg-blue-950 text-blue-200 border border-blue-800 cursor-pointer">← Back to Wagers</button>
+            <button type="button" data-fj-nav="3" class="px-6 py-2.5 rounded-xl font-broadcast text-base uppercase tracking-wider bg-emerald-500 text-[#04120D] font-bold hover:bg-emerald-400 cursor-pointer">Proceed to Grading →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3: GRADING & PODIUM -->
+        <div id="fjStep3" class="hidden space-y-5">
+          <div id="fjGradingList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <!-- Populated dynamically -->
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-blue-800/70">
+            <button type="button" data-fj-nav="2" class="px-4 py-2 rounded-lg text-xs font-bold bg-blue-950 text-blue-200 border border-blue-800 cursor-pointer">← Back to Clue</button>
+            <button id="btnApplyFJAndPodium" type="button"
+              class="px-6 py-3 rounded-xl font-broadcast text-lg uppercase tracking-wider bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-[#070B24] font-bold shadow-lg hover:brightness-110 cursor-pointer">
+              🏆 Finalize Scores &amp; Show Podium
+            </button>
+          </div>
+
+          <!-- Podium Display -->
+          <div id="fjPodiumBox" class="hidden rounded-2xl bg-[#050B2E] border-2 border-yellow-400/70 p-6 text-center animate-modal">
+            <div class="text-xs font-extrabold uppercase tracking-widest text-yellow-400 mb-1">USMLE Step 1 Pediatric GI Champions</div>
+            <h3 class="font-broadcast text-3xl sm:text-4xl text-white mb-5">FINAL STANDINGS</h3>
+            <div id="fjPodiumCards" class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end max-w-3xl mx-auto mb-5"></div>
+            <div id="fjRemainingStandings" class="flex flex-wrap justify-center gap-2 text-xs text-blue-200"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       CONFIRMATION MODAL (REPLACES BROWSER confirm() / alert())
+       ========================================================================= -->
+  <div id="confirmModal" class="fixed inset-0 z-[90] hidden items-center justify-center bg-[#030617]/85 backdrop-blur-sm p-4">
+    <div class="animate-modal w-full max-w-md rounded-2xl bg-[#0B175B] border-2 border-blue-500/60 p-6 shadow-2xl">
+      <h3 id="confirmTitle" class="font-broadcast text-2xl text-yellow-400 tracking-wide mb-2">Confirm Action</h3>
+      <p id="confirmMessage" class="text-sm text-blue-100 leading-relaxed mb-6"></p>
+      <div class="flex justify-end gap-2.5">
+        <button id="btnConfirmCancel" type="button"
+          class="px-4 py-2 rounded-lg text-xs font-bold bg-blue-950 hover:bg-blue-900 border border-blue-700 text-blue-200 cursor-pointer">
+          Cancel
+        </button>
+        <button id="btnConfirmProceed" type="button"
+          class="px-5 py-2 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white cursor-pointer">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       APPLICATION LOGIC (DATA, AUDIO, STATE, TIMERS, MODALS)
+       ========================================================================= -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* =======================================================================
+         1. DIFFICULTY TIERS & COMPLETE MEDICALLY VETTED QUESTION BANK (VERBATIM)
+         ======================================================================= */
+      const DIFFICULTY_TIERS = {
+        100: {
+          tier: 'Tier 1: Buzzword Recall',
+          short: 'Buzzword Recall',
+          badgeClass: 'bg-emerald-950/80 border-emerald-400/60 text-emerald-300'
+        },
+        200: {
+          tier: 'Tier 2: Clinical Workup',
+          short: 'Clinical Workup',
+          badgeClass: 'bg-sky-950/80 border-sky-400/60 text-sky-300'
+        },
+        300: {
+          tier: 'Tier 3: Pathophysiology',
+          short: 'Pathophysiology',
+          badgeClass: 'bg-indigo-950/80 border-indigo-400/60 text-indigo-300'
+        },
+        400: {
+          tier: 'Tier 4: Multi-Step Integration',
+          short: 'Multi-Step Integration',
+          badgeClass: 'bg-amber-950/80 border-amber-400/60 text-amber-300'
+        },
+        500: {
+          tier: 'Tier 5: Boss Level',
+          short: 'Boss Level',
+          badgeClass: 'bg-rose-950/85 border-rose-400/70 text-rose-300'
+        }
+      };
+
+      const POINT_VALUES = [100, 200, 300, 400, 500];
+
+      const CATEGORIES = [
+        {
+          title: 'VOMITING, REFLUX & OBSTRUCTION',
+          questions: [
+            {
+              points: 100,
+              clue: 'A 4-week-old firstborn male develops progressive, nonbilious, projectile vomiting after feeds. On exam, he remains eager to feed and has a palpable "olive-shaped" mass in the right upper quadrant. What is the diagnosis and the initial diagnostic test of choice?',
+              answer: 'Hypertrophic pyloric stenosis; abdominal ultrasound.',
+              explanation: 'Classic presentation: 3–6-week-old male, progressive nonbilious projectile emesis, "hungry vomiter," palpable RUQ olive mass, and hypochloremic, hypokalemic metabolic alkalosis. Ultrasound shows thickened (>3 mm) and elongated (>15 mm) pyloric muscle.'
+            },
+            {
+              points: 200,
+              clue: 'A 3-month-old infant spits up effortlessly after nearly every feed, shows no arching or feeding aversion, and tracks along the 60th percentile for weight and length ("happy spitter"). What is the primary physiologic mechanism of this condition, and what is the most appropriate management?',
+              answer: 'Transient lower esophageal sphincter relaxations (TLESRs) / immature LES; parental reassurance and conservative measures (no acid suppression or endoscopy).',
+              explanation: 'Uncomplicated infant reflux (GER) is distinguished from GERD by normal growth and absence of complications (esophagitis, Sandifer syndrome, hematemesis, apnea, failure to thrive). PPIs/H2 blockers and endoscopy are reserved for refractory GERD or alarm signs.'
+            },
+            {
+              points: 300,
+              clue: 'A 9-month-old boy presents with intermittent 15-minute episodes of inconsolable crying where he draws his knees to his chest, separated by periods of lethargy. Ultrasound shows a "target sign." What is the most common anatomic lead point in this age group, and what is the preferred initial treatment in a hemodynamically stable child without peritonitis?',
+              answer: 'Hypertrophied Peyer patches (ileal lymphoid hyperplasia, often post-viral); image-guided pneumatic (air) or hydrostatic (saline/contrast) enema reduction.',
+              explanation: 'Ileocolic intussusception peaks at 6–36 months and is typically triggered by lymphoid hyperplasia. Non-operative enema reduction is both diagnostic and therapeutic unless free air, peritonitis, or shock mandates urgent surgery.'
+            },
+            {
+              points: 400,
+              clue: 'A 6-day-old neonate develops acute bilious vomiting and abdominal distension. An upper GI contrast series demonstrates the duodenojejunal junction (ligament of Treitz) to the right of the midline with a "corkscrew" duodenum. What caused this condition, and what vascular catastrophe requires urgent Ladd surgery?',
+              answer: 'Failure of the midgut to complete its 270° counterclockwise rotation around the superior mesenteric artery (SMA) during weeks 6–10; twisting around the narrow mesenteric pedicle strangulates the SMA, causing massive midgut ischemia/necrosis.',
+              explanation: 'Bilious vomiting in a neonate is malrotation with midgut volvulus until proven otherwise. Upper GI series is the gold-standard diagnostic test in stable patients; unstable patients with peritonitis go directly to the OR for a Ladd procedure.'
+            },
+            {
+              points: 500,
+              clue: 'A 5-week-old male with untreated pyloric stenosis has been vomiting for 6 days. Labs show Na⁺ 135 mEq/L, K⁺ 2.8 mEq/L, Cl⁻ 84 mEq/L, HCO₃⁻ 34 mEq/L, arterial pH 7.52, and an unexpectedly acidic urine pH of 5.2 (paradoxical aciduria). Explain the exact renal tubular mechanism maintaining BOTH the metabolic alkalosis and the acidic urine, and identify the critical anion required to reverse it.',
+              answer: 'Volume contraction activates RAAS (↑ angiotensin II and aldosterone). Severe hypochloremia reduces luminal Cl⁻ delivery to β-intercalated cells, preventing HCO₃⁻ excretion via pendrin (Cl⁻/HCO₃⁻ exchanger). Simultaneously, aldosterone drives ENaC Na⁺ reabsorption and α-intercalated cell H⁺-ATPase secretion (worsened by hypokalemia), producing paradoxical aciduria. Repleting <strong>chloride (IV normal saline + KCl)</strong> restores volume, suppresses RAAS, and supplies luminal Cl⁻ to excrete excess HCO₃⁻.',
+              explanation: 'In severe volume depletion with hypochloremia and hypokalemia, the kidney prioritizes Na⁺/volume conservation over acid-base homeostasis. Without sufficient Cl⁻, the collecting duct cannot dump HCO₃⁻ and secretes H⁺ instead of depleted K⁺.'
+            }
+          ]
+        },
+        {
+          title: 'CONSTIPATION & HIRSCHSPRUNG',
+          questions: [
+            {
+              points: 100,
+              clue: 'A 3-day-old full-term neonate fails to pass meconium within 48 hours of birth and develops abdominal distension and bilious emesis. Digital rectal exam reveals an empty rectal vault followed by an explosive expulsion of stool and gas ("squirt sign"). What is the diagnosis?',
+              answer: 'Hirschsprung disease (Congenital aganglionic megacolon).',
+              explanation: 'Delayed passage of meconium (>48 hours) plus the classic "squirt sign" on rectal exam strongly suggests Hirschsprung disease.'
+            },
+            {
+              points: 200,
+              clue: 'A 4-year-old boy recently started preschool and now passes large, hard stools once every 5 days while experiencing daily liquid brown streaks in his underwear. Exam shows a palpable suprapubic fecal mass and intact anal wink/cremasteric reflexes. What is the diagnosis and the first-line pharmacologic agent?',
+              answer: 'Functional constipation with overflow fecal incontinence (encopresis); osmotic laxative—specifically <strong>polyethylene glycol (PEG 3350)</strong> alongside scheduled toilet routines.',
+              explanation: 'Stool withholding, large-caliber stools, and overflow soiling distinguish functional constipation from Hirschsprung disease (which features tight sphincter tone, ribbon-like stools, and rare overflow soiling). PEG 3350 is first-line for disimpaction and maintenance.'
+            },
+            {
+              points: 300,
+              clue: 'A contrast enema in an infant with Hirschsprung disease demonstrates a narrow distal rectosigmoid segment with a dramatically dilated colon upstream. Which segment actually lacks ganglion cells, and which TWO specific enteric nerve plexuses are absent on rectal suction biopsy?',
+              answer: 'The <strong>narrow distal segment</strong> is aganglionic (the dilated upstream colon has normal ganglia); both <strong>Auerbach (myenteric)</strong> and <strong>Meissner (submucosal)</strong> plexuses are absent.',
+              explanation: 'High-yield Step 1 trap! The aganglionic distal bowel remains tonically contracted, creating a functional obstruction that causes secondary dilation of the normal ganglionic bowel proximal to the transition zone.'
+            },
+            {
+              points: 400,
+              clue: 'A newborn with Down syndrome (trisomy 21) is diagnosed with Hirschsprung disease. What mechanisms causes this defect, and a loss-of-function mutation in which proto-oncogene receptor tyrosine kinase is most commonly responsible?',
+              answer: '<strong>Neural crest cells</strong>; loss-of-function mutation in the <strong>RET</strong> proto-oncogene (receptor for GDNF).',
+              explanation: 'Neural crest cells migrate craniocaudally down the GI tract, so failure always involves the distal rectum first. Contrast <em>loss-of-function</em> RET mutations (Hirschsprung) with <em>gain-of-function</em> RET mutations (MEN 2A, MEN 2B, medullary thyroid carcinoma).'
+            },
+            {
+              points: 500,
+              clue: 'On specialized histochemical and immunohistochemical staining of a rectal suction biopsy in Hirschsprung disease, which enzyme reveals <strong>hypertrophic cholinergic nerve trunks</strong> in the lamina propria, which calcium-binding protein stain is <strong>completely absent</strong> in mucosal nerve fibers, and <strong>which exact neurotransmitters</strong> are lost to cause tonic contraction of the aganglionic segment?',
+              answer: '<strong>Acetylcholinesterase (AChE)</strong> highlights hypertrophic extrinsic cholinergic fibers; <strong>Calretinin</strong> staining is absent. Tonic contraction results from loss of intrinsic inhibitory non-adrenergic, non-cholinergic (NANC) neurons that release <strong>nitric oxide (NO) and VIP</strong>, leaving unopposed excitatory cholinergic tone.',
+              explanation: 'Normal descending peristaltic relaxation requires intrinsic enteric inhibitory interneurons releasing NO and VIP. In Hirschsprung disease, intrinsic NO/VIP relaxation disappears while extrinsic cholinergic fibers proliferate (↑ AChE) and calretinin-positive intrinsic fibers vanish.'
+            }
+          ]
+        },
+        {
+          title: 'DIARRHEA & DEHYDRATION',
+          questions: [
+            {
+              points: 100,
+              clue: 'An unvaccinated 10-month-old infant presents in January with profuse watery, non-bloody diarrhea and vomiting. Stool microscopy reveals no RBCs or WBCs. Which segmented, double-stranded RNA virus is the most likely pathogen?',
+              answer: 'Rotavirus.',
+              explanation: 'Rotavirus (Reoviridae—segmented dsRNA, wheel-shaped) causes winter outbreaks of watery diarrhea in young children via villous tip destruction and the NSP4 viral enterotoxin.'
+            },
+            {
+              points: 200,
+              clue: 'A 2-year-old with 48 hours of watery diarrhea has dry mucous membranes, decreased tears, mildly sunken eyes, capillary refill of 2.5 seconds, and drinks eagerly when offered water. Classify her dehydration severity and state the first-line rehydration plan.',
+              answer: '<strong>Mild-to-moderate dehydration</strong> (~5–9% fluid deficit); <strong>Oral Rehydration Therapy (ORT)</strong> with hypo-osmolar oral rehydration solution (50–100 mL/kg over 4 hours).',
+              explanation: 'Eager thirst, normal mental status, and mildly delayed cap refill indicate mild-to-moderate dehydration, where ORT is as effective and safer than IV fluids (IV crystalloids are reserved for severe dehydration ≥10%, shock, lethargy, or intractable vomiting).'
+            },
+            {
+              points: 300,
+              clue: 'Oral rehydration solution (ORS) effectively restores intravascular volume even during severe cAMP-mediated secretory diarrhea (e.g., <em>Vibrio cholerae</em> or ETEC). Name the <strong>exact apical enterocyte cotransporter</strong> that remains functional to drive water absorption, and explain why giving undiluted apple juice or soda worsens diarrhea.',
+              answer: '<strong>SGLT1 (Sodium-Glucose Cotransporter 1)</strong> couples 2 Na⁺ with 1 glucose across the apical brush border, pulling water down the osmotic gradient. Fruit juices/sodas have <strong>excessively high osmolality and low Na⁺</strong>, drawing water into the gut lumen (osmotic diarrhea).',
+              explanation: 'Even when toxin-elevated cAMP maximally opens CFTR Cl⁻ channels, SGLT1-mediated Na⁺/glucose cotransport (powered by basolateral Na⁺/K⁺-ATPase) remains completely intact.'
+            },
+            {
+              points: 400,
+              clue: 'Five days after developing bloody diarrhea following a cookout, a 5-year-old develops pallor, petechiae, oliguria, schistocytes on smear, normal PT/aPTT, and creatinine 3.1 mg/dL. Why are <strong>antibiotics strictly contraindicated</strong> during the diarrheal illness, and what exact intracellular structure does the causative toxin inactivate?',
+              answer: 'Antibiotics trigger bacterial lysis/phage induction, increasing release of <strong>Shiga-like toxin (verotoxin)</strong> from <em>E. coli</em> O157:H7 and elevating the risk of <strong>hemolytic uremic syndrome (HUS)</strong>. The toxin cleaves 28S rRNA to inactivate the <strong>60S ribosomal subunit</strong>, halting protein synthesis and inducing glomerular endothelial injury.',
+              explanation: 'Bloody diarrhea is an urgent red flag. Remember that HUS causes microangiopathic hemolytic anemia, thrombocytopenia, and AKI with <strong>normal PT/aPTT</strong> (distinguishing it from DIC).'
+            },
+            {
+              points: 500,
+              clue: 'A 7-month-old recovers from severe rotavirus enteritis but has persistent explosive, frothy, watery diarrhea for 3 weeks with perianal erythema. Stool studies show: pH 4.8, positive reducing substances, stool Na⁺ 30 mEq/L, stool K⁺ 25 mEq/L, and measured stool osmolality 290 mOsm/kg. Calculate the <strong>stool osmotic gap</strong>, classify the diarrhea, and explain the cellular-level brush-border mechanism.',
+              answer: 'Stool osmotic gap = 290 − 2(30 + 25) = <strong>180 mOsm/kg</strong> (&gt;125 mOsm/kg = <strong>osmotic diarrhea</strong>). Mechanism: <strong>Secondary lactase deficiency</strong>—rotavirus selectively destroys mature enterocytes at the <strong>villous tips</strong>, where lactase (the most superficial and slowest-recovering brush-border disaccharidase) is concentrated. Unabsorbed lactose is fermented by colonic bacteria into <strong>short-chain fatty acids (lactic acid)</strong> and H₂ gas, dropping stool pH (&lt;5.5) and yielding positive reducing substances.',
+              explanation: 'Stool osmotic gap = 290 − 2(Na⁺ + K⁺). Values &lt;50 mOsm/kg indicate secretory diarrhea; values &gt;125 mOsm/kg indicate osmotic diarrhea. Secondary lactase deficiency is a classic cause of persistent post-infectious diarrhea in infants.'
+            }
+          ]
+        },
+        {
+          title: 'CELIAC, IBD & GROWTH',
+          questions: [
+            {
+              points: 100,
+              clue: 'A 16-month-old toddler develops bulky foul-smelling stools, abdominal distension, and poor weight gain months after starting wheat cereal. Which TWO HLA class II alleles are strongly associated with this disorder?',
+              answer: '<strong>HLA-DQ2</strong> (~90–95%) and <strong>HLA-DQ8</strong> (~5–10%).',
+              explanation: 'Celiac disease is an immune-mediated gluten-sensitive enteropathy; absence of both HLA-DQ2 and HLA-DQ8 carries a >99% negative predictive value.'
+            },
+            {
+              points: 200,
+              clue: 'Parents of a 9-year-old with suspected celiac disease placed her on a strict gluten-free diet 4 months before visiting your clinic. What is the preferred initial serologic screening panel, and why must she resume eating gluten before serology and duodenal biopsy?',
+              answer: '<strong>Anti-tissue transglutaminase IgA (anti-tTG IgA)</strong> plus <strong>total serum IgA</strong> (to rule out selective IgA deficiency). A gluten-free diet halts immune activation and heals villi, causing <strong>false-negative serology and biopsy</strong>.',
+              explanation: 'Always test for celiac disease <em>while</em> the child is consuming gluten. If selective IgA deficiency is present, switch to IgG-based testing (anti-tTG IgG or deamidated gliadin peptide IgG).'
+            },
+            {
+              points: 300,
+              clue: 'A 14-year-old boy has 6 months of abdominal pain, non-bloody diarrhea, aphthous oral ulcers, perianal skin tags, and a drop in height velocity from the 50th to the 10th percentile. Why do these findings exclude functional abdominal pain, and what <strong>classic histopathologic hallmark</strong> is expected on ileocolonoscopy biopsy?',
+              answer: 'Linear growth deceleration, oral aphthae, and perianal disease are <strong>alarm features</strong> pointing to <strong>Crohn disease</strong> rather than functional abdominal pain. Classic biopsy hallmark: <strong>noncaseating granulomas</strong> (alongside transmural inflammation and skip lesions).',
+              explanation: 'Pediatric Crohn disease frequently causes linear growth stunting before severe GI symptoms appear, driven by chronic malabsorption and pro-inflammatory cytokines (TNF-α, IL-6) suppressing IGF-1.'
+            },
+            {
+              points: 400,
+              clue: 'A 7-year-old with untreated celiac disease develops microcytic iron-deficiency anemia, osteopenia, and intensely pruritic vesicles symmetrically on his elbows and knees. Explain <strong>why iron and calcium malabsorption predominate</strong> over vitamin B12 deficiency, and state the <strong>direct immunofluorescence finding</strong> on skin biopsy.',
+              answer: 'Celiac disease predominantly injures the <strong>duodenum and proximal jejunum</strong>—the primary absorption sites for iron, calcium, and folate (whereas B12 is absorbed in the terminal ileum). Biopsy of <strong>dermatitis herpetiformis</strong> shows <strong>granular IgA deposits at the tips of dermal papillae</strong>.',
+              explanation: 'Classic duodenal histology shows villous blunting/atrophy, crypt hyperplasia, and intraepithelial lymphocytosis. Both gut and skin lesions improve with a strict gluten-free diet (plus dapsone for acute skin flares).'
+            },
+            {
+              points: 500,
+              clue: 'Trace the exact molecular immunopathogenesis of villous atrophy in celiac disease: what <strong>specific chemical modification</strong> does tissue transglutaminase (tTG) perform on gliadin peptides to enable HLA-DQ2/DQ8 binding, and which <strong>innate enterocyte cytokine</strong> induces <strong>MICA/MICB</strong> expression to license CD8⁺ intraepithelial lymphocytes (via NKG2D) to kill enterocytes?',
+              answer: 'Tissue transglutaminase <strong>deamidates neutral glutamine residues into negatively charged glutamate residues</strong>, dramatically increasing peptide affinity for the positively charged binding pockets of HLA-DQ2/DQ8 (activating gliadin-specific CD4⁺ Th1 cells → IFN-γ). Simultaneously, epithelial stress releases <strong>IL-15</strong>, which upregulates <strong>MICA/MICB</strong> on enterocytes and <strong>NKG2D</strong> on CD8⁺ intraepithelial lymphocytes, triggering direct cytotoxic enterocyte apoptosis.',
+              explanation: 'Dual-hit pathophysiology! Adaptive immunity (tTG deamidation → HLA-DQ2/8 → CD4⁺ Th1 + anti-tTG antibodies) combines with innate stress signaling (IL-15 → MICA/NKG2D → CD8⁺ IEL killing) to cause villous destruction.'
+            }
+          ]
+        },
+        {
+          title: 'RECTAL BLEEDING & GI BLEEDS',
+          questions: [
+            {
+              points: 100,
+              clue: 'A 3-year-old with hard, infrequent stools cries during defecation and has bright red streaks of blood coating the <em>outside</em> of the stool and toilet paper. Perianal exam reveals a superficial posterior midline mucosal tear. What is the diagnosis?',
+              answer: 'Anal fissure.',
+              explanation: 'Painful defecation with bright red surface streaking in a constipated child is classic for an anal fissure, typically located at the posterior midline due to relatively poorer vascular perfusion.'
+            },
+            {
+              points: 200,
+              clue: 'A healthy 2-year-old boy presents with sudden, massive, <strong>painless</strong> maroon-to-bright-red rectal bleeding and a hemoglobin of 7.8 g/dL. Name the diagnosis, the embryologic structure that failed to obliterate, and the diagnostic imaging test of choice in a stable child.',
+              answer: '<strong>Meckel diverticulum</strong>; incomplete obliteration of the <strong>vitelline (omphalomesenteric) duct</strong>; <strong>Technetium-99m (⁹⁹ᵐTc) pertechnetate scan ("Meckel scan")</strong>.',
+              explanation: 'Classic "Rule of 2s": 2% of population, 2 feet from ileocecal valve, 2 inches long, presents before age 2, 2 types of ectopic tissue (gastric/pancreatic). Painless large-volume bleeding separates it from anal fissures and intussusception.'
+            },
+            {
+              points: 300,
+              clue: 'In a bleeding Meckel diverticulum, <strong>which mucosal tissue</strong> actually ulcerates and bleeds, and what <strong>specific gastric cell type</strong> takes up the ⁹⁹ᵐTc-pertechnetate radiotracer during a Meckel scan?',
+              answer: 'The <strong>adjacent normal ileal mucosa</strong> ulcerates and bleeds (from unbuffered HCl produced by ectopic gastric parietal cells); ⁹⁹ᵐTc-pertechnetate is selectively taken up and secreted by <strong>gastric mucin-producing (mucous) cells</strong> (NOT parietal cells).',
+              explanation: 'Classic Step 1 distinction! Meckel is a true diverticulum (all 3 gut wall layers). Ectopic acid erodes neighboring unprotected ileal mucosa; pretreatment with an H2 blocker (famotidine) can improve scan sensitivity by slowing tracer washout.'
+            },
+            {
+              points: 400,
+              clue: 'A thriving, afebrile 6-week-old exclusively breastfed infant develops mucoid stools flecked with bright red blood for 1 week. Exam reveals a benign abdomen and no anal fissure. Name the diagnosis, its <strong>immune mechanism</strong>, and the appropriate management.',
+              answer: '<strong>Food protein-induced allergic proctocolitis (cow\'s milk protein allergy)</strong>; predominantly <strong>non-IgE-mediated (cell-mediated / eosinophilic)</strong> hypersensitivity; <strong>maternal dietary elimination of cow\'s milk protein</strong> while continuing breastfeeding (or extensively hydrolyzed formula if formula-fed).',
+              explanation: 'A well-appearing young infant with blood-streaked mucus stools and no fissure is classic for allergic proctocolitis. Because it is non-IgE-mediated, IgE testing is unhelpful, and breastfeeding should continue.'
+            },
+            {
+              points: 500,
+              clue: 'A 4-year-old boy has painless hematochezia and a fleshy pink mass briefly prolapsing after defecation. Colonoscopy removes a solitary, smooth, pedunculated 1.5 cm rectosigmoid polyp showing <strong>cystically dilated, mucin-filled glands</strong> in an edematous, inflamed lamina propria <strong>without smooth muscle arborization</strong>. Name the polyp, contrast its histology with a <strong>Peutz-Jeghers polyp</strong>, and state its solitary malignant potential.',
+              answer: '<strong>Juvenile (retention) polyp</strong> (hamartomatous). Unlike a <strong>Peutz-Jeghers polyp</strong>—which features characteristic <strong>arborizing smooth muscle bands</strong> ("Christmas tree" pattern) dividing normal glands—a juvenile polyp has <strong>cystically dilated mucin-filled glands in an inflamed lamina propria with NO smooth muscle core</strong>. A <strong>solitary</strong> juvenile polyp carries <strong>no increased malignant potential</strong> (unlike Juvenile Polyposis Syndrome, ≥5 polyps, SMAD4/BMPR1A).',
+              explanation: 'Solitary juvenile polyps are the most common pediatric GI polyps (ages 2–6), presenting with painless bright red rectal bleeding. Differentiating juvenile vs Peutz-Jeghers histopathology is high-yield for Step 1.'
+            }
+          ]
+        },
+        {
+          title: 'PEDIATRIC JAUNDICE & CHOLESTASIS',
+          questions: [
+            {
+              points: 100,
+              clue: 'A 4-week-old infant presents with persistent jaundice, dark urine that stains the diaper, and pale, clay-colored (<strong>acholic</strong>) stools. Labs show total bilirubin 9.2 mg/dL and direct bilirubin 6.8 mg/dL. What urgent surgical diagnosis must be ruled out immediately?',
+              answer: '<strong>Biliary atresia</strong> (neonatal cholestasis / extrahepatic biliary obstruction).',
+              explanation: 'Jaundice persisting >2 weeks always requires fractionated bilirubin. Direct bilirubin >1.0 mg/dL (or >20% of total) is pathologic; acholic stools and dark urine signal cholestasis, with biliary atresia as the #1 surgical urgency.'
+            },
+            {
+              points: 200,
+              clue: 'A healthy, exclusively breastfed 3-day-old term neonate has a total bilirubin of 13.5 mg/dL (direct 0.4 mg/dL), 11% weight loss, and only 2 wet diapers in 24 hours. Contrast <strong>breastfeeding failure jaundice</strong> with <strong>breast milk jaundice</strong> by typical onset and mechanism.',
+              answer: '<strong>Breastfeeding failure jaundice</strong> presents in the <strong>first week (days 2–5)</strong> due to inadequate intake → dehydration, slowed transit, and <strong>increased enterohepatic circulation</strong>. <strong>Breast milk jaundice</strong> begins <strong>after day 5–7</strong> (peaking around week 2) in a thriving infant due to <strong>β-glucuronidase</strong> in breast milk deconjugating bilirubin in the gut, enhancing reabsorption.',
+              explanation: 'Management of breastfeeding failure jaundice is optimizing feeding frequency/lactation support rather than discontinuing breastfeeding.'
+            },
+            {
+              points: 300,
+              clue: 'Blue-green phototherapy (~460–490 nm) is started for a 3-day-old with severe unconjugated hyperbilirubinemia to prevent kernicterus. What <strong>exact photochemical reaction</strong> does phototherapy induce in cutaneous bilirubin, and which <strong>specific CNS structures</strong> are most vulnerable to bilirubin toxicity?',
+              answer: '<strong>Photoisomerization</strong> (converting lipophilic Z,Z-bilirubin into water-soluble structural isomers—primarily <strong>lumirubin</strong>—excreted in bile/urine without hepatic UGT1A1 conjugation). Vulnerable CNS structures: <strong>basal ganglia</strong> (globus pallidus, subthalamic nuclei), <strong>hippocampus</strong>, and <strong>brainstem nuclei</strong> (auditory/oculomotor).',
+              explanation: 'Lumirubin formation is irreversible and rate-limiting for phototherapy clearance. Kernicterus causes choreoathetotic cerebral palsy, upward gaze palsy, and sensorineural hearing loss.'
+            },
+            {
+              points: 400,
+              clue: 'A 5-week-old with biliary atresia has a HIDA scan showing hepatic tracer uptake with zero duodenal excretion, and liver biopsy reveals <strong>bile ductular proliferation</strong>, portal tract edema, and bile plugs. Name the urgent surgical procedure ideally performed <strong>before 60 days of life</strong>, and explain why delaying beyond 90 days worsens prognosis.',
+              answer: '<strong>Kasai procedure (hepatic portoenterostomy)</strong>—excising fibrotic extrahepatic ducts and anastomosing a Roux-en-Y jejunal loop to the porta hepatis. Delaying beyond 60–90 days permits irreversible <strong>biliary cirrhosis, portal hypertension, and obliteration of microscopic intrahepatic ductules</strong>, markedly reducing native liver survival.',
+              explanation: 'Ultrasound findings include a "triangular cord sign" and absent/atretic gallbladder; intraoperative cholangiogram is the gold standard for confirmation.'
+            },
+            {
+              points: 500,
+              clue: 'Compare two patients with conjugated hyperbilirubinemia: <strong>Patient A</strong> (3-week-old) has cholestatic jaundice, butterfly vertebrae, peripheral pulmonary stenosis, posterior embryotoxon, and liver biopsy showing <strong>paucity of interlobular bile ducts</strong>. <strong>Patient B</strong> (adolescent) has asymptomatic chronic conjugated hyperbilirubinemia, normal LFTs, a <strong>grossly black liver</strong> on biopsy, and >80% <strong>urinary coproporphyrin I</strong>. Name BOTH syndromes and their <strong>exact mutated genes/proteins</strong>.',
+              answer: '<strong>Patient A: Alagille syndrome</strong> — autosomal dominant mutation in <strong>JAG1</strong> (or <strong>NOTCH2</strong>), impairing Notch signaling for bile duct development. <strong>Patient B: Dubin-Johnson syndrome</strong> — autosomal recessive mutation in <strong>ABCC2 (MRP2)</strong>, impairing canalicular ATP-dependent excretion of conjugated bilirubin (causing dark lysosomal pigment and inverted urinary coproporphyrin I:III ratio).',
+              explanation: 'High-yield contrast! Alagille shows bile duct <em>paucity</em> (vs biliary atresia\'s <em>proliferation</em>). Dubin-Johnson (MRP2 defect, black liver, normal total urinary coproporphyrins with >80% isomer I) contrasts with Rotor syndrome (OATP1B1/1B3 defect, normal liver histology, ↑ total urinary coproporphyrins).'
+            }
+          ]
+        }
+      ];
+
+      const FINAL_JEOPARDY = {
+        category: 'MULTI-SYSTEM PEDIATRIC GI INTEGRATION',
+        clue: 'A 2-week-old neonate fails to pass meconium until day 4, develops persistent conjugated hyperbilirubinemia with acholic stools, and later develops steatorrhea and failure to thrive. Sweat chloride is 78 mEq/L. Name the unifying genetic defect, explain why BOTH <strong>meconium ileus</strong> and <strong>neonatal cholestasis</strong> occur, and identify the two fat-soluble vitamin deficiencies causing <strong>coagulopathy</strong> and <strong>spinocerebellar ataxia</strong>.',
+        answer: '<strong>Cystic Fibrosis (CFTR Cl⁻ channel defect, most commonly ΔF508)</strong>. Defective Cl⁻/HCO₃⁻ secretion with unopposed ENaC Na⁺/water hyperabsorption creates dehydrated, viscid secretions obstructing both the distal ileum (<strong>meconium ileus</strong>) and <strong>intrahepatic bile ductules</strong> (<strong>cholestasis/focal biliary cirrhosis</strong>). Fat malabsorption causes <strong>Vitamin K</strong> deficiency (coagulopathy) and <strong>Vitamin E</strong> deficiency (spinocerebellar ataxia/hemolytic anemia).'
+      };
+
+      /* =======================================================================
+         2. WEB AUDIO API SOUND SYNTHESIZER (NO EXTERNAL FILES REQUIRED)
+         ======================================================================= */
+      const SoundFX = (() => {
+        let ctx = null;
+
+        function getCtx() {
+          if (!state.soundEnabled) return null;
+          try {
+            if (!ctx) {
+              const AudioCtx = window.AudioContext || window.webkitAudioContext;
+              if (AudioCtx) ctx = new AudioCtx();
+            }
+            if (ctx && ctx.state === 'suspended') {
+              ctx.resume();
+            }
+            return ctx;
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function playTone(freq, duration, type = 'sine', volume = 0.14, delay = 0) {
+          const audio = getCtx();
+          if (!audio) return;
+          try {
+            const startTime = audio.currentTime + delay;
+            const osc = audio.createOscillator();
+            const gain = audio.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, startTime);
+            gain.gain.setValueAtTime(0.0001, startTime);
+            gain.gain.exponentialRampToValueAtTime(volume, startTime + 0.015);
+            gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+            osc.connect(gain);
+            gain.connect(audio.destination);
+            osc.start(startTime);
+            osc.stop(startTime + duration + 0.02);
+          } catch (e) {
+            // Ignore audio errors gracefully
+          }
+        }
+
+        return {
+          tileOpen() {
+            playTone(523.25, 0.12, 'triangle', 0.1, 0);
+            playTone(659.25, 0.16, 'triangle', 0.1, 0.06);
+          },
+          correct() {
+            playTone(523.25, 0.14, 'triangle', 0.14, 0);
+            playTone(659.25, 0.14, 'triangle', 0.14, 0.08);
+            playTone(783.99, 0.16, 'triangle', 0.15, 0.16);
+            playTone(1046.5, 0.28, 'sine', 0.16, 0.24);
+          },
+          wrong() {
+            playTone(195, 0.18, 'sawtooth', 0.09, 0);
+            playTone(155, 0.28, 'sawtooth', 0.1, 0.14);
+          },
+          tick() {
+            playTone(880, 0.06, 'sine', 0.09, 0);
+          },
+          timeUp() {
+            // Classic Jeopardy-style triple time-up beep
+            playTone(392, 0.14, 'square', 0.09, 0);
+            playTone(392, 0.14, 'square', 0.09, 0.19);
+            playTone(392, 0.34, 'square', 0.1, 0.38);
+          },
+          dailyDouble() {
+            // Exciting synthesized broadcast fanfare
+            const notes = [440, 554.37, 659.25, 880, 659.25, 880, 1108.73];
+            notes.forEach((n, idx) => {
+              playTone(n, idx === notes.length - 1 ? 0.42 : 0.11, 'triangle', 0.14, idx * 0.075);
+            });
+          },
+          victory() {
+            const chord = [523.25, 659.25, 783.99, 1046.5, 1318.51];
+            chord.forEach((n, idx) => {
+              playTone(n, 0.45, 'triangle', 0.13, idx * 0.09);
+            });
+          }
+        };
+      })();
+
+      /* =======================================================================
+         3. GAME STATE & LOCALSTORAGE PERSISTENCE
+         ======================================================================= */
+      const STORAGE_KEY = 'usmle_peds_gi_jeopardy_v1';
+
+      function generateDailyDoubleTiles() {
+        // Randomly place 2 Daily Doubles on 300 (rowIdx=2) or 400 (rowIdx=3) tiles
+        const candidates = [];
+        for (let c = 0; c < CATEGORIES.length; c++) {
+          candidates.push(`${c}-2`);
+          candidates.push(`${c}-3`);
+        }
+        // Fisher-Yates shuffle
+        for (let i = candidates.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+        }
+        // Prefer 2 different columns
+        const first = candidates[0];
+        const firstCol = first.split('-')[0];
+        const second = candidates.find(k => k.split('-')[0] !== firstCol) || candidates[1];
+        return [first, second];
+      }
+
+      function createDefaultState() {
+        return {
+          students: Array.from({ length: 7 }, (_, i) => ({
+            id: i + 1,
+            name: `Student ${i + 1}`,
+            score: 0
+          })),
+          activePickerId: 1,
+          playedTiles: [],
+          soundEnabled: true,
+          dailyDoubleEnabled: true,
+          dailyDoubleTiles: generateDailyDoubleTiles(),
+          fjApplied: false
+        };
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return createDefaultState();
+          const parsed = JSON.parse(raw);
+          if (!parsed || !Array.isArray(parsed.students) || parsed.students.length !== 7) {
+            return createDefaultState();
+          }
+          if (!Array.isArray(parsed.dailyDoubleTiles) || parsed.dailyDoubleTiles.length !== 2) {
+            parsed.dailyDoubleTiles = generateDailyDoubleTiles();
+          }
+          return { ...createDefaultState(), ...parsed };
+        } catch (e) {
+          return createDefaultState();
+        }
+      }
+
+      let state = loadState();
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {
+          // Safe fallback in restricted iframes
+        }
+      }
+
+      /* =======================================================================
+         4. TRANSIENT SESSION VARIABLES (ACTIVE MODAL, TIMERS, FINAL JEOPARDY)
+         ======================================================================= */
+      let activeModal = null; // { catIdx, rowIdx, points, isDailyDouble, ddStudentId, answerRevealed, grades: { studentId: 'correct' | 'wrong' } }
+      let pendingDDTile = null; // { catIdx, rowIdx }
+
+      // Question 60s Timer
+      const QUESTION_DURATION = 60;
+      let timerRemaining = QUESTION_DURATION;
+      let timerRunning = false;
+      let timerInterval = null;
+
+      // Final Jeopardy State
+      let fjStep = 1;
+      let fjWagers = {}; // studentId -> number
+      let fjGrades = {}; // studentId -> 'correct' | 'wrong' | null
+      let fjTimerRemaining = 60;
+      let fjTimerRunning = false;
+      let fjTimerInterval = null;
+
+      // Confirm Modal Callback
+      let confirmCallback = null;
+
+      /* =======================================================================
+         5. DOM REFERENCES
+         ======================================================================= */
+      const el = {
+        jeopardyGrid: document.getElementById('jeopardyGrid'),
+        scoreboardGrid: document.getElementById('scoreboardGrid'),
+        progressCounter: document.getElementById('progressCounter'),
+        btnSoundToggle: document.getElementById('btnSoundToggle'),
+        soundIcon: document.getElementById('soundIcon'),
+        soundLabel: document.getElementById('soundLabel'),
+        btnDailyDoubleToggle: document.getElementById('btnDailyDoubleToggle'),
+        ddStatusText: document.getElementById('ddStatusText'),
+        btnFinalJeopardy: document.getElementById('btnFinalJeopardy'),
+        btnResetGame: document.getElementById('btnResetGame'),
+        toastContainer: document.getElementById('toastContainer'),
+
+        // Daily Double Modal
+        dailyDoubleModal: document.getElementById('dailyDoubleModal'),
+        ddCategoryLabel: document.getElementById('ddCategoryLabel'),
+        ddStudentSelect: document.getElementById('ddStudentSelect'),
+        ddCurrentScore: document.getElementById('ddCurrentScore'),
+        ddMaxWager: document.getElementById('ddMaxWager'),
+        ddMaxWagerInline: document.getElementById('ddMaxWagerInline'),
+        ddWagerInput: document.getElementById('ddWagerInput'),
+        ddWagerError: document.getElementById('ddWagerError'),
+        btnDDMaxPreset: document.getElementById('btnDDMaxPreset'),
+        btnLockDDWager: document.getElementById('btnLockDDWager'),
+        btnCancelDD: document.getElementById('btnCancelDD'),
+
+        // Question Modal
+        questionModal: document.getElementById('questionModal'),
+        qCategoryBadge: document.getElementById('qCategoryBadge'),
+        qPointsBadge: document.getElementById('qPointsBadge'),
+        qTierBadge: document.getElementById('qTierBadge'),
+        qDailyDoubleBadge: document.getElementById('qDailyDoubleBadge'),
+        qDDWagerBanner: document.getElementById('qDDWagerBanner'),
+        qClueText: document.getElementById('qClueText'),
+        revealActionRow: document.getElementById('revealActionRow'),
+        btnRevealAnswer: document.getElementById('btnRevealAnswer'),
+        answerRevealBox: document.getElementById('answerRevealBox'),
+        qAnswerText: document.getElementById('qAnswerText'),
+        qExplanationText: document.getElementById('qExplanationText'),
+        timerPill: document.getElementById('timerPill'),
+        timerDisplay: document.getElementById('timerDisplay'),
+        timerProgressBar: document.getElementById('timerProgressBar'),
+        btnTimerToggle: document.getElementById('btnTimerToggle'),
+        btnTimerReset: document.getElementById('btnTimerReset'),
+        btnCloseUnplayed: document.getElementById('btnCloseUnplayed'),
+        btnLeaveUnplayedFooter: document.getElementById('btnLeaveUnplayedFooter'),
+        btnCompleteQuestion: document.getElementById('btnCompleteQuestion'),
+        gradingValueLabel: document.getElementById('gradingValueLabel'),
+        modalGradingGrid: document.getElementById('modalGradingGrid'),
+
+        // Final Jeopardy Modal
+        finalJeopardyModal: document.getElementById('finalJeopardyModal'),
+        btnCloseFJ: document.getElementById('btnCloseFJ'),
+        fjStep1: document.getElementById('fjStep1'),
+        fjStep2: document.getElementById('fjStep2'),
+        fjStep3: document.getElementById('fjStep3'),
+        fjWagerList: document.getElementById('fjWagerList'),
+        btnFJToClue: document.getElementById('btnFJToClue'),
+        fjTimerDisplay: document.getElementById('fjTimerDisplay'),
+        fjTimerBar: document.getElementById('fjTimerBar'),
+        btnFJTimerStart: document.getElementById('btnFJTimerStart'),
+        btnFJTimerReset: document.getElementById('btnFJTimerReset'),
+        fjClueText: document.getElementById('fjClueText'),
+        btnFJReveal: document.getElementById('btnFJReveal'),
+        fjAnswerBox: document.getElementById('fjAnswerBox'),
+        fjAnswerText: document.getElementById('fjAnswerText'),
+        fjGradingList: document.getElementById('fjGradingList'),
+        btnApplyFJAndPodium: document.getElementById('btnApplyFJAndPodium'),
+        fjPodiumBox: document.getElementById('fjPodiumBox'),
+        fjPodiumCards: document.getElementById('fjPodiumCards'),
+        fjRemainingStandings: document.getElementById('fjRemainingStandings'),
+
+        // Confirm Modal
+        confirmModal: document.getElementById('confirmModal'),
+        confirmTitle: document.getElementById('confirmTitle'),
+        confirmMessage: document.getElementById('confirmMessage'),
+        btnConfirmCancel: document.getElementById('btnConfirmCancel'),
+        btnConfirmProceed: document.getElementById('btnConfirmProceed')
+      };
+
+      /* =======================================================================
+         6. HELPER UTILITIES (TOASTS, FORMATTING, CONFIRMATION MODAL)
+         ======================================================================= */
+      function showToast(message, tone = 'info') {
+        const colors = {
+          info: 'bg-blue-950/95 border-blue-500/70 text-blue-100',
+          gold: 'bg-amber-950/95 border-yellow-400/80 text-yellow-200',
+          success: 'bg-emerald-950/95 border-emerald-400/80 text-emerald-100'
+        };
+        const div = document.createElement('div');
+        div.className = `pointer-events-auto px-4 py-2.5 rounded-xl border text-xs font-semibold shadow-xl transition-all duration-300 ${colors[tone] || colors.info}`;
+        div.textContent = message;
+        el.toastContainer.appendChild(div);
+        setTimeout(() => {
+          div.style.opacity = '0';
+          div.style.transform = 'translateX(16px)';
+          setTimeout(() => div.remove(), 300);
+        }, 2800);
+      }
+
+      function formatScore(score) {
+        if (score < 0) return `−${Math.abs(score).toLocaleString()}`;
+        return score.toLocaleString();
+      }
+
+      function formatClock(seconds) {
+        const s = Math.max(0, Math.floor(seconds));
+        const mins = Math.floor(s / 60);
+        const secs = s % 60;
+        return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      }
+
+      function openConfirm(title, message, onConfirm) {
+        el.confirmTitle.textContent = title;
+        el.confirmMessage.textContent = message;
+        confirmCallback = onConfirm;
+        el.confirmModal.classList.remove('hidden');
+        el.confirmModal.classList.add('flex');
+      }
+
+      function closeConfirm() {
+        el.confirmModal.classList.add('hidden');
+        el.confirmModal.classList.remove('flex');
+        confirmCallback = null;
+      }
+
+      /* =======================================================================
+         7. RENDERING: HEADER, 6x5 BOARD, 7-STUDENT SCOREBOARD
+         ======================================================================= */
+      function renderHeaderControls() {
+        // Sound button
+        el.soundIcon.textContent = state.soundEnabled ? '🔊' : '🔇';
+        el.soundLabel.textContent = state.soundEnabled ? 'Sound: ON' : 'Sound: OFF';
+        el.btnSoundToggle.className = state.soundEnabled
+          ? 'flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all bg-blue-950/80 border-blue-600/70 text-blue-100 hover:border-yellow-400/70 cursor-pointer'
+          : 'flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all bg-slate-900/80 border-slate-700 text-slate-400 hover:text-white cursor-pointer';
+
+        // Daily Double button
+        el.ddStatusText.textContent = state.dailyDoubleEnabled ? 'ON' : 'OFF';
+        el.btnDailyDoubleToggle.className = state.dailyDoubleEnabled
+          ? 'flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all bg-yellow-400/15 border-yellow-400/70 text-yellow-300 hover:bg-yellow-400/25 cursor-pointer'
+          : 'flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all bg-slate-900/80 border-slate-700 text-slate-400 hover:text-white cursor-pointer';
+
+        // Progress counter
+        el.progressCounter.textContent = `${state.playedTiles.length} / 30 Clues Completed`;
+      }
+
+      function renderBoard() {
+        el.jeopardyGrid.innerHTML = '';
+
+        // Row 0: 6 Category Headers
+        CATEGORIES.forEach((cat) => {
+          const headerDiv = document.createElement('div');
+          headerDiv.className =
+            'category-tile rounded-xl px-2 py-2 flex items-center justify-center text-center min-h-[54px]';
+          headerDiv.innerHTML = `
+            <span class="font-broadcast text-xs sm:text-sm xl:text-[15px] 2xl:text-base uppercase tracking-wider text-white leading-tight header-text-shadow">
+              ${cat.title}
+            </span>
+          `;
+          el.jeopardyGrid.appendChild(headerDiv);
+        });
+
+        // Rows 1..5: 100 to 500 across 6 columns
+        for (let rowIdx = 0; rowIdx < POINT_VALUES.length; rowIdx++) {
+          const pts = POINT_VALUES[rowIdx];
+          for (let catIdx = 0; catIdx < CATEGORIES.length; catIdx++) {
+            const tileKey = `${catIdx}-${rowIdx}`;
+            const isPlayed = state.playedTiles.includes(tileKey);
+
+            const tileBtn = document.createElement('button');
+            tileBtn.type = 'button';
+            tileBtn.dataset.catIdx = String(catIdx);
+            tileBtn.dataset.rowIdx = String(rowIdx);
+            tileBtn.className = `jeopardy-tile rounded-xl flex flex-col items-center justify-center relative min-h-[62px] sm:min-h-[70px] md:min-h-0 cursor-pointer ${
+              isPlayed ? 'tile-used' : ''
+            }`;
+            tileBtn.title = isPlayed
+              ? 'Played — Click or Right-Click to re-open clue'
+              : `${CATEGORIES[catIdx].title} — ${pts} (${DIFFICULTY_TIERS[pts].tier})`;
+
+            if (isPlayed) {
+              tileBtn.innerHTML = `
+                <span class="font-broadcast text-lg sm:text-xl text-blue-300/45 line-through">${pts}</span>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-400/75 mt-0.5 flex items-center gap-1">
+                  <span>✓</span><span>Played</span>
+                </span>
+              `;
+            } else {
+              tileBtn.innerHTML = `
+                <span class="font-broadcast text-3xl sm:text-4xl xl:text-5xl 2xl:text-[3.35rem] font-bold gold-text-shadow leading-none">${pts}</span>
+                <span class="lg:hidden text-[9px] uppercase tracking-wider text-blue-200/75 font-semibold mt-1">${DIFFICULTY_TIERS[pts].short}</span>
+              `;
+            }
+
+            // Left click opens clue (if played, confirm or re-open smoothly)
+            tileBtn.addEventListener('click', () => {
+              if (isPlayed) {
+                openConfirm(
+                  'Re-open Played Tile?',
+                  `Re-open "${CATEGORIES[catIdx].title}" for ${pts} points? This will restore the tile to active play.`,
+                  () => {
+                    restoreTile(tileKey);
+                    handleTileSelect(catIdx, rowIdx, true);
+                  }
+                );
+              } else {
+                handleTileSelect(catIdx, rowIdx, false);
+              }
+            });
+
+            // Right click on played tile restores it directly for fast classroom hosting
+            tileBtn.addEventListener('contextmenu', (e) => {
+              e.preventDefault();
+              if (isPlayed) {
+                restoreTile(tileKey);
+                showToast(`Restored ${CATEGORIES[catIdx].title} (${pts})`, 'gold');
+              }
+            });
+
+            el.jeopardyGrid.appendChild(tileBtn);
+          }
+        }
+      }
+
+      function restoreTile(tileKey) {
+        state.playedTiles = state.playedTiles.filter((k) => k !== tileKey);
+        saveState();
+        renderBoard();
+        renderHeaderControls();
+      }
+
+      function renderScoreboard() {
+        el.scoreboardGrid.innerHTML = '';
+
+        state.students.forEach((student) => {
+          const isPicker = state.activePickerId === student.id;
+          const card = document.createElement('div');
+          card.className = `student-card group rounded-xl px-2.5 py-2 flex flex-col justify-between relative ${
+            isPicker ? 'active-picker' : ''
+          }`;
+
+          const scoreColor =
+            student.score < 0
+              ? 'text-rose-400'
+              : student.score > 0
+              ? 'text-yellow-400'
+              : 'text-white';
+
+          card.innerHTML = `
+            <div class="flex items-center justify-between gap-1 mb-0.5">
+              <input
+                type="text"
+                value="${escapeAttr(student.name)}"
+                aria-label="Edit student name"
+                data-student-id="${student.id}"
+                class="student-name-input w-full text-xs sm:text-[13px] font-bold text-blue-100 px-1 py-0.5 truncate"
+              />
+              <button
+                type="button"
+                data-pick-id="${student.id}"
+                title="Set board control to ${escapeAttr(student.name)}"
+                class="shrink-0 text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-full transition-all cursor-pointer ${
+                  isPicker
+                    ? 'bg-yellow-400 text-[#070B24] shadow-sm'
+                    : 'bg-blue-950/80 text-blue-300/60 hover:text-yellow-300 hover:bg-blue-900'
+                }"
+              >
+                ${isPicker ? 'PICKING' : 'SET'}
+              </button>
+            </div>
+            <div class="flex items-center justify-between gap-1 mt-0.5">
+              <button
+                type="button"
+                data-adjust-id="${student.id}"
+                data-delta="-100"
+                title="Subtract 100 points"
+                class="opacity-70 sm:opacity-35 group-hover:opacity-100 focus:opacity-100 px-1.5 py-0.5 rounded bg-rose-950/80 hover:bg-rose-700 border border-rose-600/50 text-rose-200 text-[10px] font-bold transition-all cursor-pointer"
+              >−100</button>
+              <span class="font-broadcast text-xl sm:text-2xl tracking-wide leading-none tabular-nums ${scoreColor}">
+                ${formatScore(student.score)}
+              </span>
+              <button
+                type="button"
+                data-adjust-id="${student.id}"
+                data-delta="100"
+                title="Add 100 points"
+                class="opacity-70 sm:opacity-35 group-hover:opacity-100 focus:opacity-100 px-1.5 py-0.5 rounded bg-emerald-950/80 hover:bg-emerald-700 border border-emerald-600/50 text-emerald-200 text-[10px] font-bold transition-all cursor-pointer"
+              >+100</button>
+            </div>
+          `;
+
+          // Inline Name Edit Handlers
+          const nameInput = card.querySelector('.student-name-input');
+          nameInput.addEventListener('change', (e) => {
+            const val = e.target.value.trim();
+            student.name = val || `Student ${student.id}`;
+            e.target.value = student.name;
+            saveState();
+            if (activeModal) renderModalGradingChips();
+          });
+          nameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.target.blur();
+            }
+          });
+
+          // Active Picker Switcher
+          const pickBtn = card.querySelector('[data-pick-id]');
+          pickBtn.addEventListener('click', () => {
+            state.activePickerId = student.id;
+            saveState();
+            renderScoreboard();
+          });
+
+          // Manual +/- 100 Adjustment Buttons
+          card.querySelectorAll('[data-adjust-id]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const delta = parseInt(btn.dataset.delta, 10);
+              student.score += delta;
+              saveState();
+              renderScoreboard();
+              if (activeModal) renderModalGradingChips();
+            });
+          });
+
+          el.scoreboardGrid.appendChild(card);
+        });
+      }
+
+      function escapeAttr(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/"/g, '&quot;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+      }
+
+      /* =======================================================================
+         8. TILE SELECTION & DAILY DOUBLE FLOW
+         ======================================================================= */
+      function handleTileSelect(catIdx, rowIdx, skipDailyDouble) {
+        const tileKey = `${catIdx}-${rowIdx}`;
+        const isDD =
+          !skipDailyDouble &&
+          state.dailyDoubleEnabled &&
+          state.dailyDoubleTiles.includes(tileKey);
+
+        if (isDD) {
+          openDailyDoubleModal(catIdx, rowIdx);
+        } else {
+          SoundFX.tileOpen();
+          openQuestionModal(catIdx, rowIdx, POINT_VALUES[rowIdx], false, null);
+        }
+      }
+
+      function openDailyDoubleModal(catIdx, rowIdx) {
+        pendingDDTile = { catIdx, rowIdx };
+        SoundFX.dailyDouble();
+
+        el.ddCategoryLabel.textContent = `${CATEGORIES[catIdx].title} • ${POINT_VALUES[rowIdx]} Tile`;
+
+        // Populate student dropdown defaulting to active picker
+        el.ddStudentSelect.innerHTML = '';
+        state.students.forEach((s) => {
+          const opt = document.createElement('option');
+          opt.value = String(s.id);
+          opt.textContent = `${s.name} (${formatScore(s.score)} pts)`;
+          if (s.id === state.activePickerId) opt.selected = true;
+          el.ddStudentSelect.appendChild(opt);
+        });
+
+        updateDDWagerLimits();
+        el.ddWagerError.classList.add('hidden');
+        el.dailyDoubleModal.classList.remove('hidden');
+        el.dailyDoubleModal.classList.add('flex');
+        el.ddWagerInput.focus();
+      }
+
+      function getSelectedDDStudent() {
+        const id = parseInt(el.ddStudentSelect.value, 10);
+        return state.students.find((s) => s.id === id) || state.students[0];
+      }
+
+      function updateDDWagerLimits() {
+        const student = getSelectedDDStudent();
+        const maxWager = Math.max(student.score, 500);
+        el.ddCurrentScore.textContent = `${formatScore(student.score)} pts`;
+        el.ddMaxWager.textContent = `${maxWager.toLocaleString()} pts`;
+        el.ddMaxWagerInline.textContent = maxWager.toLocaleString();
+        el.ddWagerInput.max = String(maxWager);
+        el.ddWagerInput.value = String(Math.min(POINT_VALUES[pendingDDTile ? pendingDDTile.rowIdx : 2], maxWager));
+      }
+
+      function closeDailyDoubleModal() {
+        el.dailyDoubleModal.classList.add('hidden');
+        el.dailyDoubleModal.classList.remove('flex');
+        pendingDDTile = null;
+      }
+
+      /* =======================================================================
+         9. QUESTION MODAL & 60-SECOND COUNTDOWN TIMER
+         ======================================================================= */
+      function openQuestionModal(catIdx, rowIdx, pointsValue, isDailyDouble, ddStudentId) {
+        const category = CATEGORIES[catIdx];
+        const question = category.questions[rowIdx];
+        const basePoints = question.points;
+        const tierInfo = DIFFICULTY_TIERS[basePoints];
+
+        activeModal = {
+          catIdx,
+          rowIdx,
+          tileKey: `${catIdx}-${rowIdx}`,
+          points: pointsValue,
+          isDailyDouble,
+          ddStudentId,
+          answerRevealed: false,
+          grades: {} // studentId -> 'correct' | 'wrong'
+        };
+
+        // Populate Modal Header & Content
+        el.qCategoryBadge.textContent = category.title;
+        el.qPointsBadge.textContent = `${pointsValue} PTS`;
+        el.qTierBadge.textContent = tierInfo.tier;
+        el.qTierBadge.className = `text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${tierInfo.badgeClass}`;
+
+        if (isDailyDouble) {
+          const ddStudent = state.students.find((s) => s.id === ddStudentId);
+          el.qDailyDoubleBadge.classList.remove('hidden');
+          el.qDDWagerBanner.classList.remove('hidden');
+          el.qDDWagerBanner.innerHTML = `★ <strong>DAILY DOUBLE</strong> — <strong>${escapeAttr(ddStudent ? ddStudent.name : 'Active Student')}</strong> wagered <span class="text-yellow-300 font-bold">${pointsValue.toLocaleString()} points</span>!`;
+        } else {
+          el.qDailyDoubleBadge.classList.add('hidden');
+          el.qDDWagerBanner.classList.add('hidden');
+        }
+
+        el.qClueText.innerHTML = question.clue;
+        el.qAnswerText.innerHTML = question.answer;
+        el.qExplanationText.innerHTML = question.explanation;
+        el.gradingValueLabel.textContent = `±${pointsValue.toLocaleString()}`;
+
+        // Reset Reveal UI
+        el.revealActionRow.classList.remove('hidden');
+        el.answerRevealBox.classList.add('hidden');
+
+        // Render 7-Student Grading Chips
+        renderModalGradingChips();
+
+        // Show Modal
+        el.questionModal.classList.remove('hidden');
+        el.questionModal.classList.add('flex');
+
+        // Auto-Start 60-Second Timer
+        resetQuestionTimer(true);
+      }
+
+      function renderModalGradingChips() {
+        if (!activeModal) return;
+        el.modalGradingGrid.innerHTML = '';
+
+        state.students.forEach((student) => {
+          const grade = activeModal.grades[student.id] || null;
+          const isDDTarget = activeModal.isDailyDouble && activeModal.ddStudentId === student.id;
+
+          const chip = document.createElement('div');
+          chip.className = `rounded-xl p-2 border transition-all flex flex-col gap-1.5 ${
+            grade === 'correct'
+              ? 'bg-emerald-950/75 border-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.28)]'
+              : grade === 'wrong'
+              ? 'bg-rose-950/70 border-rose-500/80'
+              : isDDTarget
+              ? 'bg-amber-950/50 border-yellow-400/80'
+              : 'bg-[#09144A]/90 border-blue-800/70'
+          }`;
+
+          chip.innerHTML = `
+            <div class="flex items-center justify-between gap-1">
+              <span class="text-xs font-bold text-white truncate" title="${escapeAttr(student.name)}">
+                ${isDDTarget ? '★ ' : ''}${escapeAttr(student.name)}
+              </span>
+              <span class="text-[11px] font-broadcast tabular-nums ${student.score < 0 ? 'text-rose-300' : 'text-yellow-300'}">
+                ${formatScore(student.score)}
+              </span>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button
+                type="button"
+                data-grade-student="${student.id}"
+                data-grade-type="correct"
+                class="py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer border ${
+                  grade === 'correct'
+                    ? 'bg-emerald-400 text-[#04140E] border-emerald-200 shadow'
+                    : 'bg-emerald-950/70 hover:bg-emerald-600 text-emerald-300 hover:text-white border-emerald-600/50'
+                }"
+                title="Award +${activeModal.points} points"
+              >✓ +${activeModal.points}</button>
+              <button
+                type="button"
+                data-grade-student="${student.id}"
+                data-grade-type="wrong"
+                class="py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer border ${
+                  grade === 'wrong'
+                    ? 'bg-rose-500 text-white border-rose-200 shadow'
+                    : 'bg-rose-950/70 hover:bg-rose-600 text-rose-300 hover:text-white border-rose-600/50'
+                }"
+                title="Deduct -${activeModal.points} points"
+              >✗ −${activeModal.points}</button>
+            </div>
+          `;
+
+          chip.querySelectorAll('[data-grade-student]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const sid = parseInt(btn.dataset.gradeStudent, 10);
+              const type = btn.dataset.gradeType;
+              applyStudentGrade(sid, type);
+            });
+          });
+
+          el.modalGradingGrid.appendChild(chip);
+        });
+      }
+
+      function applyStudentGrade(studentId, gradeType) {
+        if (!activeModal) return;
+        const student = state.students.find((s) => s.id === studentId);
+        if (!student) return;
+
+        const pts = activeModal.points;
+        const prev = activeModal.grades[studentId] || null;
+
+        // First reverse previous grade on this clue if any
+        if (prev === 'correct') {
+          student.score -= pts;
+        } else if (prev === 'wrong') {
+          student.score += pts;
+        }
+
+        // Toggle off if clicking same grade again, otherwise apply new grade
+        if (prev === gradeType) {
+          delete activeModal.grades[studentId];
+          showToast(`Undid ${student.name}'s score change`, 'info');
+        } else {
+          activeModal.grades[studentId] = gradeType;
+          if (gradeType === 'correct') {
+            student.score += pts;
+            state.activePickerId = student.id;
+            SoundFX.correct();
+            showToast(`${student.name} +${pts} pts! Now has board control.`, 'success');
+          } else {
+            student.score -= pts;
+            SoundFX.wrong();
+          }
+        }
+
+        saveState();
+        renderScoreboard();
+        renderModalGradingChips();
+      }
+
+      function revealAnswer() {
+        if (!activeModal || activeModal.answerRevealed) return;
+        activeModal.answerRevealed = true;
+        pauseQuestionTimer();
+        el.revealActionRow.classList.add('hidden');
+        el.answerRevealBox.classList.remove('hidden');
+      }
+
+      function completeAndCloseQuestion() {
+        if (!activeModal) return;
+        if (!state.playedTiles.includes(activeModal.tileKey)) {
+          state.playedTiles.push(activeModal.tileKey);
+        }
+        saveState();
+        stopQuestionTimer();
+        el.questionModal.classList.add('hidden');
+        el.questionModal.classList.remove('flex');
+        activeModal = null;
+        renderBoard();
+        renderHeaderControls();
+        renderScoreboard();
+      }
+
+      function undoAndCloseUnplayed() {
+        if (!activeModal) return;
+        // Revert any grades made during this accidentally opened modal
+        const pts = activeModal.points;
+        Object.entries(activeModal.grades).forEach(([sid, grade]) => {
+          const st = state.students.find((s) => s.id === parseInt(sid, 10));
+          if (!st) return;
+          if (grade === 'correct') st.score -= pts;
+          if (grade === 'wrong') st.score += pts;
+        });
+        saveState();
+        stopQuestionTimer();
+        el.questionModal.classList.add('hidden');
+        el.questionModal.classList.remove('flex');
+        activeModal = null;
+        renderScoreboard();
+      }
+
+      /* 60-Second Timer Engine */
+      function updateTimerUI() {
+        el.timerDisplay.textContent = formatClock(timerRemaining);
+        const pct = Math.max(0, (timerRemaining / QUESTION_DURATION) * 100);
+        el.timerProgressBar.style.width = `${pct}%`;
+
+        el.timerPill.classList.remove('timer-critical', 'border-cyan-400/60', 'border-amber-400', 'border-rose-500');
+        el.timerDisplay.classList.remove('text-cyan-300', 'text-amber-300', 'text-rose-400');
+
+        if (timerRemaining <= 10) {
+          el.timerPill.classList.add('border-rose-500');
+          if (timerRunning && timerRemaining > 0) el.timerPill.classList.add('timer-critical');
+          el.timerDisplay.classList.add('text-rose-400');
+          el.timerProgressBar.className = 'h-full rounded-full transition-all duration-200 ease-linear bg-gradient-to-r from-rose-600 to-red-400';
+        } else if (timerRemaining <= 20) {
+          el.timerPill.classList.add('border-amber-400');
+          el.timerDisplay.classList.add('text-amber-300');
+          el.timerProgressBar.className = 'h-full rounded-full transition-all duration-200 ease-linear bg-gradient-to-r from-amber-500 to-yellow-400';
+        } else {
+          el.timerPill.classList.add('border-cyan-400/60');
+          el.timerDisplay.classList.add('text-cyan-300');
+          el.timerProgressBar.className = 'h-full rounded-full transition-all duration-200 ease-linear bg-gradient-to-r from-cyan-400 to-yellow-400';
+        }
+
+        el.btnTimerToggle.textContent = timerRunning ? '⏸ Pause' : (timerRemaining === 0 ? '⏹ Time Up' : '▶ Resume');
+      }
+
+      function startQuestionTimer() {
+        if (timerRemaining <= 0) return;
+        stopQuestionTimer();
+        timerRunning = true;
+        updateTimerUI();
+
+        timerInterval = setInterval(() => {
+          timerRemaining -= 1;
+          if (timerRemaining > 0 && timerRemaining <= 5) {
+            SoundFX.tick();
+          }
+          if (timerRemaining <= 0) {
+            timerRemaining = 0;
+            stopQuestionTimer();
+            SoundFX.timeUp();
+            showToast('⏰ Time is up!', 'gold');
+          }
+          updateTimerUI();
+        }, 1000);
+      }
+
+      function pauseQuestionTimer() {
+        stopQuestionTimer();
+        updateTimerUI();
+      }
+
+      function stopQuestionTimer() {
+        timerRunning = false;
+        if (timerInterval) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+        }
+      }
+
+      function resetQuestionTimer(autoStart = false) {
+        stopQuestionTimer();
+        timerRemaining = QUESTION_DURATION;
+        updateTimerUI();
+        if (autoStart) startQuestionTimer();
+      }
+
+      /* =======================================================================
+         10. FINAL JEOPARDY MODAL LOGIC + PODIUM CONFETTI
+         ======================================================================= */
+      function openFinalJeopardy() {
+        // Initialize default wagers & grades
+        state.students.forEach((s) => {
+          if (typeof fjWagers[s.id] !== 'number') {
+            fjWagers[s.id] = Math.min(Math.max(s.score, 500), 500);
+          }
+          if (!(s.id in fjGrades)) {
+            fjGrades[s.id] = null;
+          }
+        });
+
+        el.fjClueText.innerHTML = FINAL_JEOPARDY.clue;
+        el.fjAnswerText.innerHTML = FINAL_JEOPARDY.answer;
+        el.fjAnswerBox.classList.add('hidden');
+        el.fjPodiumBox.classList.add('hidden');
+
+        resetFJTimer();
+        setFJStep(1);
+
+        el.finalJeopardyModal.classList.remove('hidden');
+        el.finalJeopardyModal.classList.add('flex');
+      }
+
+      function closeFinalJeopardy() {
+        stopFJTimer();
+        el.finalJeopardyModal.classList.add('hidden');
+        el.finalJeopardyModal.classList.remove('flex');
+      }
+
+      function setFJStep(step) {
+        fjStep = step;
+        el.fjStep1.classList.toggle('hidden', step !== 1);
+        el.fjStep2.classList.toggle('hidden', step !== 2);
+        el.fjStep3.classList.toggle('hidden', step !== 3);
+
+        document.querySelectorAll('.fj-tab').forEach((tab) => {
+          const isCurrent = parseInt(tab.dataset.fjStep, 10) === step;
+          tab.className = isCurrent
+            ? 'fj-tab px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider cursor-pointer transition-all bg-yellow-400 text-[#070B24]'
+            : 'fj-tab px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider cursor-pointer transition-all bg-blue-950 text-blue-300 hover:text-white border border-blue-800/70';
+        });
+
+        if (step === 1) renderFJWagers();
+        if (step === 3) renderFJGrading();
+      }
+
+      function renderFJWagers() {
+        el.fjWagerList.innerHTML = '';
+        state.students.forEach((student) => {
+          const maxWager = Math.max(student.score, 500);
+          const currentVal = Math.max(0, Math.min(fjWagers[student.id] ?? 0, maxWager));
+          fjWagers[student.id] = currentVal;
+
+          const card = document.createElement('div');
+          card.className = 'rounded-xl bg-[#071147] border border-blue-700/60 p-3.5 flex flex-col gap-2';
+          card.innerHTML = `
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm text-white truncate">${escapeAttr(student.name)}</span>
+              <span class="font-broadcast text-lg ${student.score < 0 ? 'text-rose-400' : 'text-yellow-400'}">${formatScore(student.score)} pts</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <input
+                type="number"
+                min="0"
+                max="${maxWager}"
+                step="50"
+                value="${currentVal}"
+                data-fj-wager-id="${student.id}"
+                class="flex-1 rounded-lg bg-[#040822] border border-blue-600/70 px-3 py-1.5 text-yellow-300 font-bold text-sm focus:outline-none focus:border-yellow-400"
+              />
+              <button
+                type="button"
+                data-fj-allin="${student.id}"
+                class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-amber-500/20 hover:bg-amber-500/35 border border-yellow-400/50 text-yellow-300 cursor-pointer shrink-0"
+              >All In (${maxWager})</button>
+            </div>
+          `;
+
+          const input = card.querySelector('[data-fj-wager-id]');
+          input.addEventListener('input', () => {
+            let v = parseInt(input.value, 10);
+            if (isNaN(v) || v < 0) v = 0;
+            if (v > maxWager) v = maxWager;
+            fjWagers[student.id] = v;
+          });
+
+          const allInBtn = card.querySelector('[data-fj-allin]');
+          allInBtn.addEventListener('click', () => {
+            fjWagers[student.id] = maxWager;
+            input.value = String(maxWager);
+          });
+
+          el.fjWagerList.appendChild(card);
+        });
+      }
+
+      function renderFJGrading() {
+        el.fjGradingList.innerHTML = '';
+        state.students.forEach((student) => {
+          const wager = fjWagers[student.id] || 0;
+          const grade = fjGrades[student.id];
+          const projected =
+            grade === 'correct'
+              ? student.score + wager
+              : grade === 'wrong'
+              ? student.score - wager
+              : student.score;
+
+          const card = document.createElement('div');
+          card.className = `rounded-xl p-3.5 border transition-all flex flex-col gap-2.5 ${
+            grade === 'correct'
+              ? 'bg-emerald-950/60 border-emerald-400/70'
+              : grade === 'wrong'
+              ? 'bg-rose-950/55 border-rose-500/70'
+              : 'bg-[#071147] border-blue-700/60'
+          }`;
+
+          card.innerHTML = `
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm text-white truncate">${escapeAttr(student.name)}</span>
+              <span class="text-xs font-semibold text-blue-200">Wager: <strong class="text-yellow-300">${wager.toLocaleString()}</strong></span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" data-fj-grade="${student.id}" data-val="correct"
+                class="py-1.5 rounded-lg text-xs font-bold border cursor-pointer transition-all ${
+                  grade === 'correct'
+                    ? 'bg-emerald-400 text-[#04140E] border-emerald-200'
+                    : 'bg-emerald-950/70 hover:bg-emerald-700 text-emerald-200 border-emerald-600/50'
+                }">✓ Correct (+${wager})</button>
+              <button type="button" data-fj-grade="${student.id}" data-val="wrong"
+                class="py-1.5 rounded-lg text-xs font-bold border cursor-pointer transition-all ${
+                  grade === 'wrong'
+                    ? 'bg-rose-500 text-white border-rose-200'
+                    : 'bg-rose-950/70 hover:bg-rose-700 text-rose-200 border-rose-600/50'
+                }">✗ Wrong (−${wager})</button>
+            </div>
+            <div class="text-right text-xs text-blue-200">
+              Projected Final: <strong class="font-broadcast text-base ${projected < 0 ? 'text-rose-400' : 'text-yellow-400'}">${formatScore(projected)}</strong>
+            </div>
+          `;
+
+          card.querySelectorAll('[data-fj-grade]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const sid = parseInt(btn.dataset.fjGrade, 10);
+              const val = btn.dataset.val;
+              fjGrades[sid] = fjGrades[sid] === val ? null : val;
+              if (fjGrades[sid] === 'correct') SoundFX.correct();
+              if (fjGrades[sid] === 'wrong') SoundFX.wrong();
+              renderFJGrading();
+            });
+          });
+
+          el.fjGradingList.appendChild(card);
+        });
+      }
+
+      function finalizeFJScoresAndPodium() {
+        if (!state.fjApplied) {
+          state.students.forEach((student) => {
+            const wager = fjWagers[student.id] || 0;
+            const grade = fjGrades[student.id];
+            if (grade === 'correct') student.score += wager;
+            if (grade === 'wrong') student.score -= wager;
+          });
+          state.fjApplied = true;
+          saveState();
+          renderScoreboard();
+        }
+
+        // Build Podium
+        const ranked = [...state.students].sort((a, b) => b.score - a.score);
+        const top3 = [ranked[1], ranked[0], ranked[2]]; // 2nd, 1st, 3rd visual layout
+        const podiumMeta = [
+          { rank: '2nd Place', medal: '🥈', height: 'sm:pt-5', border: 'border-slate-300/70 bg-slate-800/40' },
+          { rank: '1st Place', medal: '🥇', height: 'sm:pt-2 sm:scale-105', border: 'border-yellow-400 bg-amber-500/20 shadow-[0_0_25px_rgba(250,204,21,0.3)]' },
+          { rank: '3rd Place', medal: '🥉', height: 'sm:pt-7', border: 'border-amber-700/70 bg-amber-950/40' }
+        ];
+
+        el.fjPodiumCards.innerHTML = '';
+        top3.forEach((student, idx) => {
+          if (!student) return;
+          const m = podiumMeta[idx];
+          const div = document.createElement('div');
+          div.className = `rounded-2xl border-2 p-4 ${m.border} ${m.height}`;
+          div.innerHTML = `
+            <div class="text-3xl mb-1">${m.medal}</div>
+            <div class="text-[11px] font-bold uppercase tracking-widest text-blue-200">${m.rank}</div>
+            <div class="font-bold text-lg text-white truncate mt-1">${escapeAttr(student.name)}</div>
+            <div class="font-broadcast text-3xl text-yellow-400 mt-1">${formatScore(student.score)}</div>
+          `;
+          el.fjPodiumCards.appendChild(div);
+        });
+
+        el.fjRemainingStandings.innerHTML = ranked
+          .slice(3)
+          .map((s, idx) => `<span class="px-3 py-1 rounded-full bg-blue-950 border border-blue-800">${idx + 4}. <strong>${escapeAttr(s.name)}</strong>: ${formatScore(s.score)}</span>`)
+          .join('');
+
+        el.fjPodiumBox.classList.remove('hidden');
+        SoundFX.victory();
+        launchConfetti();
+        el.fjPodiumBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      /* Final Jeopardy 60s Timer */
+      function updateFJTimerUI() {
+        el.fjTimerDisplay.textContent = formatClock(fjTimerRemaining);
+        const pct = Math.max(0, (fjTimerRemaining / 60) * 100);
+        el.fjTimerBar.style.width = `${pct}%`;
+        el.btnFJTimerStart.textContent = fjTimerRunning ? '⏸ Pause' : (fjTimerRemaining < 60 && fjTimerRemaining > 0 ? '▶ Resume' : '▶ Start 60s');
+      }
+
+      function stopFJTimer() {
+        fjTimerRunning = false;
+        if (fjTimerInterval) {
+          clearInterval(fjTimerInterval);
+          fjTimerInterval = null;
+        }
+        updateFJTimerUI();
+      }
+
+      function resetFJTimer() {
+        stopFJTimer();
+        fjTimerRemaining = 60;
+        updateFJTimerUI();
+      }
+
+      function toggleFJTimer() {
+        if (fjTimerRunning) {
+          stopFJTimer();
+          return;
+        }
+        if (fjTimerRemaining <= 0) fjTimerRemaining = 60;
+        fjTimerRunning = true;
+        updateFJTimerUI();
+        fjTimerInterval = setInterval(() => {
+          fjTimerRemaining -= 1;
+          if (fjTimerRemaining > 0 && fjTimerRemaining <= 5) SoundFX.tick();
+          if (fjTimerRemaining <= 0) {
+            fjTimerRemaining = 0;
+            stopFJTimer();
+            SoundFX.timeUp();
+          }
+          updateFJTimerUI();
+        }, 1000);
+      }
+
+      /* Lightweight Canvas Confetti for Championship Celebration */
+      function launchConfetti() {
+        const canvas = document.getElementById('confettiCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        canvas.classList.remove('hidden');
+
+        const colors = ['#FACC15', '#38BDF8', '#34D399', '#F472B6', '#FFFFFF'];
+        const particles = Array.from({ length: 110 }, () => ({
+          x: Math.random() * canvas.width,
+          y: -20 - Math.random() * 200,
+          w: 7 + Math.random() * 6,
+          h: 4 + Math.random() * 4,
+          vx: (Math.random() - 0.5) * 4,
+          vy: 2.5 + Math.random() * 4.5,
+          rot: Math.random() * 360,
+          vrot: (Math.random() - 0.5) * 10,
+          color: colors[Math.floor(Math.random() * colors.length)]
+        }));
+
+        let frames = 0;
+        function animate() {
+          frames++;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          particles.forEach((p) => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.rot += p.vrot;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rot * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.restore();
+          });
+          if (frames < 175) {
+            requestAnimationFrame(animate);
+          } else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.classList.add('hidden');
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+
+      /* =======================================================================
+         11. EVENT LISTENERS & KEYBOARD SHORTCUTS
+         ======================================================================= */
+      el.btnSoundToggle.addEventListener('click', () => {
+        state.soundEnabled = !state.soundEnabled;
+        saveState();
+        renderHeaderControls();
+        if (state.soundEnabled) SoundFX.tileOpen();
+      });
+
+      el.btnDailyDoubleToggle.addEventListener('click', () => {
+        state.dailyDoubleEnabled = !state.dailyDoubleEnabled;
+        saveState();
+        renderHeaderControls();
+        showToast(
+          state.dailyDoubleEnabled
+            ? 'Daily Doubles enabled (2 hidden on 300/400 tiles)'
+            : 'Daily Doubles disabled',
+          'gold'
+        );
+      });
+
+      el.btnFinalJeopardy.addEventListener('click', openFinalJeopardy);
+
+      el.btnResetGame.addEventListener('click', () => {
+        openConfirm(
+          'Reset Entire Game?',
+          'This will clear all played tiles, reset all 7 students\' scores to 0 (keeping custom student names), and re-randomize the 2 Daily Doubles.',
+          () => {
+            const preservedNames = state.students.map((s) => s.name);
+            state = createDefaultState();
+            state.students.forEach((s, i) => {
+              s.name = preservedNames[i] || `Student ${i + 1}`;
+            });
+            fjWagers = {};
+            fjGrades = {};
+            saveState();
+            renderHeaderControls();
+            renderBoard();
+            renderScoreboard();
+            showToast('Game board & scores reset!', 'success');
+          }
+        );
+      });
+
+      // Confirm modal buttons
+      el.btnConfirmCancel.addEventListener('click', closeConfirm);
+      el.btnConfirmProceed.addEventListener('click', () => {
+        const cb = confirmCallback;
+        closeConfirm();
+        if (cb) cb();
+      });
+
+      // Daily Double modal buttons
+      el.ddStudentSelect.addEventListener('change', updateDDWagerLimits);
+      el.btnCancelDD.addEventListener('click', closeDailyDoubleModal);
+      document.querySelectorAll('.dd-preset-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const val = parseInt(btn.dataset.ddPreset, 10);
+          const max = Math.max(getSelectedDDStudent().score, 500);
+          el.ddWagerInput.value = String(Math.min(val, max));
+          el.ddWagerError.classList.add('hidden');
+        });
+      });
+      el.btnDDMaxPreset.addEventListener('click', () => {
+        const max = Math.max(getSelectedDDStudent().score, 500);
+        el.ddWagerInput.value = String(max);
+        el.ddWagerError.classList.add('hidden');
+      });
+      el.btnLockDDWager.addEventListener('click', () => {
+        if (!pendingDDTile) return;
+        const student = getSelectedDDStudent();
+        const maxWager = Math.max(student.score, 500);
+        const wager = parseInt(el.ddWagerInput.value, 10);
+
+        if (isNaN(wager) || wager < 0 || wager > maxWager) {
+          el.ddWagerError.textContent = `Please enter a valid wager between 0 and ${maxWager}.`;
+          el.ddWagerError.classList.remove('hidden');
+          return;
+        }
+
+        const { catIdx, rowIdx } = pendingDDTile;
+        closeDailyDoubleModal();
+        openQuestionModal(catIdx, rowIdx, wager, true, student.id);
+      });
+
+      // Question Modal Controls
+      el.btnRevealAnswer.addEventListener('click', revealAnswer);
+      el.btnTimerToggle.addEventListener('click', () => {
+        if (timerRunning) pauseQuestionTimer();
+        else startQuestionTimer();
+      });
+      el.btnTimerReset.addEventListener('click', () => resetQuestionTimer(true));
+      el.btnCompleteQuestion.addEventListener('click', completeAndCloseQuestion);
+      el.btnCloseUnplayed.addEventListener('click', undoAndCloseUnplayed);
+      el.btnLeaveUnplayedFooter.addEventListener('click', undoAndCloseUnplayed);
+
+      // Final Jeopardy Controls
+      el.btnCloseFJ.addEventListener('click', closeFinalJeopardy);
+      document.querySelectorAll('.fj-tab').forEach((tab) => {
+        tab.addEventListener('click', () => setFJStep(parseInt(tab.dataset.fjStep, 10)));
+      });
+      document.querySelectorAll('[data-fj-nav]').forEach((btn) => {
+        btn.addEventListener('click', () => setFJStep(parseInt(btn.dataset.fjNav, 10)));
+      });
+      el.btnFJToClue.addEventListener('click', () => {
+        setFJStep(2);
+        SoundFX.tileOpen();
+      });
+      el.btnFJTimerStart.addEventListener('click', toggleFJTimer);
+      el.btnFJTimerReset.addEventListener('click', resetFJTimer);
+      el.btnFJReveal.addEventListener('click', () => {
+        stopFJTimer();
+        el.fjAnswerBox.classList.remove('hidden');
+      });
+      el.btnApplyFJAndPodium.addEventListener('click', finalizeFJScoresAndPodium);
+
+      // Keyboard Shortcuts (Space = Reveal Answer, P = Pause/Resume Timer)
+      document.addEventListener('keydown', (e) => {
+        const tag = (e.target && e.target.tagName) ? e.target.tagName.toUpperCase() : '';
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+        if (activeModal && !el.questionModal.classList.contains('hidden')) {
+          if (e.code === 'Space') {
+            e.preventDefault();
+            revealAnswer();
+          } else if (e.key === 'p' || e.key === 'P') {
+            e.preventDefault();
+            if (timerRunning) pauseQuestionTimer();
+            else startQuestionTimer();
+          }
+        }
+      });
+
+      /* =======================================================================
+         12. INITIAL BOOTSTRAP
+         ======================================================================= */
+      renderHeaderControls();
+      renderBoard();
+      renderScoreboard();
+    })();
+  </script>
+</body>
+</html>
